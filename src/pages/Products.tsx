@@ -12,14 +12,10 @@ import {
 } from 'lucide-react';
 import CatalogProductCard from '../components/CatalogProductCard';
 import {
-  catalogGroups,
-  getCatalogGroupIdForSize,
-  getCatalogProductsByGroup,
   hasFixedPrice,
   isDiscountedProduct,
-  productSizeOptions,
-  products,
 } from '../data/products';
+import { getCatalogGroupIdForSize, productSizeOptions, useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import { useCart } from '../context/CartContext';
 import { useIsMobile } from '../hooks/use-mobile';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../components/ui/accordion';
@@ -29,6 +25,7 @@ import WaterComparison from '../sections/WaterComparison';
 export default function Products() {
   const { i18n } = useTranslation();
   const { addToCart } = useCart();
+  const { products, catalogGroups, getCatalogProductsByGroup } = useProductCatalog();
   const isMobile = useIsMobile();
   const isRTL = i18n.language === 'ar';
 

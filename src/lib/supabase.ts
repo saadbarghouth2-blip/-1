@@ -27,7 +27,7 @@ export function getSupabaseClient() {
       auth: {
         autoRefreshToken: true,
         persistSession: true,
-        detectSessionInUrl: false,
+        detectSessionInUrl: true,
         storageKey: 'riq-web-auth',
       },
     });

@@ -56,9 +56,14 @@ export function subscribeToWebAuthChanges(
 
 export async function sendWebEmailOtp(email: string) {
   const client = getClient();
+  const emailRedirectTo = typeof window === 'undefined'
+    ? undefined
+    : `${window.location.origin}/admin/products`;
+
   const { error } = await client.auth.signInWithOtp({
     email,
     options: {
+      emailRedirectTo,
       shouldCreateUser: true,
     },
   });

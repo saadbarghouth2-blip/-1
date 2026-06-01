@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, MessageCircle, Package, Shapes, ShoppingCart, Tag } from 'lucide-react';
-import { brands, getBrandEntryPrice, getProductsByBrand, hasFixedPrice, isDiscountedProduct } from '../data/products';
+import { hasFixedPrice, isDiscountedProduct } from '../data/products';
+import { getBrandEntryPrice, useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import { useCart } from '../context/CartContext';
 import ProductImage from '../components/ProductImage';
 import BrandVisual from '../components/BrandVisual';
@@ -15,6 +16,7 @@ export default function BrandDetail() {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { brands, getProductsByBrand } = useProductCatalog();
   const isRTL = i18n.language === 'ar';
 
   const brand = brands.find((item) => item.id === brandId);

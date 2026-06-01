@@ -57,6 +57,7 @@ export interface Product {
   }>;
   offerMeta?: OfferMeta;
   inStock: boolean;
+  isPublished?: boolean;
   rating: number;
   reviews: number;
   imageType?: 'case' | 'offer' | 'bottle' | 'gallon';

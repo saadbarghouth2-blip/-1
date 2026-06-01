@@ -9,6 +9,7 @@ import Navigation from './components/Navigation';
 import WebAccountDialog from './components/WebAccountDialog';
 import Footer from './sections/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
+import { InstallButton } from './components/InstallButton';
 import SplashScreen from './components/SplashScreen';
 import AnimatedBackground from './components/AnimatedBackground';
 import MobileBottomNav from './components/MobileBottomNav';
@@ -29,6 +30,8 @@ const loadCartPage = () => import('./pages/Cart');
 const loadCheckoutPage = () => import('./pages/Checkout');
 const loadMobileCheckoutBridgePage = () => import('./pages/MobileCheckoutBridge');
 const loadAppInstallPage = () => import('./pages/AppInstall');
+const loadAdminDashboardPage = () => import('./pages/AdminDashboard');
+const loadAdminProductsPage = () => import('./pages/AdminProducts');
 const loadNotFoundPage = () => import('./pages/NotFound');
 
 const Products = lazy(loadProductsPage);
@@ -43,6 +46,8 @@ const Cart = lazy(loadCartPage);
 const Checkout = lazy(loadCheckoutPage);
 const MobileCheckoutBridge = lazy(loadMobileCheckoutBridgePage);
 const AppInstall = lazy(loadAppInstallPage);
+const AdminDashboard = lazy(loadAdminDashboardPage);
+const AdminProducts = lazy(loadAdminProductsPage);
 const NotFound = lazy(loadNotFoundPage);
 
 const PAGE_TRANSITION_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -200,6 +205,8 @@ function AppContent() {
         loadCartPage,
         loadCheckoutPage,
         loadAppInstallPage,
+        loadAdminDashboardPage,
+        loadAdminProductsPage,
         loadNotFoundPage,
       ];
 
@@ -242,6 +249,8 @@ function AppContent() {
               <Route path="/checkout" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Checkout /></PageTransition>} />
               <Route path="/checkout/mobile" element={<PageTransition direction={routeDirection} isRTL={isRTL}><MobileCheckoutBridge /></PageTransition>} />
               <Route path="/app" element={<PageTransition direction={routeDirection} isRTL={isRTL}><AppInstall /></PageTransition>} />
+              <Route path="/admin" element={<PageTransition direction={routeDirection} isRTL={isRTL}><AdminDashboard /></PageTransition>} />
+              <Route path="/admin/products" element={<PageTransition direction={routeDirection} isRTL={isRTL}><AdminProducts /></PageTransition>} />
               <Route path="*" element={<PageTransition direction={routeDirection} isRTL={isRTL}><NotFound /></PageTransition>} />
             </Routes>
           </Suspense>
@@ -250,6 +259,7 @@ function AppContent() {
 
       {!isMobileCheckoutBridge && <Footer />}
       {!isMobileCheckoutBridge && <WhatsAppButton />}
+      {!isMobileCheckoutBridge && <InstallButton />}
       {!isMobileCheckoutBridge && <WebAccountDialog />}
     </div>
   );

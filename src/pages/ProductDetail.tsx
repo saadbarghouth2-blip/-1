@@ -14,13 +14,10 @@ import {
   Truck,
 } from 'lucide-react';
 import {
-  brands,
-  getCatalogGroupById,
-  getProductById,
-  getRelatedProducts,
   hasFixedPrice,
   isDiscountedProduct,
 } from '../data/products';
+import { useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import { useCart } from '../context/CartContext';
 import ProductImage from '../components/ProductImage';
 import { WHATSAPP_LINK } from '../lib/contact';
@@ -40,6 +37,7 @@ export default function ProductDetail() {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { brands, getCatalogGroupById, getProductById, getRelatedProducts } = useProductCatalog();
   const isRTL = i18n.language === 'ar';
   const [quantity, setQuantity] = useState(1);
 

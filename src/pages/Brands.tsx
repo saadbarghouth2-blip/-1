@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Search, Shapes } from 'lucide-react';
-import { brands, getBrandEntryPrice, getProductsByBrand, isDiscountedProduct, products } from '../data/products';
+import { isDiscountedProduct } from '../data/products';
+import { getBrandEntryPrice, useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import BrandVisual from '../components/BrandVisual';
 import { formatSarPrice } from '../lib/utils';
 
@@ -11,6 +12,7 @@ type SortKey = 'default' | 'products' | 'price';
 
 export default function Brands() {
   const { i18n } = useTranslation();
+  const { brands, products, getProductsByBrand } = useProductCatalog();
   const isRTL = i18n.language === 'ar';
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortKey>('default');

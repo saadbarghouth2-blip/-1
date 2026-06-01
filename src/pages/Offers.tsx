@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import { ArrowRight, BadgePercent, Package, ShoppingCart, Tags } from 'lucide-react';
-import { isDiscountedProduct, products } from '../data/products';
+import { isDiscountedProduct } from '../data/products';
+import { useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import ProductImage from '../components/ProductImage';
 import { useCart } from '../context/CartContext';
 import { formatSarPrice } from '../lib/utils';
@@ -11,13 +12,14 @@ import { formatSarPrice } from '../lib/utils';
 export default function Offers() {
   const { i18n } = useTranslation();
   const { addToCart } = useCart();
+  const { products } = useProductCatalog();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-120px' });
   const isRTL = i18n.language === 'ar';
 
   const discountedProducts = useMemo(
     () => products.filter(isDiscountedProduct),
-    [],
+    [products],
   );
 
   const totalSavings = discountedProducts.reduce((sum, product) => (

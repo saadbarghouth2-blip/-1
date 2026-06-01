@@ -7,14 +7,10 @@ import CatalogMobileToolbar from '../components/CatalogMobileToolbar';
 import CatalogProductCard from '../components/CatalogProductCard';
 import {
   PRODUCTS_PAGE_SIZE,
-  catalogGroups,
-  getCatalogGroupBySlug,
-  getCatalogProductsByGroup,
-  getProductSizeOptionsByGroup,
   isDiscountedProduct,
-  searchProducts,
   type ProductSize,
 } from '../data/products';
+import { useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import { useCart } from '../context/CartContext';
 import { useIsMobile } from '../hooks/use-mobile';
 import { Button } from '../components/ui/button';
@@ -44,6 +40,13 @@ export default function ProductCatalogGroup() {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const {
+    catalogGroups,
+    getCatalogGroupBySlug,
+    getCatalogProductsByGroup,
+    getProductSizeOptionsByGroup,
+    searchProducts,
+  } = useProductCatalog();
   const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
