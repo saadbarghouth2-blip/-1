@@ -394,14 +394,14 @@ export default function AdminProducts() {
                     return;
                   }
 
-                  setToken(event.target.value.replace(/\D/g, '').slice(0, 6));
+                  setToken(event.target.value.replace(/\D/g, '').slice(0, 8));
                 }}
                 type={loginStep === 'email' ? 'email' : 'text'}
                 inputMode={loginStep === 'email' ? 'email' : 'numeric'}
                 autoComplete={loginStep === 'email' ? 'email' : 'one-time-code'}
-                maxLength={loginStep === 'email' ? undefined : 6}
+                maxLength={loginStep === 'email' ? undefined : 8}
                 className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-right outline-none focus:border-[#153b66] focus:ring-4 focus:ring-[#153b66]/10"
-                placeholder={loginStep === 'email' ? PRODUCT_ADMIN_EMAIL : '123456'}
+                placeholder={loginStep === 'email' ? PRODUCT_ADMIN_EMAIL : '12345678'}
               />
             </label>
             {loginStep === 'otp' ? (
