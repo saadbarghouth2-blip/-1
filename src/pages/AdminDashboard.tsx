@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { BarChart3, Boxes, ClipboardList, Lock, Package, RefreshCw, ShoppingBag, Wallet } from 'lucide-react';
 import { useWebAuth } from '../features/auth/WebAuthProvider';
@@ -13,9 +13,12 @@ export default function AdminDashboard() {
     configError,
     session,
     requestEmailOtp,
+    confirmEmailOtp,
     signOut,
   } = useWebAuth();
   const [email, setEmail] = useState(PRODUCT_ADMIN_EMAIL);
+  const [token, setToken] = useState('');
+  const [loginStep, setLoginStep] = useState<'email' | 'otp'>('email');
   const [dashboard, setDashboard] = useState<AdminSalesDashboard | null>(null);
   const [isBusy, setIsBusy] = useState(false);
   const [message, setMessage] = useState('');
@@ -39,15 +42,32 @@ export default function AdminDashboard() {
     }
   }, [authReady, session?.email]);
 
-  const handleSendLogin = async () => {
+  const handleSendLogin = async (event: FormEvent) => {
+    event.preventDefault();
     setIsBusy(true);
     setError('');
     setMessage('');
     try {
       await requestEmailOtp(email);
-      setMessage('تم إرسال رابط الدخول على الإيميل. افتح الرسالة واضغط Sign in.');
+      setLoginStep('otp');
+      setMessage('تم إرسال كود الدخول على الإيميل. افتح الرسالة واكتب الكود هنا.');
     } catch (nextError) {
-      setError(nextError instanceof Error ? nextError.message : 'تعذر إرسال رابط الدخول.');
+      setError(nextError instanceof Error ? nextError.message : 'تعذر إرسال كود الدخول.');
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  const handleConfirmLogin = async (event: FormEvent) => {
+    event.preventDefault();
+    setIsBusy(true);
+    setError('');
+    setMessage('');
+    try {
+      await confirmEmailOtp(email, token);
+      setMessage('تم تسجيل الدخول بنجاح.');
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : 'الكود غير صحيح أو انتهت صلاحيته.');
     } finally {
       setIsBusy(false);
     }
@@ -73,27 +93,54 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <label className="block">
-            <span className="text-sm font-bold text-slate-700">الإيميل</span>
-            <input
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              type="email"
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-right outline-none focus:border-[#153b66] focus:ring-4 focus:ring-[#153b66]/10"
-            />
-          </label>
+          <form onSubmit={loginStep === 'email' ? handleSendLogin : handleConfirmLogin} className="space-y-4">
+            <label className="block">
+              <span className="text-sm font-bold text-slate-700">{loginStep === 'email' ? 'الإيميل' : 'كود الدخول'}</span>
+              <input
+                value={loginStep === 'email' ? email : token}
+                onChange={(event) => {
+                  if (loginStep === 'email') {
+                    setEmail(event.target.value);
+                    return;
+                  }
 
-          {message ? <p className="mt-4 rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">{message}</p> : null}
-          {error ? <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p> : null}
+                  setToken(event.target.value.replace(/\D/g, '').slice(0, 6));
+                }}
+                type={loginStep === 'email' ? 'email' : 'text'}
+                inputMode={loginStep === 'email' ? 'email' : 'numeric'}
+                autoComplete={loginStep === 'email' ? 'email' : 'one-time-code'}
+                maxLength={loginStep === 'email' ? undefined : 6}
+                placeholder={loginStep === 'email' ? PRODUCT_ADMIN_EMAIL : '123456'}
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-right outline-none focus:border-[#153b66] focus:ring-4 focus:ring-[#153b66]/10"
+              />
+            </label>
 
-          <button
-            type="button"
-            disabled={isBusy}
-            onClick={() => void handleSendLogin()}
-            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#153b66] px-5 py-3 text-sm font-bold text-white disabled:opacity-60"
-          >
-            إرسال رابط الدخول
-          </button>
+            {loginStep === 'otp' ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setLoginStep('email');
+                  setToken('');
+                  setMessage('');
+                  setError('');
+                }}
+                className="text-sm font-bold text-[#153b66]"
+              >
+                تغيير الإيميل أو إعادة إرسال الكود
+              </button>
+            ) : null}
+
+            {message ? <p className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">{message}</p> : null}
+            {error ? <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p> : null}
+
+            <button
+              type="submit"
+              disabled={isBusy}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#153b66] px-5 py-3 text-sm font-bold text-white disabled:opacity-60"
+            >
+              {loginStep === 'email' ? 'إرسال الكود' : 'تأكيد الكود'}
+            </button>
+          </form>
         </div>
       </main>
     );

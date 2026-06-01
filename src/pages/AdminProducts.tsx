@@ -210,9 +210,9 @@ export default function AdminProducts() {
     try {
       await requestEmailOtp(email);
       setLoginStep('otp');
-      setMessage('تم إرسال رابط الدخول على الإيميل. افتح رسالة Supabase واضغط Sign in من نفس المتصفح.');
+      setMessage('تم إرسال كود الدخول على الإيميل. افتح الرسالة واكتب الكود هنا.');
     } catch (nextError) {
-      setError(nextError instanceof Error ? nextError.message : 'تعذر إرسال رابط الدخول.');
+      setError(nextError instanceof Error ? nextError.message : 'تعذر إرسال كود الدخول.');
     } finally {
       setIsBusy(false);
     }
@@ -385,16 +385,39 @@ export default function AdminProducts() {
 
           <form onSubmit={loginStep === 'email' ? handleLoginRequest : handleOtpConfirm} className="space-y-4">
             <label className="block">
-              <span className="text-sm font-bold text-slate-700">{loginStep === 'email' ? 'الإيميل' : 'الكود لو ظهر في الرسالة'}</span>
+              <span className="text-sm font-bold text-slate-700">{loginStep === 'email' ? 'الإيميل' : 'كود الدخول'}</span>
               <input
                 value={loginStep === 'email' ? email : token}
-                onChange={(event) => loginStep === 'email' ? setEmail(event.target.value) : setToken(event.target.value)}
+                onChange={(event) => {
+                  if (loginStep === 'email') {
+                    setEmail(event.target.value);
+                    return;
+                  }
+
+                  setToken(event.target.value.replace(/\D/g, '').slice(0, 6));
+                }}
                 type={loginStep === 'email' ? 'email' : 'text'}
                 inputMode={loginStep === 'email' ? 'email' : 'numeric'}
+                autoComplete={loginStep === 'email' ? 'email' : 'one-time-code'}
+                maxLength={loginStep === 'email' ? undefined : 6}
                 className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-right outline-none focus:border-[#153b66] focus:ring-4 focus:ring-[#153b66]/10"
                 placeholder={loginStep === 'email' ? PRODUCT_ADMIN_EMAIL : '123456'}
               />
             </label>
+            {loginStep === 'otp' ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setLoginStep('email');
+                  setToken('');
+                  setMessage(null);
+                  setError(null);
+                }}
+                className="text-sm font-bold text-[#153b66]"
+              >
+                تغيير الإيميل أو إعادة إرسال الكود
+              </button>
+            ) : null}
             {message ? <p className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">{message}</p> : null}
             {error ? <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p> : null}
             <button
@@ -403,7 +426,7 @@ export default function AdminProducts() {
               className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#153b66] px-5 py-3 text-sm font-bold text-white disabled:opacity-60"
             >
               <CheckCircle2 className="h-4 w-4" />
-              <span>{loginStep === 'email' ? 'إرسال رابط الدخول' : 'تأكيد الكود'}</span>
+              <span>{loginStep === 'email' ? 'إرسال الكود' : 'تأكيد الكود'}</span>
             </button>
           </form>
         </div>
