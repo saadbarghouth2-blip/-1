@@ -15,6 +15,7 @@ import {
   MOYASAR_STYLES_URL,
   getMoyasarPublicKey,
 } from '../lib/payments';
+import { BANK_TRANSFER_DETAILS } from '../lib/contact';
 import { persistCompletedOrder } from '../services/webAccount';
 import { toAbsoluteUrl, withBasePath } from '../lib/site';
 import { formatSarPrice } from '../lib/utils';
@@ -227,7 +228,7 @@ export default function Checkout() {
         description: `Order from ${BRAND_NAME_EN} - ${totalItems} items`,
         publishable_api_key: moyasarPublicKey,
         callback_url: SUCCESS_URL,
-        methods: ['creditcard', 'applepay', 'stcpay'],
+        methods: ['creditcard', 'applepay'],
       });
       moyasarInitializedRef.current = true;
     }, 300);
@@ -622,6 +623,37 @@ export default function Checkout() {
 
               {step === 2 && (
                 <motion.div key="step2" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6">
+                  <div className="rounded-[2rem] border border-[#153b66]/10 bg-white p-5 shadow-lg shadow-gray-200/30 sm:p-6">
+                    <div className="mb-4">
+                      <p className="text-sm font-black text-[#153b66]">
+                        {isRTL ? 'خيار التحويل البنكي' : 'Bank transfer option'}
+                      </p>
+                      <h2 className="mt-1 text-xl font-black text-gray-900">
+                        {isRTL ? BANK_TRANSFER_DETAILS.bankNameAr : BANK_TRANSFER_DETAILS.bankNameEn}
+                      </h2>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-2xl bg-gray-50 p-4">
+                        <p className="text-xs font-bold text-gray-500">{isRTL ? 'اسم صاحب الحساب' : 'Account holder'}</p>
+                        <p className="mt-2 text-sm font-black leading-6 text-gray-900">
+                          {isRTL ? BANK_TRANSFER_DETAILS.accountNameAr : BANK_TRANSFER_DETAILS.accountNameEn}
+                        </p>
+                      </div>
+                      <div className="rounded-2xl bg-gray-50 p-4" dir="ltr">
+                        <p className="text-xs font-bold text-gray-500">{isRTL ? 'رقم الحساب' : 'Account number'}</p>
+                        <p className="mt-2 break-all text-sm font-black text-gray-900">{BANK_TRANSFER_DETAILS.accountNumber}</p>
+                      </div>
+                      <div className="rounded-2xl bg-gray-50 p-4 sm:col-span-2" dir="ltr">
+                        <p className="text-xs font-bold text-gray-500">IBAN</p>
+                        <p className="mt-2 break-all text-base font-black text-[#153b66]">{BANK_TRANSFER_DETAILS.iban}</p>
+                      </div>
+                    </div>
+                    <p className="mt-4 text-sm font-semibold leading-7 text-gray-500">
+                      {isRTL
+                        ? 'بعد التحويل، تواصل معنا عبر واتساب لتأكيد الطلب وإرفاق إيصال التحويل.'
+                        : 'After transferring, contact us on WhatsApp to confirm the order and attach the transfer receipt.'}
+                    </p>
+                  </div>
                   <div className="bg-white rounded-[2.5rem] p-6 sm:p-10 shadow-xl shadow-gray-200/30 border border-gray-100 overflow-hidden">
                     {paymentLoadError && (
                       <div className="mb-4 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">

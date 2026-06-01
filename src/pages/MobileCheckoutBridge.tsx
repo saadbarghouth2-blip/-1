@@ -75,7 +75,7 @@ export default function MobileCheckoutBridge() {
           description: getMobileCheckoutDescription(payload),
           publishable_api_key: moyasarPublicKey,
           callback_url: toAbsoluteUrl(withBasePath('/checkout/mobile?status=success')),
-          methods: ['creditcard', 'applepay', 'stcpay'],
+          methods: ['creditcard', 'applepay'],
         });
       })
       .catch(() => {
