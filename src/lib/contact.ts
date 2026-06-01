@@ -10,6 +10,14 @@ export const WHATSAPP_LINK = `https://wa.me/${CONTACT_PHONE_RAW}`;
 export const BUSINESS_TAX_NUMBER = '311090145340000003';
 export const BUSINESS_COMMERCIAL_REGISTRATION = '1010961465';
 export const BUSINESS_ECOMMERCE_LICENSE = '0000203590';
+export const BANK_TRANSFER_DETAILS = {
+  bankNameAr: 'بنك الإنماء',
+  bankNameEn: 'Alinma Bank',
+  accountNameAr: 'شركة إشراق الوادي للتجارة شركة شخص واحد',
+  accountNameEn: 'Ashraq Alwady Trading One Person Company',
+  accountNumber: '68205125742000',
+  iban: 'SA2205000068205125742000',
+};
 
 const EMAILJS_SERVICE_ID = 'service_62zna42';
 const EMAILJS_TEMPLATE_ID = 'template_l26577p';
