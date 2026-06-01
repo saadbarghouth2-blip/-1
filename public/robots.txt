@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /checkout
 Disallow: /cart
-Sitemap: https://riq.com/sitemap.xml
+Sitemap: https://xn--wgb8axa.com/sitemap.xml

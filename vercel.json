@@ -1,5 +1,40 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.xn--wgb8axa.com"
+        }
+      ],
+      "destination": "https://xn--wgb8axa.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "riq.com"
+        }
+      ],
+      "destination": "https://xn--wgb8axa.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.riq.com"
+        }
+      ],
+      "destination": "https://xn--wgb8axa.com/:path*",
+      "permanent": true
+    }
+  ],
   "routes": [
     {
       "handle": "filesystem"

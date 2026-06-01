@@ -16,14 +16,15 @@ import { localizeText } from '../lib/utils';
 import {
   SITE_ADDRESS_AR,
   SITE_ADDRESS_EN,
+  SITE_ALTERNATE_NAMES,
   SITE_DEFAULT_DESCRIPTION,
   SITE_DEFAULT_IMAGE,
   SITE_EMAIL,
   SITE_NAME_AR,
-  SITE_NAME_EN,
   SITE_NAME_LOCKUP,
   SITE_PHONE,
   SITE_PHONE_RAW,
+  SITE_SHORT_NAME_AR,
   SITE_SOCIAL_LINKS,
   getSiteOrigin,
   normalizeCanonicalPath,
@@ -104,12 +105,14 @@ function buildWebPageSchema({
   description,
   pageType,
   locale,
+  siteOrigin,
 }: {
   pageUrl: string;
   title: string;
   description: string;
   pageType: string;
   locale: string;
+  siteOrigin: string;
 }) {
   return {
     '@context': 'https://schema.org',
@@ -120,7 +123,7 @@ function buildWebPageSchema({
     description,
     inLanguage: locale,
     isPartOf: {
-      '@id': `${pageUrl.split('/').slice(0, 3).join('/')}/#website`,
+      '@id': `${siteOrigin}/#website`,
     },
     breadcrumb: {
       '@id': `${pageUrl}#breadcrumb`,
@@ -147,8 +150,9 @@ function buildItemListSchema(
 }
 
 function buildCommonSchemas(siteOrigin: string, isRTL: boolean) {
-  const locale = isRTL ? 'ar-SA' : 'en-SA';
   const description = isRTL ? SITE_DEFAULT_DESCRIPTION.ar : SITE_DEFAULT_DESCRIPTION.en;
+  const address = isRTL ? SITE_ADDRESS_AR : SITE_ADDRESS_EN;
+  const logoUrl = toAbsoluteUrl(SITE_DEFAULT_IMAGE, siteOrigin);
 
   return [
     {
@@ -156,28 +160,49 @@ function buildCommonSchemas(siteOrigin: string, isRTL: boolean) {
       '@type': 'WebSite',
       '@id': `${siteOrigin}/#website`,
       url: `${siteOrigin}/`,
-      name: SITE_NAME_LOCKUP,
-      alternateName: [SITE_NAME_EN, SITE_NAME_AR],
+      name: SITE_SHORT_NAME_AR,
+      alternateName: SITE_ALTERNATE_NAMES,
       description,
-      inLanguage: [locale, isRTL ? 'en-SA' : 'ar-SA'],
+      inLanguage: ['ar-SA', 'en-SA'],
+      publisher: {
+        '@id': `${siteOrigin}/#organization`,
+      },
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: `${siteOrigin}/products?q={search_term_string}`,
+        'query-input': 'required name=search_term_string',
+      },
     },
     {
       '@context': 'https://schema.org',
-      '@type': 'Store',
-      '@id': `${siteOrigin}/#store`,
+      '@type': 'Organization',
+      '@id': `${siteOrigin}/#organization`,
       name: SITE_NAME_LOCKUP,
-      alternateName: [SITE_NAME_EN, SITE_NAME_AR],
-      image: toAbsoluteUrl(SITE_DEFAULT_IMAGE, siteOrigin),
-      logo: toAbsoluteUrl(SITE_DEFAULT_IMAGE, siteOrigin),
+      alternateName: SITE_ALTERNATE_NAMES,
+      url: `${siteOrigin}/`,
+      logo: logoUrl,
+      image: logoUrl,
+      email: SITE_EMAIL,
+      telephone: SITE_PHONE_RAW,
+      sameAs: SITE_SOCIAL_LINKS,
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': ['Store', 'LocalBusiness'],
+      '@id': `${siteOrigin}/#store`,
+      name: SITE_NAME_AR,
+      alternateName: SITE_ALTERNATE_NAMES,
+      image: logoUrl,
+      logo: logoUrl,
       url: `${siteOrigin}/`,
       telephone: SITE_PHONE_RAW,
       email: SITE_EMAIL,
       description,
       address: {
         '@type': 'PostalAddress',
-        addressLocality: 'Riyadh',
+        addressLocality: isRTL ? 'الرياض' : 'Riyadh',
         addressCountry: 'SA',
-        streetAddress: isRTL ? SITE_ADDRESS_AR : SITE_ADDRESS_EN,
+        streetAddress: address,
       },
       sameAs: SITE_SOCIAL_LINKS,
       contactPoint: [
@@ -279,7 +304,7 @@ function buildBrandSchema({
     url: pageUrl,
     logo: toAbsoluteUrl(brand.logo ?? SITE_DEFAULT_IMAGE, siteOrigin),
     description: isRTL
-      ? `تسوّق منتجات ${brand.nameAr} داخل متجر ريق مع توصيل سريع في الرياض.`
+      ? `تسوق منتجات ${brand.nameAr} داخل متجر ريق مع توصيل سريع في الرياض.`
       : `Shop ${brand.name} products at Riq Store with fast delivery in Riyadh.`,
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
@@ -345,6 +370,7 @@ function buildStaticPagePayload({
         description,
         pageType,
         locale,
+        siteOrigin,
       }),
       ...(items ? [buildItemListSchema(pageUrl, items, siteOrigin)] : []),
     ],
@@ -357,12 +383,12 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
     { name: isRTL ? 'الرئيسية' : 'Home', path: '/' },
   ];
   const genericKeywords = isRTL
-    ? 'متجر ريق, مياه معبأة, توصيل مياه الرياض, كتالوج المياه'
-    : 'Riq Store, bottled water Riyadh, water delivery, bottled water catalog';
+    ? 'ريق, متجر ريق, Riq Store, riq, مياه معبأة, توصيل مياه الرياض'
+    : 'Riq Store, riq, bottled water Riyadh, water delivery, bottled water catalog';
 
   if (normalizedPath === '/') {
     return buildStaticPagePayload({
-      title: isRTL ? 'متجر ريق - Riq Store' : 'Riq Store | Bottled Water Delivery in Riyadh',
+      title: isRTL ? 'ريق | متجر ريق - توصيل مياه في الرياض' : 'Riq | Riq Store - Bottled Water Delivery in Riyadh',
       description: isRTL ? SITE_DEFAULT_DESCRIPTION.ar : SITE_DEFAULT_DESCRIPTION.en,
       path: '/',
       keywords: genericKeywords,
@@ -379,14 +405,14 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
 
   if (normalizedPath === '/products') {
     return buildStaticPagePayload({
-      title: isRTL ? 'فهرس المنتجات | متجر ريق' : 'Product Index | Riq Store',
+      title: isRTL ? 'المنتجات | متجر ريق' : 'Products | Riq Store',
       description: isRTL
-        ? 'ابدأ من فهرس المنتجات ثم انتقل إلى صفحات 200 مل و330 مل والأحجام الأكبر مع تجربة أوضح للموبايل.'
-        : 'Start from the product index, then move into 200ml, 330ml, and above-330ml pages with a clearer mobile-first experience.',
+        ? 'تصفح منتجات المياه المعبأة المتاحة في متجر ريق واطلب توصيل المياه داخل الرياض.'
+        : 'Browse bottled water products at Riq Store and order water delivery in Riyadh.',
       path: '/products',
       keywords: isRTL
-        ? 'فهرس المنتجات, 200 مل, 330 مل, 1.5 لتر, متجر ريق'
-        : 'product index, 200ml water, 330ml water, 1.5L water, Riq Store',
+        ? 'منتجات متجر ريق, مياه 200 مل, مياه 330 مل, مياه 1.5 لتر, توصيل مياه'
+        : 'Riq Store products, 200ml water, 330ml water, 1.5L water, water delivery',
       breadcrumbs: [
         ...homeBreadcrumbs,
         { name: isRTL ? 'المنتجات' : 'Products', path: '/products' },
@@ -412,7 +438,7 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
         description: isRTL ? group.descriptionAr : group.descriptionEn,
         path: normalizedPath,
         keywords: isRTL
-          ? `${group.shortAr}, كتالوج المنتجات, متجر ريق`
+          ? `${group.shortAr}, منتجات المياه, متجر ريق`
           : `${group.shortEn}, water catalog, Riq Store`,
         breadcrumbs: [
           ...homeBreadcrumbs,
@@ -437,6 +463,7 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
       const canonicalPath = withBasePath(normalizedPath);
       const pageUrl = toAbsoluteUrl(canonicalPath, siteOrigin);
       const group = catalogGroups.find((item) => item.id === product.catalogGroup);
+      const title = `${isRTL ? product.name.ar : product.name.en} | ${SITE_NAME_LOCKUP}`;
       const description = hasFixedPrice(product)
         ? (
           isRTL
@@ -445,12 +472,12 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
         )
         : (
           isRTL
-            ? `اطلب ${product.name.ar} من متجر ريق وتواصل معنا مباشرة لمعرفة السعر الحالي وتأكيد التوفر.`
+            ? `اطلب ${product.name.ar} من متجر ريق وتواصل معنا لمعرفة السعر الحالي وتأكيد التوفر.`
             : `Order ${product.name.en} from Riq Store and contact us directly to confirm the current price and availability.`
         );
 
       return {
-        title: `${isRTL ? product.name.ar : product.name.en} | ${SITE_NAME_LOCKUP}`,
+        title,
         description,
         image: product.image ?? SITE_DEFAULT_IMAGE,
         path: canonicalPath,
@@ -469,10 +496,11 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
           ], siteOrigin, pageUrl),
           buildWebPageSchema({
             pageUrl,
-            title: `${isRTL ? product.name.ar : product.name.en} | ${SITE_NAME_LOCKUP}`,
+            title,
             description,
             pageType: 'WebPage',
             locale: isRTL ? 'ar-SA' : 'en-SA',
+            siteOrigin,
           }),
           buildProductSchema({
             productId: product.id,
@@ -489,8 +517,8 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
     return buildStaticPagePayload({
       title: isRTL ? 'العلامات التجارية | متجر ريق' : 'Brands | Riq Store',
       description: isRTL
-        ? 'اكتشف العلامات التجارية المتاحة حالياً داخل الكتالوج المحدث في متجر ريق.'
-        : 'Discover the brands currently available in the refreshed catalog at Riq Store.',
+        ? 'اكتشف العلامات التجارية المتاحة حاليا داخل متجر ريق لتوصيل المياه في الرياض.'
+        : 'Discover the water brands currently available at Riq Store.',
       path: '/brands',
       keywords: isRTL ? 'العلامات التجارية, مياه معبأة, متجر ريق' : 'water brands, bottled water, Riq Store',
       breadcrumbs: [
@@ -515,12 +543,13 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
       const entryPrice = getBrandEntryPrice(brandProducts);
       const canonicalPath = withBasePath(normalizedPath);
       const pageUrl = toAbsoluteUrl(canonicalPath, siteOrigin);
+      const title = `${isRTL ? brand.nameAr : brand.name} | ${SITE_NAME_LOCKUP}`;
       const description = isRTL
-        ? `${brand.nameAr} متاحة الآن عبر ${brandProducts.length} منتجاً داخل الكتالوج الحالي، مع سعر يبدأ من ${entryPrice !== null ? entryPrice.toFixed(2) : '0.00'} ريال.`
+        ? `${brand.nameAr} متاحة الآن عبر ${brandProducts.length} منتجا داخل متجر ريق، مع سعر يبدأ من ${entryPrice !== null ? entryPrice.toFixed(2) : '0.00'} ريال.`
         : `${brand.name} is currently available through ${brandProducts.length} catalog products, with pricing from ${entryPrice !== null ? entryPrice.toFixed(2) : '0.00'} SAR.`;
 
       return {
-        title: `${isRTL ? brand.nameAr : brand.name} | ${SITE_NAME_LOCKUP}`,
+        title,
         description,
         image: brand.logo ?? SITE_DEFAULT_IMAGE,
         path: canonicalPath,
@@ -538,10 +567,11 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
           ], siteOrigin, pageUrl),
           buildWebPageSchema({
             pageUrl,
-            title: `${isRTL ? brand.nameAr : brand.name} | ${SITE_NAME_LOCKUP}`,
+            title,
             description,
             pageType: 'CollectionPage',
             locale: isRTL ? 'ar-SA' : 'en-SA',
+            siteOrigin,
           }),
           buildItemListSchema(
             pageUrl,
@@ -564,10 +594,10 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
 
   if (normalizedPath === '/offers') {
     return buildStaticPagePayload({
-      title: isRTL ? 'العروض الخاصة | متجر ريق' : 'Special Offers | Riq Store',
+      title: isRTL ? 'العروض | متجر ريق' : 'Special Offers | Riq Store',
       description: isRTL
-        ? 'تابع المنتجات المخفضة حالياً داخل الكتالوج، بناءً على خصومات حقيقية وأسعار مؤكدة.'
-        : 'Browse the currently discounted catalog products based on real confirmed savings.',
+        ? 'تابع عروض المياه والمنتجات المخفضة داخل متجر ريق.'
+        : 'Browse current water discounts and special offers at Riq Store.',
       path: '/offers',
       keywords: isRTL ? 'عروض المياه, خصومات المياه, متجر ريق' : 'water discounts, water deals, Riq Store',
       breadcrumbs: [
@@ -588,14 +618,14 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
     '/about': {
       title: isRTL ? 'من نحن | متجر ريق' : 'About Us | Riq Store',
       description: isRTL
-        ? 'تعرف على متجر ريق ورسالتنا في تقديم المياه المعبأة عالية الجودة في الرياض.'
+        ? 'تعرف على متجر ريق ورسالتنا في توصيل المياه المعبأة داخل الرياض.'
         : 'Learn more about Riq Store and our mission to deliver high-quality bottled water in Riyadh.',
       pageType: 'AboutPage',
     },
     '/app': {
       title: isRTL ? 'تثبيت التطبيق | متجر ريق' : 'Install the App | Riq Store',
       description: isRTL
-        ? 'ثبت متجر ريق على جوالك من المتصفح الآن، واحتفظ بروابط التحميل في صفحة واحدة.'
+        ? 'ثبت متجر ريق على جوالك من المتصفح واحتفظ بروابط التحميل في صفحة واحدة.'
         : 'Install Riq Store on your phone from the browser today and keep app links in one page.',
       pageType: 'WebPage',
     },
@@ -630,7 +660,7 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
       robots: staticDefinition.robots,
       breadcrumbs: [
         ...homeBreadcrumbs,
-        { name: isRTL ? staticDefinition.title.split('|')[0].trim() : staticDefinition.title.split('|')[0].trim(), path: normalizedPath },
+        { name: staticDefinition.title.split('|')[0].trim(), path: normalizedPath },
       ],
       pageType: staticDefinition.pageType,
       isRTL,
@@ -689,7 +719,7 @@ export default function SeoManager() {
     upsertMeta('property', 'og:site_name', SITE_NAME_LOCKUP);
     upsertMeta('property', 'og:locale', locale);
     upsertMeta('property', 'business:contact_data:street_address', isRTL ? SITE_ADDRESS_AR : SITE_ADDRESS_EN);
-    upsertMeta('property', 'business:contact_data:locality', 'Riyadh');
+    upsertMeta('property', 'business:contact_data:locality', isRTL ? 'الرياض' : 'Riyadh');
     upsertMeta('property', 'business:contact_data:country_name', 'Saudi Arabia');
     upsertMeta('property', 'business:contact_data:email', SITE_EMAIL);
     upsertMeta('property', 'business:contact_data:phone_number', SITE_PHONE);
