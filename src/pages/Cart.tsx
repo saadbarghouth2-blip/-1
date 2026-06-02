@@ -11,6 +11,7 @@ import { useCart } from '../context/CartContext';
 import ProductImage from '../components/ProductImage';
 import { formatSarPrice } from '../lib/utils';
 import { buildOrderWhatsAppLink } from '../lib/contact';
+import { FREE_DELIVERY_CARTONS, MIN_DELIVERY_CARTONS, getDeliveryRuleState } from '../lib/deliveryRules';
 
 export default function Cart() {
   const { i18n } = useTranslation();
@@ -24,11 +25,11 @@ export default function Cart() {
   const [promoApplied, setPromoApplied] = useState(false);
   const [showPromoInput, setShowPromoInput] = useState(false);
 
-  const deliveryFee = totalPrice >= 100 ? 0 : 15;
+  const deliveryRule = getDeliveryRuleState(totalItems);
+  const deliveryFee = deliveryRule.deliveryFee;
   const discount = promoApplied ? totalPrice * 0.1 : 0;
   const finalTotal = totalPrice + deliveryFee - discount;
-  const freeDeliveryRemaining = Math.max(100 - totalPrice, 0);
-  const freeDeliveryProgress = Math.min((totalPrice / 100) * 100, 100);
+  const freeDeliveryProgress = Math.min((totalItems / FREE_DELIVERY_CARTONS) * 100, 100);
   const distinctBrands = new Set(items.map((item) => item.product.brand)).size;
   const cartInsights = [
     {
@@ -46,7 +47,7 @@ export default function Cart() {
     {
       icon: ShieldCheck,
       label: isRTL ? 'جاهزية الطلب' : 'Order readiness',
-      value: isRTL ? 'مؤكد' : 'Ready',
+      value: deliveryRule.canDeliver ? (isRTL ? 'جاهز' : 'Ready') : (isRTL ? 'ناقص' : 'Short'),
       tone: 'from-indigo-500 to-blue-600',
     },
   ];
@@ -176,9 +177,9 @@ export default function Cart() {
                     {isRTL ? 'التقدم نحو التوصيل المجاني' : 'Progress to free delivery'}
                   </span>
                   <span className="font-bold text-white">
-                    {freeDeliveryRemaining === 0
+                    {deliveryRule.hasFreeDelivery
                       ? isRTL ? 'تم الوصول' : 'Unlocked'
-                      : isRTL ? `${formatSarPrice(freeDeliveryRemaining, isRTL)} متبقية` : `${formatSarPrice(freeDeliveryRemaining, isRTL)} left`}
+                      : isRTL ? `${deliveryRule.cartonsToFreeDelivery} كرتونة متبقية` : `${deliveryRule.cartonsToFreeDelivery} cartons left`}
                   </span>
                 </div>
                 <div className="h-3 overflow-hidden rounded-full bg-white/20">
@@ -190,9 +191,9 @@ export default function Cart() {
                   />
                 </div>
                 <p className="mt-3 text-xs leading-6 text-white/80 sm:text-sm">
-                  {freeDeliveryRemaining === 0
+                  {deliveryRule.hasFreeDelivery
                     ? (isRTL ? 'طلبك مؤهل الآن لتوصيل مجاني، ويمكنك إتمام الشراء مباشرة.' : 'Your cart already qualifies for free delivery, so you can check out immediately.')
-                    : (isRTL ? 'أضف قيمة بسيطة إضافية لتقليل الرسوم وزيادة القيمة النهائية للطلب.' : 'Add a little more to reduce fees and improve overall order value.')}
+                    : (isRTL ? `أضف حتى ${FREE_DELIVERY_CARTONS} كرتونة للحصول على توصيل مجاني.` : `Add up to ${FREE_DELIVERY_CARTONS} cartons to unlock free delivery.`)}
                 </p>
               </div>
             </div>
@@ -410,6 +411,20 @@ export default function Cart() {
                     {isRTL ? '✓ لقد حصلت على توصيل مجاني!' : '✓ You got free delivery!'}
                   </div>
                 )}
+                {!deliveryRule.canDeliver && (
+                  <div className="text-xs sm:text-sm text-amber-700 bg-amber-50 p-2 rounded-lg">
+                    {isRTL
+                      ? `الحد الأدنى للتوصيل ${MIN_DELIVERY_CARTONS} كراتين. أضف ${deliveryRule.cartonsToMinimum} كرتونة لإتمام الطلب.`
+                      : `Minimum delivery order is ${MIN_DELIVERY_CARTONS} cartons. Add ${deliveryRule.cartonsToMinimum} more to check out.`}
+                  </div>
+                )}
+                {deliveryRule.canDeliver && !deliveryRule.hasFreeDelivery && (
+                  <div className="text-xs sm:text-sm text-[#153b66] bg-[#edf4fa] p-2 rounded-lg">
+                    {isRTL
+                      ? `رسوم التوصيل ${formatSarPrice(deliveryFee, isRTL)}. التوصيل مجاني من ${FREE_DELIVERY_CARTONS} كرتونة.`
+                      : `Delivery fee is ${formatSarPrice(deliveryFee, isRTL)}. Free delivery starts at ${FREE_DELIVERY_CARTONS} cartons.`}
+                  </div>
+                )}
                 <div className="border-t pt-3">
                   <div className="flex justify-between text-lg sm:text-xl font-bold text-gray-800">
                     <span>{isRTL ? 'الإجمالي' : 'Total'}</span>
@@ -421,16 +436,20 @@ export default function Cart() {
 
               <motion.button
                 onClick={() => navigate('/checkout')}
+                disabled={!deliveryRule.canDeliver}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-3 sm:py-4 bg-gradient-to-r from-[#153b66] to-[#2b648c] text-white rounded-xl font-bold text-base sm:text-lg shadow-lg shadow-[#153b66]/20 hover:shadow-[#153b66]/40 transition-all mb-3 sm:mb-4 flex items-center justify-center gap-3"
+                className="w-full py-3 sm:py-4 bg-gradient-to-r from-[#153b66] to-[#2b648c] text-white rounded-xl font-bold text-base sm:text-lg shadow-lg shadow-[#153b66]/20 hover:shadow-[#153b66]/40 transition-all mb-3 sm:mb-4 flex items-center justify-center gap-3 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                {isRTL ? 'إتمام الدفع الإلكتروني' : 'Digital Checkout'}
+                {deliveryRule.canDeliver
+                  ? (isRTL ? 'إتمام الدفع الإلكتروني' : 'Digital Checkout')
+                  : (isRTL ? `أكمل ${MIN_DELIVERY_CARTONS} كراتين للتوصيل` : `Add ${MIN_DELIVERY_CARTONS} cartons to deliver`)}
                 <ArrowRight className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
               </motion.button>
 
-              <a
-                href={buildOrderWhatsAppLink({
+              {deliveryRule.canDeliver ? (
+                <a
+                  href={buildOrderWhatsAppLink({
                   customerName: (isRTL ? 'عميل جديد' : 'New customer'),
                   phone: (isRTL ? 'غير متوفر' : 'Not provided'),
                   items: items.map((item) => ({
@@ -446,12 +465,19 @@ export default function Cart() {
                   finalTotal,
                   isRTL,
                 })}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mb-3 flex w-full items-center justify-center rounded-xl border-2 border-green-200 bg-green-50 py-3 font-semibold text-green-700 transition-colors hover:bg-green-100 sm:py-4"
-              >
-                {isRTL ? 'إرسال الطلب عبر واتساب' : 'Send order via WhatsApp'}
-              </a>
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mb-3 flex w-full items-center justify-center rounded-xl border-2 border-green-200 bg-green-50 py-3 font-semibold text-green-700 transition-colors hover:bg-green-100 sm:py-4"
+                >
+                  {isRTL ? 'إرسال الطلب عبر واتساب' : 'Send order via WhatsApp'}
+                </a>
+              ) : (
+                <div className="mb-3 flex w-full items-center justify-center rounded-xl border-2 border-amber-200 bg-amber-50 px-3 py-3 text-center text-sm font-semibold text-amber-700 sm:py-4">
+                  {isRTL
+                    ? `إرسال الطلب متاح عند الوصول إلى ${MIN_DELIVERY_CARTONS} كراتين.`
+                    : `Order submission is available from ${MIN_DELIVERY_CARTONS} cartons.`}
+                </div>
+              )}
 
               <Link
                 to="/products"

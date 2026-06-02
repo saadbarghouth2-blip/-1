@@ -44,8 +44,8 @@ export default function Offers() {
       id: 3,
       title: isRTL ? 'توصيل مجاني' : 'Free Delivery',
       description: isRTL
-        ? 'توصيل مجاني على جميع الطلبات فوق 100 ريال'
-        : 'Free delivery on all orders above 100 SAR',
+        ? 'توصيل مجاني عند طلب 20 كرتونة أو أكثر'
+        : 'Free delivery on orders of 20 cartons or more',
       discount: 'FREE',
       image: '/images/products_processed/WhatsApp_Image_2026-03-22_at_9.00.47_PM.jpg',
       color: 'from-purple-500 to-pink-600',

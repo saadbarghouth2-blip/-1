@@ -11,11 +11,12 @@ import {
   buildContactWhatsAppLink,
   CONTACT_EMAIL,
   CONTACT_EMAIL_HREF,
-  CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_HREF,
+  CONTACT_PHONE_NUMBERS,
   sendContactEmail,
   WHATSAPP_LINK,
 } from '../lib/contact';
+import { SITE_ADDRESS_AR, SITE_ADDRESS_EN } from '../lib/site';
 import DeliveryCoverage from '../sections/DeliveryCoverage';
 import FAQSection from '../sections/FAQSection';
 
@@ -70,7 +71,7 @@ export default function Contact() {
     {
       icon: Phone,
       title: isRTL ? 'الهاتف' : 'Phone',
-      content: CONTACT_PHONE_DISPLAY,
+      content: CONTACT_PHONE_NUMBERS.map((phone) => phone.display).join(' / '),
       subContent: isRTL ? 'متاح على مدار الساعة' : 'Available 24/7',
       color: 'from-green-400 to-green-600',
       action: CONTACT_PHONE_HREF,
@@ -86,7 +87,7 @@ export default function Contact() {
     {
       icon: MapPin,
       title: isRTL ? 'العنوان' : 'Address',
-      content: isRTL ? 'الرياض، المملكة العربية السعودية' : 'Riyadh, Saudi Arabia',
+      content: isRTL ? SITE_ADDRESS_AR : SITE_ADDRESS_EN,
       subContent: isRTL ? 'توصيل لجميع المناطق' : 'Delivery to all areas',
       color: 'from-red-400 to-red-600',
       action: '#',
@@ -123,8 +124,8 @@ export default function Contact() {
     {
       q: isRTL ? 'هل يوجد حد أدنى للطلب؟' : 'Is there a minimum order?',
       a: isRTL
-        ? 'لا يوجد حد أدنى للطلب. يمكنك طلب منتج واحد فقط. لكن التوصيل المجاني متاح للطلبات فوق 100 ريال سعودي.'
-        : 'There is no minimum order. You can order just one product. However, free delivery is available for orders over 100 Saudi Riyals.',
+        ? 'الحد الأدنى للتوصيل هو 10 كراتين. رسوم التوصيل 20 ريال للطلبات من 10 إلى 19 كرتونة، والتوصيل مجاني عند طلب 20 كرتونة أو أكثر.'
+        : 'The minimum delivery order is 10 cartons. Delivery costs 20 SAR for orders from 10 to 19 cartons, and it is free from 20 cartons or more.',
     },
     {
       q: isRTL ? 'هل يمكنني إرجاع المنتج؟' : 'Can I return the product?',
@@ -614,7 +615,7 @@ export default function Contact() {
               <div className="text-center">
                 <MapPin className="w-8 h-8 sm:w-12 sm:h-12 text-[#153b66] mx-auto mb-2" />
                 <p className="text-gray-600 text-sm sm:text-base">
-                  {isRTL ? 'الرياض، المملكة العربية السعودية' : 'Riyadh, Saudi Arabia'}
+                  {isRTL ? SITE_ADDRESS_AR : SITE_ADDRESS_EN}
                 </p>
                 <a 
                   href="https://maps.google.com"

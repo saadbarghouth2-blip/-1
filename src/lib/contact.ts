@@ -4,6 +4,14 @@ import { BRAND_NAME_EN, BRAND_NAME_LOCKUP } from './brand';
 export const CONTACT_PHONE_RAW = '966595546436';
 export const CONTACT_PHONE_DISPLAY = '+966 59 554 6436';
 export const CONTACT_PHONE_HREF = `tel:+${CONTACT_PHONE_RAW}`;
+export const CONTACT_PHONE_NUMBERS = [
+  {
+    raw: CONTACT_PHONE_RAW,
+    display: CONTACT_PHONE_DISPLAY,
+    href: CONTACT_PHONE_HREF,
+    primary: true,
+  },
+];
 export const CONTACT_EMAIL = 'saadsaad50begiseralex6@gmail.com';
 export const CONTACT_EMAIL_HREF = `mailto:${CONTACT_EMAIL}`;
 export const WHATSAPP_LINK = `https://wa.me/${CONTACT_PHONE_RAW}`;

@@ -19,6 +19,7 @@ import { BANK_TRANSFER_DETAILS } from '../lib/contact';
 import { persistCompletedOrder } from '../services/webAccount';
 import { toAbsoluteUrl, withBasePath } from '../lib/site';
 import { formatSarPrice } from '../lib/utils';
+import { FREE_DELIVERY_CARTONS, MIN_DELIVERY_CARTONS, getDeliveryRuleState } from '../lib/deliveryRules';
 import ProductImage from '../components/ProductImage';
 
 const SUCCESS_URL = toAbsoluteUrl(`${withBasePath('/checkout')}?status=success`);
@@ -79,7 +80,8 @@ export default function Checkout() {
   const [accountNotice, setAccountNotice] = useState('');
   const [orderSyncMessage, setOrderSyncMessage] = useState('');
 
-  const deliveryFee = totalPrice >= 100 ? 0 : 15;
+  const deliveryRule = getDeliveryRuleState(totalItems);
+  const deliveryFee = deliveryRule.deliveryFee;
   const finalTotal = totalPrice + deliveryFee;
 
   // Handle Moyasar Success Return
@@ -382,6 +384,11 @@ export default function Checkout() {
   };
 
   const handleNextStep = async () => {
+    if (!deliveryRule.canDeliver) {
+      navigate('/cart');
+      return;
+    }
+
     if (step === 1) {
       if (!formData.name || !formData.phone || !formData.address) {
         return;
@@ -465,6 +472,35 @@ export default function Checkout() {
             {isRTL ? 'العودة للرئيسية' : 'Back to Home'}
           </button>
         </motion.div>
+      </main>
+    );
+  }
+
+  if (items.length === 0 || !deliveryRule.canDeliver) {
+    return (
+      <main className="relative z-10 flex min-h-screen items-center justify-center bg-gray-50/50 px-4 py-20">
+        <div className="w-full max-w-lg rounded-[2.5rem] border border-amber-100 bg-white p-8 text-center shadow-xl shadow-gray-200/40">
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-amber-50 text-amber-600">
+            <MapPin className="h-7 w-7" />
+          </div>
+          <h1 className="text-2xl font-black text-gray-900">
+            {isRTL ? 'الطلب غير جاهز للتوصيل' : 'Order is not ready for delivery'}
+          </h1>
+          <p className="mt-3 text-sm font-semibold leading-7 text-gray-500">
+            {items.length === 0
+              ? (isRTL ? 'السلة فارغة الآن. اختر المنتجات أولًا قبل إتمام الطلب.' : 'Your cart is empty. Choose products before checkout.')
+              : (isRTL
+                  ? `الحد الأدنى للتوصيل هو ${MIN_DELIVERY_CARTONS} كراتين. لديك الآن ${totalItems} كرتونة، أضف ${deliveryRule.cartonsToMinimum} كرتونة لإتمام الطلب.`
+                  : `Minimum delivery order is ${MIN_DELIVERY_CARTONS} cartons. You currently have ${totalItems}; add ${deliveryRule.cartonsToMinimum} more to check out.`)}
+          </p>
+          <button
+            type="button"
+            onClick={() => navigate('/cart')}
+            className="mt-6 w-full rounded-3xl bg-[#153b66] px-5 py-4 text-base font-black text-white transition hover:bg-[#0f2f53]"
+          >
+            {isRTL ? 'الرجوع للسلة' : 'Back to cart'}
+          </button>
+        </div>
       </main>
     );
   }
@@ -553,9 +589,14 @@ export default function Checkout() {
                     </div>
                     <div>
                       <p className="text-sm font-black text-gray-900">{isRTL ? 'تغطية الرياض فقط' : 'Riyadh Coverage Only'}</p>
-                      <p className="text-xs text-gray-400">{isRTL ? 'نحن متخصصون في توصيل الرياض بأسرع وقت' : 'Specialized Riyadh fast delivery service'}</p>
-                    </div>
+                    <p className="text-xs text-gray-400">{isRTL ? 'نحن متخصصون في توصيل الرياض بأسرع وقت' : 'Specialized Riyadh fast delivery service'}</p>
+                    <p className="mt-1 text-xs font-bold text-[#153b66]">
+                      {isRTL
+                        ? `الحد الأدنى ${MIN_DELIVERY_CARTONS} كراتين، والتوصيل مجاني من ${FREE_DELIVERY_CARTONS} كرتونة.`
+                        : `Minimum ${MIN_DELIVERY_CARTONS} cartons. Free delivery from ${FREE_DELIVERY_CARTONS} cartons.`}
+                    </p>
                   </div>
+                </div>
 
                   <div className="bg-white rounded-[2.5rem] p-6 sm:p-10 shadow-xl shadow-gray-200/30 border border-gray-100 space-y-10">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -690,6 +731,13 @@ export default function Checkout() {
                <div className="space-y-4 pt-6 mt-6 border-t border-white/10">
                   <div className="flex justify-between text-white/50 text-sm"><span>{isRTL ? 'المجموع' : 'Subtotal'}</span><span>{formatSarPrice(totalPrice, isRTL)}</span></div>
                   <div className="flex justify-between text-white/50 text-sm"><span>{isRTL ? 'التوصيل' : 'Delivery'}</span><span className={deliveryFee === 0 ? 'text-green-400' : ''}>{deliveryFee === 0 ? isRTL ? 'مجاني' : 'Free' : formatSarPrice(deliveryFee, isRTL)}</span></div>
+                  {!deliveryRule.hasFreeDelivery && (
+                    <div className="rounded-2xl bg-white/5 px-3 py-2 text-xs leading-6 text-white/55">
+                      {isRTL
+                        ? `أضف ${deliveryRule.cartonsToFreeDelivery} كرتونة للتوصيل المجاني.`
+                        : `Add ${deliveryRule.cartonsToFreeDelivery} cartons for free delivery.`}
+                    </div>
+                  )}
                   <div className="flex justify-between items-center pt-4 border-t border-white/10"><span className="text-2xl font-black">{isRTL ? 'الإجمالي' : 'Total'}</span><span className="text-3xl font-black text-[#2b648c]">{formatSarPrice(finalTotal, isRTL)}</span></div>
                </div>
             </div>

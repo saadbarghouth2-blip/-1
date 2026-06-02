@@ -18,8 +18,8 @@ const faqs = [
   {
     qAr: 'ما هو الحد الأدنى للطلب؟',
     qEn: 'What is the minimum order?',
-    aAr: 'لا يوجد حد أدنى لمعظم المنتجات — يمكنك طلب حتى كرتون واحد فقط. للطلبات بالجملة والشركات نقدم خصومات خاصة تبدأ من 10 كراتين وأكثر. تواصل معنا لمعرفة عروض الجملة المتاحة.',
-    aEn: 'There is no minimum order for most products — you can order even just one carton. For bulk and corporate orders, we offer special discounts starting from 10 cartons and above. Contact us to learn about available wholesale offers.',
+    aAr: 'الحد الأدنى للتوصيل هو 10 كراتين. رسوم التوصيل 20 ريال للطلبات من 10 إلى 19 كرتونة، والتوصيل مجاني عند طلب 20 كرتونة أو أكثر.',
+    aEn: 'The minimum delivery order is 10 cartons. Delivery costs 20 SAR for orders from 10 to 19 cartons, and it is free from 20 cartons or more.',
     category: 'order',
   },
   {
