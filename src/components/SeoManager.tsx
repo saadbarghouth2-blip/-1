@@ -72,6 +72,19 @@ function upsertLink(rel: string, href: string) {
   element.href = href;
 }
 
+function upsertAlternateLink(hreflang: string, href: string) {
+  let element = document.head.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${hreflang}"]`);
+
+  if (!element) {
+    element = document.createElement('link');
+    element.rel = 'alternate';
+    element.hreflang = hreflang;
+    document.head.appendChild(element);
+  }
+
+  element.href = href;
+}
+
 function upsertStructuredData(id: string, data: unknown) {
   let element = document.head.querySelector<HTMLScriptElement>(`script[data-seo-id="${id}"]`);
 
@@ -383,12 +396,12 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
     { name: isRTL ? 'الرئيسية' : 'Home', path: '/' },
   ];
   const genericKeywords = isRTL
-    ? 'ريق, متجر ريق, Riq Store, riq, مياه معبأة, توصيل مياه الرياض'
-    : 'Riq Store, riq, bottled water Riyadh, water delivery, bottled water catalog';
+    ? 'ريق, ريق.com, الموقع الرسمي ريق, متجر ريق, Riq Store, riq, مياه معبأة, توصيل مياه الرياض, طلب مياه الرياض'
+    : 'Riq Store, riq, Riq official website, Riq.com, bottled water Riyadh, water delivery, bottled water catalog';
 
   if (normalizedPath === '/') {
     return buildStaticPagePayload({
-      title: isRTL ? 'ريق | متجر ريق - توصيل مياه في الرياض' : 'Riq | Riq Store - Bottled Water Delivery in Riyadh',
+      title: isRTL ? 'ريق - الموقع الرسمي | متجر ريق لتوصيل المياه في الرياض' : 'Riq Official Website | Riq Store Water Delivery in Riyadh',
       description: isRTL ? SITE_DEFAULT_DESCRIPTION.ar : SITE_DEFAULT_DESCRIPTION.en,
       path: '/',
       keywords: genericKeywords,
@@ -724,6 +737,9 @@ export default function SeoManager() {
     upsertMeta('property', 'business:contact_data:email', SITE_EMAIL);
     upsertMeta('property', 'business:contact_data:phone_number', SITE_PHONE);
     upsertLink('canonical', canonicalUrl);
+    upsertAlternateLink('ar-SA', canonicalUrl);
+    upsertAlternateLink('en-SA', canonicalUrl);
+    upsertAlternateLink('x-default', canonicalUrl);
     upsertStructuredData('route-schema', seo.structuredData);
   }, [isRTL, seo]);
 

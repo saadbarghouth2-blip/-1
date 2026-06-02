@@ -1,4 +1,5 @@
 import {
+  BUSINESS_ADDRESS_EN,
   CONTACT_EMAIL,
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_RAW,
@@ -9,9 +10,9 @@ export const SITE_NAME_EN = 'Riq Store';
 export const SITE_NAME_AR = 'متجر ريق';
 export const SITE_SHORT_NAME_AR = 'ريق';
 export const SITE_NAME_LOCKUP = 'متجر ريق - Riq Store';
-export const SITE_ALTERNATE_NAMES = ['ريق', 'متجر ريق', 'Riq Store', 'riq'];
+export const SITE_ALTERNATE_NAMES = ['ريق', 'ريق.com', 'متجر ريق', 'Riq Store', 'riq', 'xn--wgb8axa.com'];
 export const SITE_DEFAULT_IMAGE = '/images/96e4912f-19c6-4e22-aa20-512a75f63282.jpg';
-export const SITE_ADDRESS_EN = 'Riyadh, Saudi Arabia';
+export const SITE_ADDRESS_EN = BUSINESS_ADDRESS_EN;
 export const SITE_ADDRESS_AR = 'الرياض، حي هارون الرشيد، شارع 53، مبنى 6149، الرمز البريدي 14264، الرقم الفرعي 2909، المملكة العربية السعودية';
 export const SITE_SOCIAL_LINKS = [WHATSAPP_LINK];
 export const SITE_PHONE = CONTACT_PHONE_DISPLAY;
@@ -19,8 +20,8 @@ export const SITE_PHONE_RAW = `+${CONTACT_PHONE_RAW}`;
 export const SITE_EMAIL = CONTACT_EMAIL;
 
 export const SITE_DEFAULT_DESCRIPTION = {
-  ar: 'متجر ريق لتوصيل المياه المعبأة في الرياض. اطلب منتجات المياه والعروض من متجر ريق مع خدمة توصيل سريعة وموثوقة.',
-  en: 'Riq Store offers bottled water, gallon delivery, and special offers in Riyadh with fast service and trusted brands.',
+  ar: 'ريق هو الموقع الرسمي لمتجر ريق لتوصيل المياه المعبأة في الرياض. اطلب منتجات المياه والعروض من ريق.com مع خدمة توصيل سريعة وموثوقة.',
+  en: 'Riq Store is the official website for bottled water delivery in Riyadh. Order water products and offers from Riq.com with fast, trusted service.',
 };
 
 export function normalizeSiteUrl(value?: string) {
