@@ -1,9 +1,16 @@
 import { formatSarPrice } from './utils';
 import { BRAND_NAME_EN, BRAND_NAME_LOCKUP } from './brand';
 
-export const CONTACT_PHONE_RAW = '966595546436';
-export const CONTACT_PHONE_DISPLAY = '+966 59 554 6436';
+export const CONTACT_PHONE_RAW = '966570323534';
+export const CONTACT_PHONE_DISPLAY = '+966 57 032 3534';
 export const CONTACT_PHONE_HREF = `tel:+${CONTACT_PHONE_RAW}`;
+export const CONTACT_ADDITIONAL_PHONES = [
+  {
+    raw: '966573734946',
+    display: '+966 57 373 4946',
+    href: 'tel:+966573734946',
+  },
+];
 export const CONTACT_PHONE_NUMBERS = [
   {
     raw: CONTACT_PHONE_RAW,
@@ -11,18 +18,29 @@ export const CONTACT_PHONE_NUMBERS = [
     href: CONTACT_PHONE_HREF,
     primary: true,
   },
+  ...CONTACT_ADDITIONAL_PHONES.map((phone) => ({ ...phone, primary: false })),
 ];
 export const CONTACT_EMAIL = 'saadsaad50begiseralex6@gmail.com';
 export const CONTACT_EMAIL_HREF = `mailto:${CONTACT_EMAIL}`;
-export const WHATSAPP_LINK = `https://wa.me/${CONTACT_PHONE_RAW}`;
-export const BUSINESS_TAX_NUMBER = '311090145340000003';
-export const BUSINESS_COMMERCIAL_REGISTRATION = '1010961465';
+export const WHATSAPP_PHONE_RAW = '966505457251';
+export const WHATSAPP_PHONE_DISPLAY = '+966 50 545 7251';
+export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_PHONE_RAW}`;
+export const BUSINESS_LEGAL_NAME_AR = 'شركة إشراق الوادي للتجارة شركة شخص واحد';
+export const BUSINESS_LEGAL_NAME_EN = 'Ashraq Alwady Trading One Person Company';
+export const BUSINESS_ADDRESS_AR = 'الرياض، حي هارون الرشيد، شارع 53، مبنى 6149، الرمز البريدي 14264، الرقم الفرعي 2909، المملكة العربية السعودية';
+export const BUSINESS_ADDRESS_EN = 'Building 6149, 53 Street, Harun Al Rashid District, Riyadh 14264, Saudi Arabia';
+export const BUSINESS_TAX_NUMBER = '312711661800003';
+export const BUSINESS_NATIONAL_UNIFIED_NUMBER = '7030837798';
+export const BUSINESS_COMMERCIAL_REGISTRATION = BUSINESS_NATIONAL_UNIFIED_NUMBER;
+export const BUSINESS_LICENSE_NUMBER = '1010826701';
 export const BUSINESS_ECOMMERCE_LICENSE = '0000203590';
+export const BUSINESS_REGISTRATION_STATUS_AR = 'نشط';
+export const BUSINESS_REGISTRATION_STATUS_EN = 'Active';
 export const BANK_TRANSFER_DETAILS = {
   bankNameAr: 'بنك الإنماء',
   bankNameEn: 'Alinma Bank',
-  accountNameAr: 'شركة إشراق الوادي للتجارة شركة شخص واحد',
-  accountNameEn: 'Ashraq Alwady Trading One Person Company',
+  accountNameAr: BUSINESS_LEGAL_NAME_AR,
+  accountNameEn: BUSINESS_LEGAL_NAME_EN,
   accountNumber: '68205125742000',
   iban: 'SA2205000068205125742000',
 };
@@ -245,7 +263,7 @@ export function sendContactEmail(payload: ContactEmailPayload) {
     message: composedMessage,
     user_message: payload.message,
     to_email: CONTACT_EMAIL,
-    whatsapp_number: CONTACT_PHONE_DISPLAY,
+    whatsapp_number: WHATSAPP_PHONE_DISPLAY,
     ...localeParams,
   });
 }
@@ -323,7 +341,7 @@ export function sendOrderEmail(payload: OrderEmailPayload) {
     address: withFallback(payload.address, fallback),
     notes: withFallback(payload.notes, fallback),
     to_email: CONTACT_EMAIL,
-    whatsapp_number: CONTACT_PHONE_DISPLAY,
+    whatsapp_number: WHATSAPP_PHONE_DISPLAY,
     ...localeParams,
   });
 }
