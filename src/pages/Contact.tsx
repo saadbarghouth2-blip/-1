@@ -5,7 +5,7 @@ import {
   Phone, Mail, MapPin, Clock, Send, MessageCircle, 
   Check, ChevronDown, ChevronUp, Truck, Headphones, Shield,
   Instagram, Twitter, Facebook, ExternalLink, Sparkles,
-  TimerReset, BadgeCheck, Activity
+  TimerReset, BadgeCheck, Activity, Music2
 } from 'lucide-react';
 import {
   buildContactWhatsAppLink,
@@ -14,6 +14,7 @@ import {
   CONTACT_PHONE_HREF,
   CONTACT_PHONE_NUMBERS,
   sendContactEmail,
+  TIKTOK_LINK,
   WHATSAPP_LINK,
 } from '../lib/contact';
 import { SITE_ADDRESS_AR, SITE_ADDRESS_EN } from '../lib/site';
@@ -104,6 +105,12 @@ export default function Contact() {
 
   const faqs = [
     {
+      q: isRTL ? 'ما هي سياسة الطلب والتوصيل؟' : 'What is the order and delivery policy?',
+      a: isRTL
+        ? 'الحد الأدنى للطلب 10 كراتين. رسوم التوصيل 20 ريال للطلبات الأقل من 20 كرتون، والتوصيل مجاني من 20 كرتون أو أكثر. التوصيل للأرضي بدون رسوم إضافية، الدور الأول 10 ريالات، الدور الثاني 20 ريالا، والأدوار الأعلى يتم الاتفاق عليها حسب حالة الموقع. يجب تسجيل الطلب قبل موعد التوصيل بيوم واحد على الأقل، والتوصيل داخل الرياض من 8:00 صباحا حتى 8:00 مساء وفق المواعيد المتاحة وجدول التشغيل.'
+        : 'Minimum order is 10 cartons. Delivery is 20 SAR for orders below 20 cartons, and free from 20 cartons or more. Ground-floor delivery has no extra fee, first floor is 10 SAR, second floor is 20 SAR, and higher floors are quoted by site conditions. Orders should be placed at least one day before delivery. Riyadh delivery runs from 8:00 AM to 8:00 PM according to available slots and the operating schedule.',
+    },
+    {
       q: isRTL ? 'ما هي مناطق التوصيل المتاحة؟' : 'What are the available delivery areas?',
       a: isRTL 
         ? 'نوفر خدمة التوصيل لجميع مناطق المملكة العربية السعودية بما في ذلك الرياض، جدة، الدمام، مكة المكرمة، المدينة المنورة، وجميع المدن الأخرى. التوصيل داخل المدن الرئيسية يستغرق 24-48 ساعة، بينما المناطق البعيدة قد تستغرق 3-5 أيام عمل.'
@@ -145,6 +152,7 @@ export default function Contact() {
     { icon: Instagram, href: '#', color: 'from-purple-500 to-pink-500', label: 'Instagram' },
     { icon: Twitter, href: '#', color: 'from-blue-400 to-blue-600', label: 'Twitter' },
     { icon: Facebook, href: '#', color: 'from-blue-600 to-blue-800', label: 'Facebook' },
+    { icon: Music2, href: TIKTOK_LINK, color: 'from-slate-900 to-slate-700', label: 'TikTok' },
     { icon: MessageCircle, href: WHATSAPP_LINK, color: 'from-green-500 to-green-600', label: 'WhatsApp' },
   ];
 
@@ -568,7 +576,7 @@ export default function Contact() {
                 {isRTL ? 'الأسئلة الشائعة' : 'Frequently Asked Questions'}
               </h3>
               <div className="space-y-2">
-                {faqs.map((faq, index) => (
+                {faqs.filter((_, index) => ![1, 2].includes(index)).map((faq, index) => (
                   <div key={index} className="border border-gray-100 rounded-xl overflow-hidden">
                     <button
                       onClick={() => setOpenFaq(openFaq === index ? null : index)}

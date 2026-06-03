@@ -147,6 +147,7 @@ const BRAND_META = {
   view: { id: 'view', en: 'View', ar: 'فيو' },
   marina: { id: 'marina', en: 'Marina', ar: 'مارينا' },
   safa: { id: 'safa', en: 'Safa', ar: 'صفا' },
+  fly: { id: 'fly', en: 'Fly Water', ar: 'فلاي' },
 } satisfies Record<string, BrandMeta>;
 
 const PRODUCTS_BASE_DIR = '/images/New Products';
@@ -189,6 +190,10 @@ function assetPath(folder: string, fileName?: string) {
 
 function newProductImage(fileName: string) {
   return encodeURI(`${NEW_PRODUCTS_BASE_DIR}/${fileName}`);
+}
+
+function offerImage(fileName: string) {
+  return encodeURI(`/images/offers/${fileName}`);
 }
 
 const productSeeds: ProductSeed[] = [
@@ -1282,7 +1287,125 @@ function makeProduct(seed: ProductSeed): Product {
   };
 }
 
-export const products: Product[] = productSeeds.map(makeProduct);
+const offerProducts: Product[] = [
+  {
+    id: 'offer-nova-330-15-plus-5',
+    brandId: BRAND_META.nova.id,
+    name: {
+      ar: 'عرض مياه نوفا 330 مل 15 + 5 كراتين',
+      en: 'Nova 330ml 15 + 5 Cartons Offer',
+    },
+    brand: BRAND_META.nova.en,
+    brandAr: BRAND_META.nova.ar,
+    category: 'offer',
+    catalogGroup: '330ml',
+    size: '330ml',
+    quantity: 20,
+    price: 350,
+    originalPrice: 467,
+    pricingMode: 'fixed',
+    isPurchasable: true,
+    image: offerImage('nova-campaign.png'),
+    description: {
+      ar: 'عرض مميز على مياه نوفا 330 مل: اشتر 15 كرتون واحصل على 5 كراتين مجانا، شامل التوصيل المجاني داخل الرياض بسعر 350 ريال فقط.',
+      en: 'Special Nova 330ml offer: buy 15 cartons and get 5 cartons free, with free delivery in Riyadh for SAR 350 only.',
+    },
+    features: [
+      'مياه نوفا تأتي من آبار وادي سعد، أحد أشهر المصادر الطبيعية للمياه النقية في المملكة.',
+      'تركيبة متوازنة وطعم نقي ينعش يومك مع كل رشفة.',
+      'المقاس: 330 مل، والكمية الإجمالية: 20 كرتون ضمن عرض 15 + 5 مجانا.',
+      'السعر 350 ريال فقط شامل التوصيل المجاني داخل الرياض.',
+      'اختيار مثالي للمنزل، المكاتب، المناسبات، والضيافة الراقية.',
+    ],
+    benefits: [
+      '15 كرتون + 5 كراتين مجانا',
+      'توصيل مجاني',
+      'مياه نوفا 330 مل',
+      'مناسب للمنزل والمكاتب والضيافة',
+    ],
+    specifications: {
+      packaging: '15 + 5 كراتين مجانا، 330ml',
+    },
+    story: {
+      ar: 'تأتي مياه نوفا من آبار وادي سعد، وتتميز بتركيبة متوازنة وطعم نقي مناسب للاستخدام اليومي والضيافة.',
+      en: 'Nova water comes from Wadi Saad wells and is known for a balanced composition and clean taste for daily use and hospitality.',
+    },
+    quickFacts: [
+      { labelAr: 'العلامة', labelEn: 'Brand', valueAr: 'نوفا', valueEn: 'Nova' },
+      { labelAr: 'المقاس', labelEn: 'Size', valueAr: '330 مل', valueEn: '330ml' },
+      { labelAr: 'العرض', labelEn: 'Offer', valueAr: '15 + 5 كراتين مجانا', valueEn: '15 + 5 cartons free' },
+      { labelAr: 'التوصيل', labelEn: 'Delivery', valueAr: 'مجاني داخل الرياض', valueEn: 'Free in Riyadh' },
+    ],
+    inStock: true,
+    isPublished: true,
+    rating: 0,
+    reviews: 0,
+    imageType: 'offer',
+    imageFit: 'balanced',
+    catalogOrder: 0,
+  },
+  {
+    id: 'offer-fly-15-plus-5',
+    brandId: BRAND_META.fly.id,
+    name: {
+      ar: 'عرض مياه فلاي 15 + 5 كراتين',
+      en: 'Fly Water 15 + 5 Cartons Offer',
+    },
+    brand: BRAND_META.fly.en,
+    brandAr: BRAND_META.fly.ar,
+    category: 'offer',
+    catalogGroup: '200ml',
+    size: '200ml / 330ml',
+    quantity: 20,
+    price: 195,
+    originalPrice: 260,
+    pricingMode: 'fixed',
+    isPurchasable: true,
+    image: offerImage('fly-campaign.jpeg'),
+    description: {
+      ar: 'اشتر 15 كرتون مياه فلاي واحصل على 5 كراتين مجانا. متوفر 200 مل 48 عبوة أو 330 مل 40 عبوة بسعر 195 ريال شامل الضريبة والتوصيل داخل الرياض.',
+      en: 'Buy 15 Fly Water cartons and get 5 cartons free. Available in 200ml x48 bottles or 330ml x40 bottles for SAR 195 including VAT and delivery in Riyadh.',
+    },
+    features: [
+      'اشتر 15 كرتون مياه فلاي واحصل على 5 كراتين مجانا.',
+      'متوفر بمقاس 200 مل بعدد 48 عبوة للكرتون أو 330 مل بعدد 40 عبوة للكرتون.',
+      'السعر 195 ريال فقط شامل الضريبة والتوصيل داخل الرياض.',
+      'مياه شرب نقية مع توصيل سريع وعروض مستمرة.',
+      'اطلب الآن واستفد من العرض قبل انتهائه.',
+    ],
+    benefits: [
+      '15 كرتون + 5 كراتين مجانا',
+      '200 مل أو 330 مل',
+      'شامل الضريبة والتوصيل',
+      'توصيل سريع داخل الرياض',
+    ],
+    specifications: {
+      packaging: '15 + 5 كراتين مجانا، 200ml x48 أو 330ml x40',
+    },
+    story: {
+      ar: 'عرض فلاي مناسب للتخزين اليومي والطلبات العائلية والمكتبية مع سعر شامل الضريبة والتوصيل داخل الرياض.',
+      en: 'Fly offer is suited for daily stocking, family orders, and office supply with VAT and delivery included in Riyadh.',
+    },
+    quickFacts: [
+      { labelAr: 'العلامة', labelEn: 'Brand', valueAr: 'فلاي', valueEn: 'Fly Water' },
+      { labelAr: 'المقاسات', labelEn: 'Sizes', valueAr: '200 مل / 330 مل', valueEn: '200ml / 330ml' },
+      { labelAr: 'العرض', labelEn: 'Offer', valueAr: '15 + 5 كراتين مجانا', valueEn: '15 + 5 cartons free' },
+      { labelAr: 'السعر شامل', labelEn: 'Includes', valueAr: 'الضريبة والتوصيل', valueEn: 'VAT and delivery' },
+    ],
+    inStock: true,
+    isPublished: true,
+    rating: 0,
+    reviews: 0,
+    imageType: 'offer',
+    imageFit: 'balanced',
+    catalogOrder: 1,
+  },
+];
+
+export const products: Product[] = [
+  ...offerProducts,
+  ...productSeeds.map((seed) => makeProduct({ ...seed, order: seed.order + offerProducts.length })),
+];
 
 function firstDefined<T>(values: T[]) {
   return values.find((value) => value !== undefined);
@@ -1393,6 +1516,184 @@ export const isDiscountedProduct = (product: Product): product is Product & { pr
   hasFixedPrice(product) &&
   typeof product.originalPrice === 'number' &&
   product.originalPrice > product.price;
+
+function getUnitLabel(product: Product, isRTL: boolean) {
+  if (product.category === 'glass') {
+    return isRTL ? 'زجاجة' : 'glass bottles';
+  }
+
+  if (product.category === 'gallon') {
+    return isRTL ? 'جالون' : 'gallons';
+  }
+
+  return isRTL ? 'عبوة' : 'bottles';
+}
+
+function getContainerLabel(product: Product, isRTL: boolean) {
+  if (product.category === 'gallon') {
+    return isRTL ? 'عبوة جالون كبيرة' : 'large gallon pack';
+  }
+
+  if (product.category === 'glass') {
+    return isRTL ? 'كرتون زجاج' : 'glass bottle carton';
+  }
+
+  if (product.imageType === 'bottle') {
+    return isRTL ? 'عبوة مياه فردية' : 'single-bottle pack';
+  }
+
+  return isRTL ? 'كرتون مياه' : 'water carton';
+}
+
+function getVolumeInMl(size: string) {
+  const normalized = size.trim().toLowerCase();
+  const value = Number.parseFloat(normalized.replace(/[^\d.]/g, ''));
+
+  if (!Number.isFinite(value)) {
+    return null;
+  }
+
+  if (normalized.includes('l')) {
+    return value * 1000;
+  }
+
+  if (normalized.includes('مل')) {
+    return value;
+  }
+
+  return normalized.includes('ml') ? value : null;
+}
+
+function formatTotalVolume(product: Product, isRTL: boolean) {
+  const volumeInMl = getVolumeInMl(product.size);
+  if (volumeInMl === null) {
+    return null;
+  }
+
+  const totalLiters = (volumeInMl * product.quantity) / 1000;
+  const formatted = Number.isInteger(totalLiters)
+    ? totalLiters.toFixed(0)
+    : totalLiters.toFixed(1).replace(/\.0$/, '');
+
+  return isRTL ? `${formatted} لتر تقريبا` : `about ${formatted} liters`;
+}
+
+function getUsageDetail(product: Product, isRTL: boolean) {
+  if (product.category === 'gallon' || product.size === '5L' || product.size === '12L') {
+    return isRTL
+      ? 'مناسب للاستخدام العائلي، المكاتب، والاستراحات التي تحتاج كمية أكبر في كل طلب.'
+      : 'Suited for family use, offices, and locations that need more water per order.';
+  }
+
+  if (product.category === 'glass') {
+    return isRTL
+      ? 'اختيار مناسب للضيافة الرسمية، غرف الاجتماعات، والمناسبات التي تحتاج تقديم أنيق.'
+      : 'A polished option for hospitality, meeting rooms, and occasions that need a refined presentation.';
+  }
+
+  if (product.size === '1.5L') {
+    return isRTL
+      ? 'حجم عملي للمنزل، الرحلات، والتخزين اليومي لأنه يعطي كمية أكبر في كل زجاجة.'
+      : 'A practical size for home use, trips, and daily storage because each bottle carries more water.';
+  }
+
+  if (product.size === '500ml' || product.size === '600ml' || product.size === '750ml') {
+    return isRTL
+      ? 'مناسب للاستخدام اليومي والتنقل والعمل، بحجم يكفي لفترة أطول من العبوات الصغيرة.'
+      : 'Good for daily use, commuting, and work, with more water than the smaller bottle sizes.';
+  }
+
+  if (product.size === '330ml') {
+    return isRTL
+      ? 'حجم متوازن للضيافة والاستخدام اليومي، أسهل في الحمل ويقلل الهدر مقارنة بالأحجام الكبيرة.'
+      : 'A balanced size for hospitality and daily use, easy to carry with less waste than larger bottles.';
+  }
+
+  return isRTL
+    ? 'حجم صغير مناسب للضيافة، الاجتماعات، التوزيع، والمدارس مع عدد حبات عملي داخل الكرتون.'
+    : 'A small size for hospitality, meetings, distribution, and schools with a practical carton count.';
+}
+
+export function getProductPackageDetails(product: Product, isRTL: boolean) {
+  if (product.id === 'offer-nova-330-15-plus-5') {
+    return isRTL
+      ? [
+          'مياه نوفا تأتي من آبار وادي سعد، أحد أشهر المصادر الطبيعية للمياه النقية في المملكة.',
+          'تركيبة متوازنة وطعم نقي ينعش يومك مع كل رشفة.',
+          'المقاس: 330 مل، والكمية الإجمالية: 20 كرتون ضمن عرض 15 + 5 مجانا.',
+          'السعر 350 ريال فقط شامل التوصيل المجاني داخل الرياض.',
+          'اختيار مثالي للمنزل، المكاتب، المناسبات، والضيافة الراقية.',
+        ]
+      : [
+          'Nova water comes from Wadi Saad wells, one of the well-known natural sources of pure water in Saudi Arabia.',
+          'Balanced composition with a clean taste that refreshes your day with every sip.',
+          'Size: 330ml, total quantity: 20 cartons in a 15 + 5 free offer.',
+          'SAR 350 only, including free delivery in Riyadh.',
+          'Ideal for homes, offices, events, and premium hospitality.',
+        ];
+  }
+
+  if (product.id === 'offer-fly-15-plus-5') {
+    return isRTL
+      ? [
+          'اشتر 15 كرتون مياه فلاي واحصل على 5 كراتين مجانا.',
+          'متوفر بمقاس 200 مل بعدد 48 عبوة للكرتون أو 330 مل بعدد 40 عبوة للكرتون.',
+          'السعر 195 ريال فقط شامل الضريبة والتوصيل داخل الرياض.',
+          'مياه شرب نقية مع توصيل سريع وعروض مستمرة.',
+          'اطلب الآن واستفد من العرض قبل انتهائه.',
+        ]
+      : [
+          'Buy 15 Fly Water cartons and get 5 cartons free.',
+          'Available as 200ml with 48 bottles per carton or 330ml with 40 bottles per carton.',
+          'SAR 195 only, including VAT and delivery in Riyadh.',
+          'Pure drinking water with fast delivery and ongoing offers.',
+          'Order now and use the offer before it ends.',
+        ];
+  }
+
+  if (product.category === 'offer' && product.features.length > 0) {
+    return product.features;
+  }
+
+  const unitLabel = getUnitLabel(product, isRTL);
+  const containerLabel = getContainerLabel(product, isRTL);
+  const totalVolume = formatTotalVolume(product, isRTL);
+  const packaging = product.specifications.packaging || `${product.size} x${product.quantity}`;
+  const details = [
+    isRTL
+      ? `تحتوي العبوة على ${product.quantity} ${unitLabel} من ${product.brandAr}، حجم كل واحدة ${product.size}.`
+      : `The pack contains ${product.quantity} ${unitLabel} from ${product.brand}, with ${product.size} in each unit.`,
+    isRTL
+      ? `التغليف عبارة عن ${containerLabel} مرتب وسهل التخزين والنقل.`
+      : `Packaging comes as a tidy ${containerLabel} that is easy to store and move.`,
+    getUsageDetail(product, isRTL),
+    isRTL
+      ? `بيانات العبوة: ${packaging}.`
+      : `Pack specification: ${packaging}.`,
+  ];
+
+  if (totalVolume) {
+    details.splice(
+      1,
+      0,
+      isRTL
+        ? `إجمالي كمية المياه داخل العبوة ${totalVolume}.`
+        : `Total water volume in the pack is ${totalVolume}.`,
+    );
+  }
+
+  details.push(
+    product.pricingMode === 'quote'
+      ? isRTL
+        ? 'السعر يتم تأكيده حسب التوفر والكمية المطلوبة عبر واتساب قبل الطلب.'
+        : 'Price is confirmed by availability and requested quantity on WhatsApp before ordering.'
+      : isRTL
+        ? 'المنتج قابل للإضافة للسلة مباشرة بالسعر الموضح في صفحة المنتج.'
+        : 'This product can be added to the cart directly at the price shown on the product page.',
+  );
+
+  return details;
+}
 
 export const getBrandEntryPrice = (brandProducts: Product[]) => {
   const fixedPrices = brandProducts.filter(hasFixedPrice).map((product) => product.price);

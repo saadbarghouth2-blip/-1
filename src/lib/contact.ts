@@ -25,6 +25,7 @@ export const CONTACT_EMAIL_HREF = `mailto:${CONTACT_EMAIL}`;
 export const WHATSAPP_PHONE_RAW = '966505457251';
 export const WHATSAPP_PHONE_DISPLAY = '+966 50 545 7251';
 export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_PHONE_RAW}`;
+export const TIKTOK_LINK = 'https://www.tiktok.com/@moya.ksaa?_r=1&_t=ZS-96ucaLw51Tc';
 export const BUSINESS_LEGAL_NAME_AR = 'شركة إشراق الوادي للتجارة شركة شخص واحد';
 export const BUSINESS_LEGAL_NAME_EN = 'Ashraq Alwady Trading One Person Company';
 export const BUSINESS_ADDRESS_AR = 'الرياض، حي هارون الرشيد، شارع 53، مبنى 6149، الرمز البريدي 14264، الرقم الفرعي 2909، المملكة العربية السعودية';

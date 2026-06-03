@@ -14,6 +14,7 @@ import {
   Truck,
 } from 'lucide-react';
 import {
+  getProductPackageDetails,
   hasFixedPrice,
   isDiscountedProduct,
 } from '../data/products';
@@ -65,6 +66,7 @@ export default function ProductDetail() {
   const hasDiscount = discountedProduct !== null;
   const discountValue = discountedProduct ? discountedProduct.originalPrice - discountedProduct.price : 0;
   const productFacts = product.quickFacts ?? [];
+  const packageDetails = getProductPackageDetails(product, isRTL);
   const categoryLabel = CATEGORY_LABELS[product.category];
   const quoteLink = `${WHATSAPP_LINK}?text=${encodeURIComponent(
     isRTL
@@ -288,7 +290,7 @@ export default function ProductDetail() {
                   {isRTL ? 'تفاصيل العبوة' : 'Pack details'}
                 </h2>
                 <div className="mt-4 space-y-3">
-                  {product.features.map((feature) => (
+                  {packageDetails.map((feature) => (
                     <div key={feature} className="flex items-start gap-3 text-sm text-slate-600">
                       <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-600" />
                       <span className="leading-7">{feature}</span>

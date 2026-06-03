@@ -3,6 +3,7 @@ import {
   CONTACT_EMAIL,
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_RAW,
+  TIKTOK_LINK,
   WHATSAPP_LINK,
 } from './contact';
 
@@ -14,7 +15,7 @@ export const SITE_ALTERNATE_NAMES = ['ريق', 'ريق.com', 'متجر ريق', 
 export const SITE_DEFAULT_IMAGE = '/images/96e4912f-19c6-4e22-aa20-512a75f63282.jpg';
 export const SITE_ADDRESS_EN = BUSINESS_ADDRESS_EN;
 export const SITE_ADDRESS_AR = 'الرياض، حي هارون الرشيد، شارع 53، مبنى 6149، الرمز البريدي 14264، الرقم الفرعي 2909، المملكة العربية السعودية';
-export const SITE_SOCIAL_LINKS = [WHATSAPP_LINK];
+export const SITE_SOCIAL_LINKS = [WHATSAPP_LINK, TIKTOK_LINK];
 export const SITE_PHONE = CONTACT_PHONE_DISPLAY;
 export const SITE_PHONE_RAW = `+${CONTACT_PHONE_RAW}`;
 export const SITE_EMAIL = CONTACT_EMAIL;

@@ -11,7 +11,7 @@ import { useCart } from '../context/CartContext';
 import ProductImage from '../components/ProductImage';
 import { formatSarPrice } from '../lib/utils';
 import { buildOrderWhatsAppLink } from '../lib/contact';
-import { FREE_DELIVERY_CARTONS, MIN_DELIVERY_CARTONS, getDeliveryRuleState } from '../lib/deliveryRules';
+import { FREE_DELIVERY_CARTONS, MIN_DELIVERY_CARTONS, getDeliveryPolicySummary, getDeliveryRuleState } from '../lib/deliveryRules';
 
 export default function Cart() {
   const { i18n } = useTranslation();
@@ -31,6 +31,7 @@ export default function Cart() {
   const finalTotal = totalPrice + deliveryFee - discount;
   const freeDeliveryProgress = Math.min((totalItems / FREE_DELIVERY_CARTONS) * 100, 100);
   const distinctBrands = new Set(items.map((item) => item.product.brand)).size;
+  const deliveryPolicy = getDeliveryPolicySummary(isRTL);
   const cartInsights = [
     {
       icon: ShoppingBag,
@@ -500,6 +501,20 @@ export default function Cart() {
                 <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-600">
                   <Clock className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#153b66]" />
                   <span>{isRTL ? 'دعم على مدار الساعة' : '24/7 support'}</span>
+                </div>
+              </div>
+
+              <div className="mt-4 sm:mt-6 rounded-2xl border border-[#153b66]/10 bg-[#edf4fa]/70 p-4">
+                <h3 className="mb-3 text-sm font-black text-[#153b66]">
+                  {isRTL ? 'سياسة الطلب والتوصيل' : 'Order and delivery policy'}
+                </h3>
+                <div className="space-y-2">
+                  {deliveryPolicy.slice(0, 5).map((item) => (
+                    <div key={item} className="flex gap-2 text-xs leading-6 text-gray-600 sm:text-sm">
+                      <Check className="mt-1 h-3.5 w-3.5 flex-shrink-0 text-[#153b66]" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 

@@ -1,6 +1,7 @@
 import type { Product } from '../data/products';
 import {
   catalogGroups,
+  getProductPackageDetails,
   productSizeOptions,
   products as fallbackProducts,
   type CatalogGroupId,
@@ -78,7 +79,7 @@ function slugify(value: string) {
 }
 
 function toProduct(row: ProductRow): Product {
-  return {
+  const product: Product = {
     id: row.id,
     brandId: row.brand_id,
     name: {
@@ -117,6 +118,14 @@ function toProduct(row: ProductRow): Product {
     imageType: row.image_type ?? 'case',
     imageFit: row.image_fit ?? (row.size === '1.5L' ? 'tight' : 'balanced'),
     catalogOrder: row.catalog_order,
+  };
+
+  const packageDetails = getProductPackageDetails(product, true);
+
+  return {
+    ...product,
+    features: packageDetails,
+    benefits: packageDetails.slice(0, 4),
   };
 }
 

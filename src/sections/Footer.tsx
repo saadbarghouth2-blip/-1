@@ -7,6 +7,7 @@ import {
   Twitter,
   Instagram,
   Linkedin,
+  Music2,
   ArrowUp,
   MapPin,
   Phone,
@@ -15,12 +16,18 @@ import {
 import LogoMark from '../components/LogoMark';
 import {
   BUSINESS_COMMERCIAL_REGISTRATION,
-  BUSINESS_ECOMMERCE_LICENSE,
+  BUSINESS_LEGAL_NAME_AR,
+  BUSINESS_LEGAL_NAME_EN,
+  BUSINESS_LICENSE_NUMBER,
+  BUSINESS_REGISTRATION_STATUS_AR,
+  BUSINESS_REGISTRATION_STATUS_EN,
   BUSINESS_TAX_NUMBER,
   CONTACT_EMAIL,
   CONTACT_EMAIL_HREF,
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_HREF,
+  CONTACT_PHONE_NUMBERS,
+  TIKTOK_LINK,
 } from '../lib/contact';
 import { BRAND_NAME_AR, BRAND_NAME_EN, BRAND_NAME_LOCKUP } from '../lib/brand';
 
@@ -78,6 +85,7 @@ export default function Footer() {
     { icon: Twitter, href: '#', label: 'Twitter' },
     { icon: Instagram, href: '#', label: 'Instagram' },
     { icon: Linkedin, href: '#', label: 'LinkedIn' },
+    { icon: Music2, href: TIKTOK_LINK, label: 'TikTok' },
   ];
 
   const paymentMethods = [
@@ -109,6 +117,14 @@ export default function Footer() {
 
   const officialDetails = [
     {
+      label: isRTL ? 'اسم الشركة' : 'Company Name',
+      value: isRTL ? BUSINESS_LEGAL_NAME_AR : BUSINESS_LEGAL_NAME_EN,
+      logo: <LogoMark scaleClassName="scale-[1.05]" />,
+      accent: 'text-[#bae6fd]',
+      logoFrameClassName:
+        'flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-[1rem] bg-white/10 p-2 ring-1 ring-white/10 sm:h-16 sm:w-16',
+    },
+    {
       label: isRTL ? 'الرقم الضريبي' : 'Tax Number',
       value: BUSINESS_TAX_NUMBER,
       logo: <VatLogo />,
@@ -117,7 +133,7 @@ export default function Footer() {
         'flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-[1rem] bg-white/10 p-1 ring-1 ring-white/10 sm:h-16 sm:w-16',
     },
     {
-      label: isRTL ? 'رقم السجل التجاري' : 'Commercial Registration',
+      label: isRTL ? 'الرقم الوطني الموحد / السجل التجاري' : 'Unified National / Commercial No.',
       value: BUSINESS_COMMERCIAL_REGISTRATION,
       logo: (
         <OfficialImageLogo
@@ -130,8 +146,8 @@ export default function Footer() {
         'flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-[1rem] bg-white p-2 ring-1 ring-white/10 sm:h-16 sm:w-16',
     },
     {
-      label: isRTL ? 'التجارة الإلكترونية' : 'E-Commerce License',
-      value: BUSINESS_ECOMMERCE_LICENSE,
+      label: isRTL ? 'رقم السجل / الرخصة' : 'CR / License Number',
+      value: BUSINESS_LICENSE_NUMBER,
       logo: (
         <OfficialImageLogo
           src="/images/images.png"
@@ -141,6 +157,19 @@ export default function Footer() {
       accent: 'text-[#5eead4]',
       logoFrameClassName:
         'flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-[1rem] bg-white p-0.5 ring-1 ring-white/10 sm:h-16 sm:w-16',
+    },
+    {
+      label: isRTL ? 'حالة السجل' : 'Registration Status',
+      value: isRTL ? BUSINESS_REGISTRATION_STATUS_AR : BUSINESS_REGISTRATION_STATUS_EN,
+      logo: (
+        <OfficialImageLogo
+          src="/images/ministry-of-commerce-logo.svg"
+          alt={isRTL ? 'وزارة التجارة' : 'Ministry of Commerce'}
+        />
+      ),
+      accent: 'text-[#86efac]',
+      logoFrameClassName:
+        'flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-[1rem] bg-white p-2 ring-1 ring-white/10 sm:h-16 sm:w-16',
     },
   ];
 
@@ -281,6 +310,17 @@ export default function Footer() {
                   <a href={CONTACT_PHONE_HREF} className="font-medium transition-colors hover:text-[#8ad8ff]">
                     {CONTACT_PHONE_DISPLAY}
                   </a>
+                  <div className="mt-2 flex flex-col gap-1">
+                    {CONTACT_PHONE_NUMBERS.filter((phone) => !phone.primary).map((phone) => (
+                      <a
+                        key={phone.raw}
+                        href={phone.href}
+                        className="text-sm font-medium text-white/75 transition-colors hover:text-[#8ad8ff]"
+                      >
+                        {phone.display}
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </div>
               <div className="flex items-start gap-3">

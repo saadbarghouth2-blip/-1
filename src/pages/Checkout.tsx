@@ -19,7 +19,16 @@ import { BANK_TRANSFER_DETAILS } from '../lib/contact';
 import { persistCompletedOrder } from '../services/webAccount';
 import { toAbsoluteUrl, withBasePath } from '../lib/site';
 import { formatSarPrice } from '../lib/utils';
-import { FREE_DELIVERY_CARTONS, MIN_DELIVERY_CARTONS, getDeliveryRuleState } from '../lib/deliveryRules';
+import {
+  DELIVERY_FLOOR_OPTIONS,
+  FREE_DELIVERY_CARTONS,
+  MIN_DELIVERY_CARTONS,
+  getDeliveryPolicySummary,
+  getDeliveryRuleState,
+  getFloorDeliveryFee,
+  requiresFloorFeeAgreement,
+  type DeliveryFloorLevel,
+} from '../lib/deliveryRules';
 import ProductImage from '../components/ProductImage';
 
 const SUCCESS_URL = toAbsoluteUrl(`${withBasePath('/checkout')}?status=success`);
@@ -30,6 +39,7 @@ type CheckoutFormData = {
   name: string;
   phone: string;
   address: string;
+  floorLevel: DeliveryFloorLevel;
   lat: number;
   lng: number;
 };
@@ -51,10 +61,16 @@ export default function Checkout() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<CheckoutFormData>(() => {
     const saved = localStorage.getItem('reeq_checkout_data');
-    return saved ? JSON.parse(saved) : {
+    const savedData = saved ? JSON.parse(saved) : null;
+
+    return savedData ? {
+      ...savedData,
+      floorLevel: savedData.floorLevel ?? 'ground',
+    } : {
       name: '',
       phone: '',
       address: '',
+      floorLevel: 'ground',
       lat: 24.7136,
       lng: 46.6753,
     };
@@ -82,7 +98,11 @@ export default function Checkout() {
 
   const deliveryRule = getDeliveryRuleState(totalItems);
   const deliveryFee = deliveryRule.deliveryFee;
-  const finalTotal = totalPrice + deliveryFee;
+  const floorDeliveryFee = getFloorDeliveryFee(formData.floorLevel);
+  const needsFloorAgreement = requiresFloorFeeAgreement(formData.floorLevel);
+  const totalDeliveryFee = deliveryFee + floorDeliveryFee;
+  const finalTotal = totalPrice + totalDeliveryFee;
+  const deliveryPolicy = getDeliveryPolicySummary(isRTL);
 
   // Handle Moyasar Success Return
   useEffect(() => {
@@ -428,7 +448,7 @@ export default function Checkout() {
         customerLat: formData.lat,
         customerLng: formData.lng,
         subtotal: totalPrice,
-        deliveryFee,
+        deliveryFee: totalDeliveryFee,
         discount: 0,
         finalTotal,
         locale: isRTL ? 'ar' : 'en',
@@ -655,6 +675,61 @@ export default function Checkout() {
                       <textarea value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} placeholder={isRTL ? 'يرجى كتابة العنوان بالتفصيل (الحي، الشارع، رقم الشقة)' : 'Detailed address (District, Street, Villa/Apt num)'} className="w-full h-32 p-6 rounded-2xl bg-gray-50 border border-gray-100 text-lg font-medium focus:border-[#153b66] outline-none transition-all resize-none shadow-sm" />
                     </div>
 
+                    <div className="space-y-3">
+                      <label className="text-sm font-bold text-gray-500">
+                        {isRTL ? 'الدور ورسوم التوصيل الإضافية' : 'Floor and extra delivery fee'}
+                      </label>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {DELIVERY_FLOOR_OPTIONS.map((option) => {
+                          const selected = formData.floorLevel === option.id;
+                          return (
+                            <button
+                              key={option.id}
+                              type="button"
+                              onClick={() => setFormData({ ...formData, floorLevel: option.id })}
+                              className={`rounded-2xl border px-4 py-3 text-start transition-all ${
+                                selected
+                                  ? 'border-[#153b66] bg-[#153b66] text-white shadow-lg shadow-[#153b66]/15'
+                                  : 'border-gray-100 bg-gray-50 text-gray-700 hover:border-[#153b66]/30 hover:bg-[#edf4fa]'
+                              }`}
+                            >
+                              <span className="block text-sm font-black">
+                                {isRTL ? option.labelAr : option.labelEn}
+                              </span>
+                              <span className={`mt-1 block text-xs font-bold ${selected ? 'text-white/75' : 'text-gray-500'}`}>
+                                {option.fee === null
+                                  ? (isRTL ? 'يتم الاتفاق حسب حالة الموقع' : 'Quoted by site conditions')
+                                  : option.fee === 0
+                                    ? (isRTL ? 'بدون رسوم إضافية' : 'No extra fee')
+                                    : formatSarPrice(option.fee, isRTL)}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {needsFloorAgreement ? (
+                        <p className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm font-semibold leading-7 text-amber-700">
+                          {isRTL
+                            ? 'للأدوار الأعلى من الثاني يتم الاتفاق على الرسوم حسب حالة الموقع قبل تأكيد التوصيل.'
+                            : 'For floors above the second, the extra fee is agreed according to site conditions before delivery confirmation.'}
+                        </p>
+                      ) : null}
+                    </div>
+
+                    <div className="rounded-[1.7rem] border border-[#153b66]/10 bg-[#edf4fa]/70 p-4">
+                      <h3 className="mb-3 text-sm font-black text-[#153b66]">
+                        {isRTL ? 'سياسة الطلب والتوصيل' : 'Order and delivery policy'}
+                      </h3>
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        {deliveryPolicy.map((item) => (
+                          <div key={item} className="flex gap-2 text-xs leading-6 text-gray-600">
+                            <CheckCircle2 className="mt-1 h-3.5 w-3.5 flex-shrink-0 text-[#153b66]" />
+                            <span>{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
                     <button onClick={handleNextStep} disabled={!formData.name || !formData.phone || !formData.address} className="w-full h-20 bg-gradient-to-r from-[#153b66] to-[#2b648c] text-white rounded-[1.7rem] font-black text-xl hover:shadow-2xl transition-all disabled:opacity-30">
                       {isRTL ? 'الاستمرار للدفع الآمن' : 'Continue to Payment'}
                     </button>
@@ -731,6 +806,16 @@ export default function Checkout() {
                <div className="space-y-4 pt-6 mt-6 border-t border-white/10">
                   <div className="flex justify-between text-white/50 text-sm"><span>{isRTL ? 'المجموع' : 'Subtotal'}</span><span>{formatSarPrice(totalPrice, isRTL)}</span></div>
                   <div className="flex justify-between text-white/50 text-sm"><span>{isRTL ? 'التوصيل' : 'Delivery'}</span><span className={deliveryFee === 0 ? 'text-green-400' : ''}>{deliveryFee === 0 ? isRTL ? 'مجاني' : 'Free' : formatSarPrice(deliveryFee, isRTL)}</span></div>
+                  <div className="flex justify-between text-white/50 text-sm">
+                    <span>{isRTL ? 'رسوم الدور' : 'Floor fee'}</span>
+                    <span className={floorDeliveryFee === 0 && !needsFloorAgreement ? 'text-green-400' : ''}>
+                      {needsFloorAgreement
+                        ? (isRTL ? 'بالاتفاق' : 'By agreement')
+                        : floorDeliveryFee === 0
+                          ? (isRTL ? 'بدون رسوم' : 'No fee')
+                          : formatSarPrice(floorDeliveryFee, isRTL)}
+                    </span>
+                  </div>
                   {!deliveryRule.hasFreeDelivery && (
                     <div className="rounded-2xl bg-white/5 px-3 py-2 text-xs leading-6 text-white/55">
                       {isRTL

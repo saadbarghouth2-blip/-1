@@ -9,6 +9,13 @@ interface FAQSectionProps {
 
 const faqs = [
   {
+    qAr: 'ما هي سياسة الطلب والتوصيل داخل الرياض؟',
+    qEn: 'What is the order and delivery policy in Riyadh?',
+    aAr: 'الحد الأدنى للطلب 10 كراتين. تطبق رسوم توصيل 20 ريال على الطلبات الأقل من 20 كرتون، ويكون التوصيل مجانيا عند طلب 20 كرتون أو أكثر. التوصيل حتى الدور الأرضي بدون رسوم إضافية، والدور الأول 10 ريالات، والدور الثاني 20 ريالا، أما الأدوار الأعلى فيتم الاتفاق على رسومها حسب حالة الموقع. يجب تسجيل الطلب قبل موعد التوصيل بيوم واحد على الأقل، ويتم التوصيل خلال ساعات العمل الرسمية من 8:00 صباحا حتى 8:00 مساء. الخدمة متاحة لجميع أحياء مدينة الرياض وفق المواعيد المتاحة وجدول التشغيل، وتحتفظ الإدارة بحق تحديث السياسة بما يناسب جودة الخدمة.',
+    aEn: 'Minimum order is 10 cartons. A 20 SAR delivery fee applies to orders below 20 cartons, and delivery is free from 20 cartons or more. Delivery to the ground floor has no extra fee; first floor is 10 SAR, second floor is 20 SAR, and higher floors are quoted according to site conditions. Orders should be placed at least one day before delivery, and delivery runs from 8:00 AM to 8:00 PM. Service covers all Riyadh districts according to available slots and the operating schedule. Management may update this policy to maintain service quality.',
+    category: 'delivery',
+  },
+  {
     qAr: 'ما هي المناطق التي يشملها التوصيل؟',
     qEn: 'Which areas does delivery cover?',
     aAr: 'نغطي جميع مدن المملكة العربية السعودية الرئيسية بما فيها الرياض، جدة، الدمام، مكة المكرمة، والمدينة المنورة. كما نوفر خدمة التوصيل إلى أكثر من 30 مدينة ومنطقة في المملكة مع خطط توسع مستمرة لتشمل مناطق جديدة.',
@@ -78,7 +85,8 @@ const categories = [
 export default function FAQSection({ isRTL }: FAQSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [activeCategory, setActiveCategory] = useState('all');
-  const filtered = activeCategory === 'all' ? faqs : faqs.filter(f => f.category === activeCategory);
+  const currentFaqs = faqs.filter((_, index) => ![1, 6].includes(index));
+  const filtered = activeCategory === 'all' ? currentFaqs : currentFaqs.filter(f => f.category === activeCategory);
 
   return (
     <section className="py-16 sm:py-24 bg-gradient-to-b from-white to-[#f0f9ff]">
