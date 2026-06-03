@@ -143,15 +143,15 @@ export default function Cart() {
             <div className="relative">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm backdrop-blur-sm">
                 <Sparkles className="h-4 w-4" />
-                <span>{isRTL ? 'سلة أذكى وأكثر وضوحًا' : 'Smarter, clearer cart'}</span>
+                <span>{isRTL ? 'راجع طلبك قبل الدفع' : 'Review your order before payment'}</span>
               </div>
               <h2 className="mb-3 text-2xl font-bold sm:text-3xl">
-                {isRTL ? 'أضفنا طبقة احترافية توضّح حالة طلبك قبل الدفع' : 'We added a premium layer that explains your order status before checkout'}
+                {isRTL ? 'اعرف حالة طلبك بوضوح قبل إتمام الدفع' : 'Understand your order status clearly before checkout'}
               </h2>
               <p className="max-w-2xl text-sm leading-7 text-white/85 sm:text-base">
                 {isRTL
-                  ? 'السلة الآن لا تعرض المنتجات فقط، بل تشرح لك مستوى الجاهزية، مدى تنوع الطلب، والمسافة المتبقية للوصول إلى مزايا أفضل مثل التوصيل المجاني.'
-                  : 'The cart now does more than list items. It explains readiness, assortment variety, and how close you are to better value like free delivery.'}
+                  ? 'هنا تقدر تراجع المنتجات والكميات، تعرف هل طلبك جاهز للتوصيل، وتشوف كم كرتونة متبقية للحصول على التوصيل المجاني.'
+                  : 'Here you can review products and quantities, see whether your order is ready for delivery, and check how many cartons remain to unlock free delivery.'}
               </p>
 
               <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -203,9 +203,9 @@ export default function Cart() {
           <div className="rounded-[2rem] border border-sky-100 bg-white p-5 shadow-[0_22px_60px_-34px_rgba(15,23,42,0.28)] sm:p-6">
             <div className="mb-5 flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-[#153b66]">{isRTL ? 'بعد إتمام الطلب' : 'After checkout'}</p>
+                <p className="text-sm font-medium text-[#153b66]">{isRTL ? 'بعد إرسال الطلب' : 'After placing the order'}</p>
                 <h3 className="text-2xl font-bold text-gray-900">
-                  {isRTL ? 'مسار أوضح لما سيحدث بعد الضغط على الدفع' : 'A clearer view of what happens after you place the order'}
+                  {isRTL ? 'ماذا يحدث بعد تأكيد طلبك؟' : 'What happens after you confirm your order?'}
                 </h3>
               </div>
               <Clock className="h-4 w-4 text-[#153b66] sm:h-5 sm:w-5" />
@@ -232,12 +232,12 @@ export default function Cart() {
             <div className="mt-5 rounded-[1.6rem] bg-gradient-to-r from-slate-50 to-sky-50 p-4">
               <div className="mb-2 flex items-center gap-2 text-[#153b66]">
                 <Shield className="h-4 w-4" />
-                <span className="text-sm font-semibold">{isRTL ? 'طبقة ثقة إضافية' : 'Extra confidence layer'}</span>
+                <span className="text-sm font-semibold">{isRTL ? 'معلومات مهمة قبل الطلب' : 'Important information before ordering'}</span>
               </div>
               <p className="text-sm leading-7 text-gray-600">
                 {isRTL
-                  ? 'هذه الإضافات تجعل صفحة السلة ليست مجرد محطة نهائية، بل صفحة إقناع واطمئنان ترفع احتمالية إكمال الطلب وتوضّح التجربة للعميل.'
-                  : 'These additions turn the cart from a final stop into a confidence-building page that improves conversion and clarifies the customer journey.'}
+                  ? 'قبل المتابعة، تأكد من الكميات ورسوم التوصيل وسياسة الأدوار. عند إرسال الطلب سنتواصل معك لتأكيد التفاصيل وموعد التوصيل المناسب.'
+                  : 'Before continuing, review quantities, delivery fees, and floor policy. After you place the order, we will contact you to confirm the details and delivery slot.'}
               </p>
             </div>
           </div>
