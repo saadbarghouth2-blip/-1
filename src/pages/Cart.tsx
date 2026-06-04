@@ -10,7 +10,6 @@ import {
 import { useCart } from '../context/CartContext';
 import ProductImage from '../components/ProductImage';
 import { formatSarPrice } from '../lib/utils';
-import { buildOrderWhatsAppLink } from '../lib/contact';
 import { FREE_DELIVERY_CARTONS, MIN_DELIVERY_CARTONS, getDeliveryPolicySummary, getDeliveryRuleState } from '../lib/deliveryRules';
 
 export default function Cart() {
@@ -449,29 +448,13 @@ export default function Cart() {
               </motion.button>
 
               {deliveryRule.canDeliver ? (
-                <a
-                  href={buildOrderWhatsAppLink({
-                  customerName: (isRTL ? 'عميل جديد' : 'New customer'),
-                  phone: (isRTL ? 'غير متوفر' : 'Not provided'),
-                  items: items.map((item) => ({
-                    name: isRTL ? item.product.name.ar : item.product.name.en,
-                    quantity: item.quantity,
-                    unitPrice: item.product.price ?? 0,
-                    lineTotal: (item.product.price ?? 0) * item.quantity,
-                  })),
-                  totalItems,
-                  subtotal: totalPrice,
-                  deliveryFee,
-                  discount,
-                  finalTotal,
-                  isRTL,
-                })}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() => navigate('/checkout?channel=whatsapp')}
                   className="mb-3 flex w-full items-center justify-center rounded-xl border-2 border-green-200 bg-green-50 py-3 font-semibold text-green-700 transition-colors hover:bg-green-100 sm:py-4"
                 >
                   {isRTL ? 'إرسال الطلب عبر واتساب' : 'Send order via WhatsApp'}
-                </a>
+                </button>
               ) : (
                 <div className="mb-3 flex w-full items-center justify-center rounded-xl border-2 border-amber-200 bg-amber-50 px-3 py-3 text-center text-sm font-semibold text-amber-700 sm:py-4">
                   {isRTL

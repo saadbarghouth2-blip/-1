@@ -15,7 +15,7 @@ import {
   MOYASAR_STYLES_URL,
   getMoyasarPublicKey,
 } from '../lib/payments';
-import { BANK_TRANSFER_DETAILS } from '../lib/contact';
+import { BANK_TRANSFER_DETAILS, buildOrderWhatsAppLink } from '../lib/contact';
 import { persistCompletedOrder } from '../services/webAccount';
 import { toAbsoluteUrl, withBasePath } from '../lib/site';
 import { formatSarPrice } from '../lib/utils';
@@ -91,6 +91,7 @@ export default function Checkout() {
 
   const queryParams = new URLSearchParams(location.search);
   const isSuccessFromMoyasar = queryParams.get('status') === 'success' || queryParams.get('id');
+  const isWhatsAppCheckout = queryParams.get('channel') === 'whatsapp';
   const paymentReferenceFromQuery = queryParams.get('id')?.trim() || '';
   const [isSuccess, setIsSuccess] = useState(!!isSuccessFromMoyasar);
   const [accountNotice, setAccountNotice] = useState('');
@@ -103,6 +104,9 @@ export default function Checkout() {
   const totalDeliveryFee = deliveryFee + floorDeliveryFee;
   const finalTotal = totalPrice + totalDeliveryFee;
   const deliveryPolicy = getDeliveryPolicySummary(isRTL);
+  const canSubmitCustomerDetails = Boolean(
+    formData.name.trim() && formData.phone.trim() && formData.address.trim()
+  );
 
   // Handle Moyasar Success Return
   useEffect(() => {
@@ -465,6 +469,40 @@ export default function Checkout() {
     setStep(step + 1);
   };
 
+  const buildCurrentOrderWhatsAppLink = () =>
+    buildOrderWhatsAppLink({
+      customerName: formData.name.trim(),
+      phone: formData.phone.trim(),
+      address: formData.address.trim(),
+      email: session?.email ?? undefined,
+      items: items.map((item) => ({
+        name: isRTL ? item.product.name.ar : item.product.name.en,
+        quantity: item.quantity,
+        unitPrice: item.product.price ?? 0,
+        lineTotal: (item.product.price ?? 0) * item.quantity,
+      })),
+      totalItems,
+      subtotal: totalPrice,
+      deliveryFee: totalDeliveryFee,
+      discount: 0,
+      finalTotal,
+      isRTL,
+    });
+
+  const handleWhatsAppOrder = () => {
+    if (!deliveryRule.canDeliver) {
+      navigate('/cart');
+      return;
+    }
+
+    if (!canSubmitCustomerDetails) {
+      setStep(1);
+      return;
+    }
+
+    window.open(buildCurrentOrderWhatsAppLink(), '_blank', 'noopener,noreferrer');
+  };
+
   if (isSuccess) {
     return (
       <main className="min-h-screen py-20 flex items-center justify-center px-4 relative z-10">
@@ -730,8 +768,24 @@ export default function Checkout() {
                       </div>
                     </div>
 
-                    <button onClick={handleNextStep} disabled={!formData.name || !formData.phone || !formData.address} className="w-full h-20 bg-gradient-to-r from-[#153b66] to-[#2b648c] text-white rounded-[1.7rem] font-black text-xl hover:shadow-2xl transition-all disabled:opacity-30">
+                    {isWhatsAppCheckout ? (
+                      <div className="rounded-[1.7rem] border border-green-200 bg-green-50 px-4 py-3 text-center text-sm font-bold leading-7 text-green-700">
+                        {isRTL
+                          ? 'أكمل بياناتك أولاً، ثم أرسل الطلب عبر واتساب وسيصل لنا الاسم والجوال والعنوان مع تفاصيل السلة.'
+                          : 'Complete your details first, then send the order on WhatsApp with your name, phone, address, and cart details.'}
+                      </div>
+                    ) : null}
+
+                    <button onClick={handleNextStep} disabled={!canSubmitCustomerDetails} className="w-full h-20 bg-gradient-to-r from-[#153b66] to-[#2b648c] text-white rounded-[1.7rem] font-black text-xl hover:shadow-2xl transition-all disabled:opacity-30">
                       {isRTL ? 'الاستمرار للدفع الآمن' : 'Continue to Payment'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleWhatsAppOrder}
+                      disabled={!canSubmitCustomerDetails}
+                      className="w-full h-16 rounded-[1.4rem] border-2 border-green-200 bg-green-50 font-black text-green-700 transition-all hover:bg-green-100 disabled:opacity-30"
+                    >
+                      {isRTL ? 'إرسال الطلب عبر واتساب' : 'Send order via WhatsApp'}
                     </button>
                   </div>
                 </motion.div>
