@@ -202,8 +202,8 @@ export default function Checkout() {
     if (!moyasarPublicKey) {
       setPaymentLoadError(
         isRTL
-          ? 'يرجى ضبط VITE_MOYASAR_PUBLIC_KEY بمفتاح Moyasar الحي قبل تفعيل الدفع على الموقع.'
-          : 'Set VITE_MOYASAR_PUBLIC_KEY to your live Moyasar public key before enabling production checkout.'
+          ? 'يرجى ضبط إعدادات ميسر قبل تفعيل نموذج التأكيد على الموقع.'
+          : 'Set the Moyasar settings before enabling the production confirmation form.'
       );
       return;
     }
@@ -221,8 +221,8 @@ export default function Checkout() {
         if (!isCancelled) {
           setPaymentLoadError(
             isRTL
-              ? 'تعذر تحميل بوابة الدفع الآن. حاول مرة أخرى خلال لحظات.'
-              : 'Unable to load the payment gateway right now. Please try again shortly.'
+              ? 'تعذر تحميل نموذج التأكيد الآن. حاول مرة أخرى خلال لحظات.'
+              : 'Unable to load the confirmation form right now. Please try again shortly.'
           );
         }
       });
@@ -475,6 +475,8 @@ export default function Checkout() {
       customerName: formData.name.trim(),
       phone: formData.phone.trim(),
       address: formData.address.trim(),
+      lat: formData.lat,
+      lng: formData.lng,
       email: session?.email ?? undefined,
       items: items.map((item) => ({
         name: isRTL ? item.product.name.ar : item.product.name.en,
@@ -580,7 +582,7 @@ export default function Checkout() {
               </button>
               <div>
                 <h1 className="text-3xl font-black text-gray-900">{isRTL ? 'تحديد الموقع والتوصيل' : 'Delivery & Location'}</h1>
-                <p className="text-gray-400 mt-1 text-sm font-medium">{isRTL ? (step === 1 ? 'موقعك في الرياض بدقة عالية' : 'الدفع الآمن') : (step === 1 ? 'Precision Riyadh location' : 'Secure Payment')}</p>
+                <p className="text-gray-400 mt-1 text-sm font-medium">{isRTL ? (step === 1 ? 'موقعك في الرياض بدقة عالية' : 'تأكيد الطلب') : (step === 1 ? 'Precision Riyadh location' : 'Order confirmation')}</p>
               </div>
             </div>
 
@@ -777,17 +779,25 @@ export default function Checkout() {
                       </div>
                     ) : null}
 
-                    <button onClick={handleNextStep} disabled={!canSubmitCustomerDetails} className="w-full h-20 bg-gradient-to-r from-[#153b66] to-[#2b648c] text-white rounded-[1.7rem] font-black text-xl hover:shadow-2xl transition-all disabled:opacity-30">
-                      {isRTL ? 'الاستمرار للدفع الآمن' : 'Continue to Payment'}
-                    </button>
                     <button
-                      type="button"
-                      onClick={handleWhatsAppOrder}
+                      onClick={isWhatsAppCheckout ? handleWhatsAppOrder : handleNextStep}
                       disabled={!canSubmitCustomerDetails}
-                      className="w-full h-16 rounded-[1.4rem] border-2 border-green-200 bg-green-50 font-black text-green-700 transition-all hover:bg-green-100 disabled:opacity-30"
+                      className="w-full h-20 bg-gradient-to-r from-[#153b66] to-[#2b648c] text-white rounded-[1.7rem] font-black text-xl hover:shadow-2xl transition-all disabled:opacity-30"
                     >
-                      {isRTL ? 'إرسال الطلب عبر واتساب' : 'Send order via WhatsApp'}
+                      {isWhatsAppCheckout
+                        ? (isRTL ? 'إرسال الطلب عبر واتساب' : 'Send order via WhatsApp')
+                        : (isRTL ? 'متابعة تأكيد الطلب' : 'Continue order confirmation')}
                     </button>
+                    {!isWhatsAppCheckout ? (
+                      <button
+                        type="button"
+                        onClick={handleWhatsAppOrder}
+                        disabled={!canSubmitCustomerDetails}
+                        className="w-full h-16 rounded-[1.4rem] border-2 border-green-200 bg-green-50 font-black text-green-700 transition-all hover:bg-green-100 disabled:opacity-30"
+                      >
+                        {isRTL ? 'إرسال الطلب عبر واتساب' : 'Send order via WhatsApp'}
+                      </button>
+                    ) : null}
                   </div>
                 </motion.div>
               )}
@@ -834,7 +844,7 @@ export default function Checkout() {
                     <div className="moyasar-form-container min-h-[400px]">
                       <div className="flex flex-col items-center justify-center h-full py-20 space-y-4">
                         <div className="w-10 h-10 border-4 border-[#153b66] border-t-transparent rounded-full animate-spin sm:w-12 sm:h-12" />
-                        <p className="text-gray-400 font-bold">{isRTL ? 'جاري تحميل بوابة الدفع...' : 'Loading Payment Gateway...'}</p>
+                        <p className="text-gray-400 font-bold">{isRTL ? 'جاري تجهيز نموذج التأكيد...' : 'Loading confirmation form...'}</p>
                       </div>
                     </div>
                   </div>
