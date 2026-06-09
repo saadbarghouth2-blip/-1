@@ -15,7 +15,7 @@ import { FREE_DELIVERY_CARTONS, MIN_DELIVERY_CARTONS, getDeliveryPolicySummary, 
 export default function Cart() {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
-  const { items, removeFromCart, updateQuantity, totalItems, totalPrice, clearCart } = useCart();
+  const { items, removeFromCart, updateQuantity, totalItems, totalCartons, totalPrice, clearCart } = useCart();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
   const isRTL = i18n.language === 'ar';
@@ -24,18 +24,18 @@ export default function Cart() {
   const [promoApplied, setPromoApplied] = useState(false);
   const [showPromoInput, setShowPromoInput] = useState(false);
 
-  const deliveryRule = getDeliveryRuleState(totalItems);
+  const deliveryRule = getDeliveryRuleState(totalCartons);
   const deliveryFee = deliveryRule.deliveryFee;
   const discount = promoApplied ? totalPrice * 0.1 : 0;
   const finalTotal = totalPrice + deliveryFee - discount;
-  const freeDeliveryProgress = Math.min((totalItems / FREE_DELIVERY_CARTONS) * 100, 100);
+  const freeDeliveryProgress = Math.min((totalCartons / FREE_DELIVERY_CARTONS) * 100, 100);
   const distinctBrands = new Set(items.map((item) => item.product.brand)).size;
   const deliveryPolicy = getDeliveryPolicySummary(isRTL);
   const cartInsights = [
     {
       icon: ShoppingBag,
-      label: isRTL ? 'عدد القطع' : 'Items in cart',
-      value: `${totalItems}`,
+      label: isRTL ? 'عدد الكراتين' : 'Cartons in cart',
+      value: `${totalCartons}`,
       tone: 'from-sky-500 to-cyan-500',
     },
     {
@@ -443,7 +443,7 @@ export default function Cart() {
               >
                 {deliveryRule.canDeliver
                   ? (isRTL ? 'إتمام الدفع الإلكتروني' : 'Digital Checkout')
-                  : (isRTL ? `أكمل ${MIN_DELIVERY_CARTONS} كراتين للتوصيل` : `Add ${MIN_DELIVERY_CARTONS} cartons to deliver`)}
+                  : (isRTL ? `أضف ${deliveryRule.cartonsToMinimum} كرتونة للتوصيل` : `Add ${deliveryRule.cartonsToMinimum} cartons to deliver`)}
                 <ArrowRight className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
               </motion.button>
 

@@ -13,7 +13,12 @@ interface CartContextType {
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
+  totalCartons: number;
   totalPrice: number;
+}
+
+function getProductCartonCount(product: Product) {
+  return product.category === 'offer' ? Math.max(product.quantity, 1) : 1;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -60,6 +65,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalCartons = items.reduce(
+    (sum, item) => sum + getProductCartonCount(item.product) * item.quantity,
+    0
+  );
   const totalPrice = items.reduce(
     (sum, item) => sum + (item.product.price ?? 0) * item.quantity,
     0
@@ -74,6 +83,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         updateQuantity,
         clearCart,
         totalItems,
+        totalCartons,
         totalPrice,
       }}
     >

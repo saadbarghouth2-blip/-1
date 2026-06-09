@@ -217,7 +217,7 @@ export function buildOrderWhatsAppLink(payload: OrderEmailPayload) {
     `${payload.isRTL ? 'تفاصيل الطلب' : 'Order details'}:`,
     orderItems,
     '',
-    `${payload.isRTL ? 'إجمالي القطع' : 'Total items'}: ${payload.totalItems}`,
+    `${payload.isRTL ? 'إجمالي الكراتين' : 'Total cartons'}: ${payload.totalItems}`,
     `${payload.isRTL ? 'الإجمالي النهائي' : 'Final total'}: ${formatSarPrice(
       payload.finalTotal,
       payload.isRTL
@@ -317,7 +317,7 @@ export function sendOrderEmail(payload: OrderEmailPayload) {
     `${payload.isRTL ? 'تفاصيل الطلب' : 'Order items'}:`,
     orderItems,
     '',
-    `${payload.isRTL ? 'إجمالي القطع' : 'Total items'}: ${payload.totalItems}`,
+    `${payload.isRTL ? 'إجمالي الكراتين' : 'Total cartons'}: ${payload.totalItems}`,
     `${payload.isRTL ? 'المجموع الفرعي' : 'Subtotal'}: ${formatSarPrice(
       payload.subtotal,
       payload.isRTL
