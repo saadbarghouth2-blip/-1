@@ -142,10 +142,10 @@ export default function Cart() {
             <div className="relative">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm backdrop-blur-sm">
                 <Sparkles className="h-4 w-4" />
-                <span>{isRTL ? 'راجع طلبك قبل الدفع' : 'Review your order before payment'}</span>
+                <span>{isRTL ? 'راجع طلبك قبل الإرسال' : 'Review your order before sending'}</span>
               </div>
               <h2 className="mb-3 text-2xl font-bold sm:text-3xl">
-                {isRTL ? 'اعرف حالة طلبك بوضوح قبل إتمام الدفع' : 'Understand your order status clearly before checkout'}
+                {isRTL ? 'اعرف حالة طلبك بوضوح قبل إتمام الطلب' : 'Understand your order status clearly before checkout'}
               </h2>
               <p className="max-w-2xl text-sm leading-7 text-white/85 sm:text-base">
                 {isRTL
@@ -435,14 +435,14 @@ export default function Cart() {
 
 
               <motion.button
-                onClick={() => navigate('/checkout')}
+                onClick={() => navigate('/checkout?channel=whatsapp')}
                 disabled={!deliveryRule.canDeliver}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full py-3 sm:py-4 bg-gradient-to-r from-[#153b66] to-[#2b648c] text-white rounded-xl font-bold text-base sm:text-lg shadow-lg shadow-[#153b66]/20 hover:shadow-[#153b66]/40 transition-all mb-3 sm:mb-4 flex items-center justify-center gap-3 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {deliveryRule.canDeliver
-                  ? (isRTL ? 'إتمام الدفع الإلكتروني' : 'Digital Checkout')
+                  ? (isRTL ? 'إكمال بيانات الطلب' : 'Complete order details')
                   : (isRTL ? `أضف ${deliveryRule.cartonsToMinimum} كرتونة للتوصيل` : `Add ${deliveryRule.cartonsToMinimum} cartons to deliver`)}
                 <ArrowRight className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
               </motion.button>
@@ -501,15 +501,14 @@ export default function Cart() {
                 </div>
               </div>
 
-              {/* Payment Methods */}
+              {/* Confirmation Methods */}
               <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t">
                 <p className="text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">
-                  {isRTL ? 'طرق الدفع المتاحة:' : 'Available payment methods:'}
+                  {isRTL ? 'وسائل تأكيد الطلب:' : 'Order confirmation methods:'}
                 </p>
                 <div className="flex gap-2 sm:gap-3">
-                  <div className="w-10 h-6 sm:w-12 sm:h-8 bg-gray-100 rounded flex items-center justify-center text-xs font-bold text-gray-600">Visa</div>
-                  <div className="w-10 h-6 sm:w-12 sm:h-8 bg-gray-100 rounded flex items-center justify-center text-xs font-bold text-gray-600">MC</div>
-                  <div className="w-10 h-6 sm:w-12 sm:h-8 bg-gray-100 rounded flex items-center justify-center text-xs font-bold text-gray-600">Mada</div>
+                  <div className="w-16 h-6 sm:w-20 sm:h-8 bg-gray-100 rounded flex items-center justify-center text-xs font-bold text-gray-600">WhatsApp</div>
+                  <div className="w-10 h-6 sm:w-12 sm:h-8 bg-gray-100 rounded flex items-center justify-center text-xs font-bold text-gray-600">Bank</div>
                   <div className="w-10 h-6 sm:w-12 sm:h-8 bg-gray-100 rounded flex items-center justify-center text-xs font-bold text-gray-600">COD</div>
                 </div>
               </div>

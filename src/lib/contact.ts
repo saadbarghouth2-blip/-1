@@ -72,6 +72,8 @@ type OrderEmailPayload = {
   phone: string;
   email?: string;
   address?: string;
+  lat?: number;
+  lng?: number;
   notes?: string;
   items: OrderEmailItem[];
   totalItems: number;
@@ -92,6 +94,14 @@ function formatTimestamp() {
 function withFallback(value: string | undefined, fallback: string) {
   const trimmed = value?.trim();
   return trimmed ? trimmed : fallback;
+}
+
+function buildGoogleMapsLink(lat?: number, lng?: number) {
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    return '';
+  }
+
+  return `https://maps.google.com/?q=${lat},${lng}`;
 }
 
 function buildTemplateLocaleParams(isRTL: boolean) {
@@ -191,6 +201,7 @@ export function buildContactWhatsAppLink(
 
 export function buildOrderWhatsAppLink(payload: OrderEmailPayload) {
   const fallback = payload.isRTL ? 'غير متوفر' : 'Not provided';
+  const locationUrl = buildGoogleMapsLink(payload.lat, payload.lng);
   const orderItems = payload.items
     .map(
       (item, index) =>
@@ -213,6 +224,7 @@ export function buildOrderWhatsAppLink(payload: OrderEmailPayload) {
       payload.address,
       fallback
     )}`,
+    `${payload.isRTL ? 'لينك الموقع' : 'Location link'}: ${locationUrl || fallback}`,
     '',
     `${payload.isRTL ? 'تفاصيل الطلب' : 'Order details'}:`,
     orderItems,
@@ -288,6 +300,7 @@ export function sendContactEmail(payload: ContactEmailPayload) {
 
 export function sendOrderEmail(payload: OrderEmailPayload) {
   const fallback = payload.isRTL ? 'غير متوفر' : 'Not provided';
+  const locationUrl = buildGoogleMapsLink(payload.lat, payload.lng);
   const orderItems = payload.items
     .map(
       (item, index) =>
@@ -309,6 +322,7 @@ export function sendOrderEmail(payload: OrderEmailPayload) {
       payload.address,
       fallback
     )}`,
+    `${payload.isRTL ? 'لينك الموقع' : 'Location link'}: ${locationUrl || fallback}`,
     `${payload.isRTL ? 'الملاحظات' : 'Notes'}: ${withFallback(
       payload.notes,
       fallback
@@ -357,6 +371,7 @@ export function sendOrderEmail(payload: OrderEmailPayload) {
     discount: formatSarPrice(payload.discount, payload.isRTL),
     total_items: String(payload.totalItems),
     address: withFallback(payload.address, fallback),
+    location_link: locationUrl || fallback,
     notes: withFallback(payload.notes, fallback),
     to_email: CONTACT_EMAIL,
     whatsapp_number: WHATSAPP_PHONE_DISPLAY,
