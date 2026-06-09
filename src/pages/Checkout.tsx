@@ -48,7 +48,7 @@ export default function Checkout() {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { items, totalPrice, totalItems, clearCart } = useCart();
+  const { items, totalPrice, totalItems, totalCartons, clearCart } = useCart();
   const { authReady, isConfigured, session, profile, saveProfile, refreshOrders, openAccountDialog } = useWebAuth();
   const isRTL = i18n.language === 'ar';
 
@@ -97,7 +97,7 @@ export default function Checkout() {
   const [accountNotice, setAccountNotice] = useState('');
   const [orderSyncMessage, setOrderSyncMessage] = useState('');
 
-  const deliveryRule = getDeliveryRuleState(totalItems);
+  const deliveryRule = getDeliveryRuleState(totalCartons);
   const deliveryFee = deliveryRule.deliveryFee;
   const floorDeliveryFee = getFloorDeliveryFee(formData.floorLevel);
   const needsFloorAgreement = requiresFloorFeeAgreement(formData.floorLevel);
@@ -251,7 +251,7 @@ export default function Checkout() {
         element: '.moyasar-form-container',
         amount: finalTotal * 100,
         currency: 'SAR',
-        description: `Order from ${BRAND_NAME_EN} - ${totalItems} items`,
+        description: `Order from ${BRAND_NAME_EN} - ${totalCartons} cartons`,
         publishable_api_key: moyasarPublicKey,
         callback_url: SUCCESS_URL,
         methods: ['creditcard', 'applepay'],
@@ -262,7 +262,7 @@ export default function Checkout() {
     return () => {
       window.clearTimeout(timer);
     };
-  }, [finalTotal, isMoyasarReady, isSuccess, moyasarPublicKey, step, totalItems]);
+  }, [finalTotal, isMoyasarReady, isSuccess, moyasarPublicKey, step, totalCartons]);
 
   useEffect(() => {
     if (!showMap) {
@@ -460,6 +460,7 @@ export default function Checkout() {
           productId: item.product.id,
           name: isRTL ? item.product.name.ar : item.product.name.en,
           quantity: item.quantity,
+          cartonQuantity: item.product.category === 'offer' ? item.product.quantity * item.quantity : item.quantity,
           unitPrice: item.product.price ?? 0,
           lineTotal: (item.product.price ?? 0) * item.quantity,
           image: item.product.image ?? '',
@@ -481,7 +482,7 @@ export default function Checkout() {
         unitPrice: item.product.price ?? 0,
         lineTotal: (item.product.price ?? 0) * item.quantity,
       })),
-      totalItems,
+      totalItems: totalCartons,
       subtotal: totalPrice,
       deliveryFee: totalDeliveryFee,
       discount: 0,
@@ -548,8 +549,8 @@ export default function Checkout() {
             {items.length === 0
               ? (isRTL ? 'السلة فارغة الآن. اختر المنتجات أولًا قبل إتمام الطلب.' : 'Your cart is empty. Choose products before checkout.')
               : (isRTL
-                  ? `الحد الأدنى للتوصيل هو ${MIN_DELIVERY_CARTONS} كراتين. لديك الآن ${totalItems} كرتونة، أضف ${deliveryRule.cartonsToMinimum} كرتونة لإتمام الطلب.`
-                  : `Minimum delivery order is ${MIN_DELIVERY_CARTONS} cartons. You currently have ${totalItems}; add ${deliveryRule.cartonsToMinimum} more to check out.`)}
+                  ? `الحد الأدنى للتوصيل هو ${MIN_DELIVERY_CARTONS} كراتين. لديك الآن ${totalCartons} كرتونة، أضف ${deliveryRule.cartonsToMinimum} كرتونة لإتمام الطلب.`
+                  : `Minimum delivery order is ${MIN_DELIVERY_CARTONS} cartons. You currently have ${totalCartons}; add ${deliveryRule.cartonsToMinimum} more to check out.`)}
           </p>
           <button
             type="button"
@@ -845,7 +846,11 @@ export default function Checkout() {
           {/* Sidebar Summary */}
           <div className="lg:col-span-5 sticky top-24">
             <div className="bg-gray-900 rounded-[2.5rem] p-8 text-white shadow-2xl overflow-hidden">
-               <h3 className="text-xl font-black mb-8 border-b border-white/10 pb-4">{isRTL ? `ملخص الطلب (${totalItems})` : `Order Summary (${totalItems})`}</h3>
+               <h3 className="text-xl font-black mb-8 border-b border-white/10 pb-4">
+                 {isRTL
+                   ? `ملخص الطلب (${totalItems} منتج / ${totalCartons} كرتون)`
+                   : `Order Summary (${totalItems} items / ${totalCartons} cartons)`}
+               </h3>
                <div className="space-y-4 max-h-[40vh] overflow-y-auto mb-8 pr-2 custom-scrollbar">
                   {items.map((item) => (
                     <div key={item.product.id} className="flex gap-4 items-center">

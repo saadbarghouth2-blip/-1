@@ -199,7 +199,7 @@ export async function persistCompletedOrder(userId: string, email: string | null
       customer_notes: null,
       customer_lat: draft.customerLat,
       customer_lng: draft.customerLng,
-      total_items: draft.items.reduce((sum, item) => sum + item.quantity, 0),
+      total_items: draft.items.reduce((sum, item) => sum + (item.cartonQuantity ?? item.quantity), 0),
       subtotal: draft.subtotal,
       delivery_fee: draft.deliveryFee,
       discount: draft.discount,

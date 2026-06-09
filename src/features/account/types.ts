@@ -42,6 +42,7 @@ export type CheckoutDraftItem = {
   productId: string;
   name: string;
   quantity: number;
+  cartonQuantity?: number;
   unitPrice: number;
   lineTotal: number;
   image: string;
