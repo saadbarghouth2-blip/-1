@@ -1,10 +1,9 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
-  ChevronDown,
   Truck,
   Shield,
   Clock,
@@ -16,17 +15,14 @@ import {
   Info,
   Sparkles,
   Smartphone,
+  MapPin,
+  CalendarCheck,
+  ChevronDown,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import HeroWordmark from '../components/HeroWordmark';
-import ProductImage from '../components/ProductImage';
-import {
-  hasFixedPrice,
-  isDiscountedProduct,
-  products,
-} from '../data/products';
+import { isDiscountedProduct, products } from '../data/products';
 import { cancelIdleTask, scheduleIdleTask } from '../lib/idle';
-import { formatSarPrice } from '../lib/utils';
 
 const loadStatsTickerSection = () => import('../sections/StatsTicker');
 const loadParallaxShowcaseSection = () => import('../sections/ParallaxShowcase');
@@ -90,14 +86,322 @@ function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: strin
   return <span ref={ref}>{displayValue}{suffix}</span>;
 }
 
+function FastDeliveryHero({
+  heroRef,
+  heroOpacity,
+  heroScale,
+  heroY,
+  isRTL,
+}: {
+  heroRef: React.RefObject<HTMLDivElement | null>;
+  heroOpacity: MotionValue<number>;
+  heroScale: MotionValue<number>;
+  heroY: MotionValue<number>;
+  isRTL: boolean;
+}) {
+  const prefersReducedMotion = useReducedMotion();
+  const directionClassName = isRTL ? 'text-right' : 'text-left';
+  const truckImageSrc = '/images/fast-delivery-riyadh-truck.jpg';
+  const featureItems = [
+    { icon: Clock, title: 'سرعة', desc: 'في التوصيل' },
+    { icon: MapPin, title: 'تغطية شاملة', desc: 'لكل الأحياء' },
+    { icon: CalendarCheck, title: 'طلبات يومية', desc: 'ومجدولة' },
+  ];
+
+  return (
+    <motion.section
+      ref={heroRef}
+      style={{ opacity: heroOpacity }}
+      className="relative isolate flex min-h-screen items-center overflow-hidden bg-[#d8edfb] pt-24 sm:pt-28 lg:pt-32"
+    >
+      <motion.div style={{ scale: heroScale, y: heroY }} className="absolute inset-0">
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,#dff4ff_0%,#eef8ff_38%,#e9f0ee_64%,#d8dde0_100%)]" />
+        <motion.img
+          src={truckImageSrc}
+          alt="توصيل سريع لمياه ريق في الرياض"
+          className="absolute inset-0 h-full w-full object-cover object-[62%_center] opacity-95 sm:object-center"
+          initial={prefersReducedMotion ? false : { x: 90, opacity: 0.86, scale: 1.03 }}
+          animate={prefersReducedMotion ? { opacity: 1 } : { x: 0, opacity: 1, scale: [1, 1.008, 1] }}
+          transition={prefersReducedMotion ? { duration: 0.2 } : {
+            x: { duration: 1.05, ease: [0.22, 1, 0.36, 1] },
+            opacity: { duration: 0.7 },
+            scale: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
+          }}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.94)_0%,rgba(255,255,255,0.78)_37%,rgba(255,255,255,0.22)_66%,rgba(255,255,255,0)_100%)] rtl:bg-[linear-gradient(270deg,rgba(255,255,255,0.94)_0%,rgba(255,255,255,0.78)_37%,rgba(255,255,255,0.22)_66%,rgba(255,255,255,0)_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-36 bg-[linear-gradient(0deg,rgba(15,23,42,0.24),rgba(15,23,42,0))]" />
+      </motion.div>
+
+      {!prefersReducedMotion ? (
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-[9%] right-[8%] hidden h-24 w-[48rem] max-w-[52vw] lg:block"
+          initial={{ opacity: 0, x: 80 }}
+          animate={{ opacity: [0, 0.34, 0.18], x: [80, 0, -20] }}
+          transition={{ duration: 1.2, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {[0, 1, 2].map((line) => (
+            <motion.span
+              key={line}
+              className="absolute h-1 rounded-full bg-white/70 shadow-[0_0_18px_rgba(255,255,255,0.45)]"
+              style={{
+                bottom: `${line * 1.65 + 1.2}rem`,
+                right: `${line * 5.5}rem`,
+                width: `${12 + line * 7}rem`,
+              }}
+              animate={{ x: [0, -26, 0], opacity: [0.12, 0.5, 0.12] }}
+              transition={{ duration: 2.8 + line * 0.35, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          ))}
+        </motion.div>
+      ) : null}
+
+      <motion.div
+        style={{ scale: heroScale, y: heroY }}
+        className={`relative z-10 w-full px-4 pb-24 pt-8 sm:px-6 lg:px-12 xl:px-20 ${directionClassName}`}
+      >
+        <div className="grid min-h-[calc(100vh-7rem)] items-center gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+          <motion.div
+            initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 34 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: prefersReducedMotion ? 0.2 : 0.72, ease: [0.22, 1, 0.36, 1] }}
+            className="max-w-2xl"
+          >
+            <div className="mb-8 sm:mb-9">
+              <h1 className="text-5xl font-black leading-none text-[#063f7d] drop-shadow-[0_8px_20px_rgba(255,255,255,0.62)] sm:text-6xl md:text-7xl lg:text-8xl">
+                توصيل سريع
+              </h1>
+              <div className="mt-4 inline-flex rounded-[0.9rem] bg-[#064c99] px-6 py-3 text-3xl font-black leading-tight text-white shadow-[0_18px_40px_-24px_rgba(6,76,153,0.8)] sm:mt-5 sm:px-8 sm:py-4 sm:text-4xl md:text-5xl">
+                لكل أحياء الرياض
+              </div>
+            </div>
+
+            <div className="grid max-w-2xl grid-cols-3 gap-3 sm:gap-5">
+              {featureItems.map((item, index) => (
+                <motion.div
+                  key={item.title}
+                  initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: prefersReducedMotion ? 0 : 0.28 + index * 0.1, duration: 0.46 }}
+                  className="flex min-h-[8.25rem] flex-col items-center justify-start border-[#064c99]/22 px-1 text-center text-[#063f7d] sm:min-h-[9rem] sm:px-3 [&:not(:last-child)]:border-l"
+                >
+                  <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#064c99] bg-white/42 shadow-[0_14px_34px_-26px_rgba(6,76,153,0.45)] backdrop-blur-sm sm:h-[4.7rem] sm:w-[4.7rem]">
+                    <item.icon className="h-8 w-8 sm:h-10 sm:w-10" strokeWidth={2.2} />
+                  </div>
+                  <p className="text-base font-black leading-7 sm:text-xl">{item.title}</p>
+                  <p className="text-sm font-extrabold leading-6 sm:text-lg">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div
+              initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: prefersReducedMotion ? 0 : 0.58, duration: 0.5 }}
+              className="mt-8 flex flex-wrap gap-3 sm:mt-10"
+            >
+              <Link
+                to="/products"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#064c99] px-6 py-3 text-base font-black text-white shadow-[0_18px_38px_-22px_rgba(6,76,153,0.85)] transition hover:-translate-y-0.5 hover:bg-[#043e7d] sm:px-7 sm:py-3.5 sm:text-lg"
+              >
+                <span>ابدأ الطلب الآن</span>
+                <ArrowRight className="h-5 w-5 rotate-180" />
+              </Link>
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#064c99]/30 bg-white/72 px-6 py-3 text-base font-black text-[#064c99] shadow-[0_18px_38px_-28px_rgba(15,23,42,0.38)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white sm:px-7 sm:py-3.5 sm:text-lg"
+              >
+                <Truck className="h-5 w-5" />
+                <span>اتصل بنا للتوصيل</span>
+              </Link>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            aria-hidden="true"
+            className="relative hidden min-h-[32rem] lg:block"
+            initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: 96, y: 8 }}
+            animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, x: 0, y: [0, -5, 0] }}
+            transition={prefersReducedMotion ? { duration: 0.2 } : {
+              opacity: { duration: 0.65, delay: 0.18 },
+              x: { duration: 1.08, delay: 0.08, ease: [0.22, 1, 0.36, 1] },
+              y: { duration: 4.8, repeat: Infinity, ease: 'easeInOut' },
+            }}
+          >
+            <motion.div
+              className="absolute bottom-[8%] right-[8%] h-10 w-[62%] rounded-full bg-slate-950/20 blur-xl"
+              animate={prefersReducedMotion ? undefined : { scaleX: [1, 0.94, 1], opacity: [0.24, 0.16, 0.24] }}
+              transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          </motion.div>
+        </div>
+      </motion.div>
+    </motion.section>
+  );
+}
+
+const fastDeliveryCopy = {
+  ar: {
+    headline: '\u062a\u0648\u0635\u064a\u0644 \u0633\u0631\u064a\u0639',
+    pill: '\u0644\u0643\u0644 \u0623\u062d\u064a\u0627\u0621 \u0627\u0644\u0631\u064a\u0627\u0636',
+    alt: '\u062a\u0648\u0635\u064a\u0644 \u0633\u0631\u064a\u0639 \u0644\u0645\u064a\u0627\u0647 \u0631\u064a\u0642 \u0641\u064a \u0627\u0644\u0631\u064a\u0627\u0636',
+    speedTitle: '\u0633\u0631\u0639\u0629',
+    speedDesc: '\u0641\u064a \u0627\u0644\u062a\u0648\u0635\u064a\u0644',
+    coverageTitle: '\u062a\u063a\u0637\u064a\u0629 \u0634\u0627\u0645\u0644\u0629',
+    coverageDesc: '\u0644\u0643\u0644 \u0627\u0644\u0623\u062d\u064a\u0627\u0621',
+    scheduleTitle: '\u0637\u0644\u0628\u0627\u062a \u064a\u0648\u0645\u064a\u0629',
+    scheduleDesc: '\u0648\u0645\u062c\u062f\u0648\u0644\u0629',
+  },
+  en: {
+    headline: 'Fast Delivery',
+    pill: 'Across Riyadh Neighborhoods',
+    alt: 'Fast delivery for Riq water across Riyadh',
+    speedTitle: 'Fast',
+    speedDesc: 'Delivery',
+    coverageTitle: 'Full Coverage',
+    coverageDesc: 'All neighborhoods',
+    scheduleTitle: 'Daily Orders',
+    scheduleDesc: 'Scheduled',
+  },
+};
+
+function ExactFastDeliveryHero({
+  heroRef,
+  heroOpacity,
+  heroScale,
+  heroY,
+  isRTL,
+}: {
+  heroRef: React.RefObject<HTMLDivElement | null>;
+  heroOpacity: MotionValue<number>;
+  heroScale: MotionValue<number>;
+  heroY: MotionValue<number>;
+  isRTL: boolean;
+}) {
+  const prefersReducedMotion = useReducedMotion();
+  const copy = isRTL ? fastDeliveryCopy.ar : fastDeliveryCopy.en;
+  const featureItems = [
+    { icon: CalendarCheck, title: copy.scheduleTitle, desc: copy.scheduleDesc },
+    { icon: MapPin, title: copy.coverageTitle, desc: copy.coverageDesc },
+    { icon: Clock, title: copy.speedTitle, desc: copy.speedDesc },
+  ];
+
+  return (
+    <motion.section
+      ref={heroRef}
+      style={{ opacity: heroOpacity }}
+      className="relative isolate min-h-[100svh] overflow-hidden bg-[#dff4ff]"
+      dir={isRTL ? 'rtl' : 'ltr'}
+    >
+      <motion.div style={{ scale: heroScale, y: heroY }} className="absolute inset-0">
+        <motion.img
+          src="/images/fast-delivery-riyadh-truck-left.png"
+          alt={copy.alt}
+          className="absolute inset-0 h-full w-full object-cover object-[31%_center] md:object-[37%_center]"
+          initial={prefersReducedMotion ? false : { x: -86, opacity: 0.88, scale: 1.018 }}
+          animate={prefersReducedMotion ? { opacity: 1 } : { x: 0, opacity: 1, scale: [1, 1.004, 1] }}
+          transition={prefersReducedMotion ? { duration: 0.2 } : {
+            x: { duration: 0.95, ease: [0.22, 1, 0.36, 1] },
+            opacity: { duration: 0.7 },
+            scale: { duration: 5.6, repeat: Infinity, ease: 'easeInOut' },
+          }}
+        />
+        <div className="absolute inset-y-0 right-0 hidden w-[57%] bg-[linear-gradient(270deg,rgba(255,255,255,0.46),rgba(255,255,255,0.2)_58%,rgba(255,255,255,0))] md:block" />
+        <div className="absolute inset-x-0 top-0 h-[42%] bg-[linear-gradient(180deg,rgba(255,255,255,0.7),rgba(255,255,255,0))] md:hidden" />
+        <div className="absolute inset-x-0 bottom-0 h-[26%] bg-[linear-gradient(0deg,rgba(5,20,35,0.34),rgba(5,20,35,0))] md:hidden" />
+      </motion.div>
+
+      {!prefersReducedMotion ? (
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-[10%] left-[8%] hidden h-24 w-[44rem] max-w-[48vw] lg:block"
+          initial={{ opacity: 0, x: -70 }}
+          animate={{ opacity: [0, 0.22, 0.12], x: [-70, 0, 16] }}
+          transition={{ duration: 1.2, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {[0, 1, 2].map((line) => (
+            <motion.span
+              key={line}
+              className="absolute h-1 rounded-full bg-white/70 shadow-[0_0_18px_rgba(255,255,255,0.45)]"
+              style={{
+                bottom: `${line * 1.65 + 1.2}rem`,
+                left: `${line * 5.5}rem`,
+                width: `${12 + line * 7}rem`,
+              }}
+              animate={{ x: [0, 22, 0], opacity: [0.12, 0.42, 0.12] }}
+              transition={{ duration: 2.8 + line * 0.35, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          ))}
+        </motion.div>
+      ) : null}
+
+      <motion.div style={{ scale: heroScale, y: heroY }} className="relative z-10 min-h-screen">
+        <motion.div
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: prefersReducedMotion ? 0.2 : 0.62, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute right-[5.2%] top-[7.75rem] hidden w-[min(43rem,47vw)] text-center md:block xl:top-[8rem]"
+        >
+          <div className="mb-8 xl:mb-9">
+            <h1 className={`${isRTL ? 'text-[clamp(3.75rem,6.15vw,7rem)]' : 'text-[clamp(3.35rem,5vw,5.75rem)]'} whitespace-nowrap font-black leading-[1.02] text-[#06478c] drop-shadow-[0_7px_16px_rgba(255,255,255,0.62)]`}>
+              {copy.headline}
+            </h1>
+            <div className={`${isRTL ? 'text-[clamp(2.25rem,3.65vw,4rem)]' : 'text-[clamp(1.65rem,2.45vw,2.95rem)]'} mx-auto mt-3 inline-flex w-[94%] items-center justify-center rounded-[0.72rem] bg-[#064c99] px-7 py-3.5 font-black leading-[1.12] text-white shadow-[0_16px_34px_-22px_rgba(6,76,153,0.8)] xl:py-4`}>
+              {copy.pill}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-5 xl:gap-7">
+            {featureItems.map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: prefersReducedMotion ? 0 : 0.28 + index * 0.1, duration: 0.46 }}
+                className="flex min-h-[11.4rem] flex-col items-center justify-start border-[#064c99]/24 px-2 text-center text-[#06478c] [&:not(:last-child)]:border-l"
+              >
+                <div className="mb-4 flex h-[5.6rem] w-[5.6rem] items-center justify-center rounded-full border-[3px] border-[#064c99] bg-white/20 shadow-[0_12px_28px_-24px_rgba(6,76,153,0.42)]">
+                  <item.icon className="h-12 w-12" strokeWidth={2.35} />
+                </div>
+                <p className={`${isRTL ? 'text-[1.45rem]' : 'text-[1.22rem]'} font-black leading-[1.38]`}>{item.title}</p>
+                <p className={`${isRTL ? 'text-[1.35rem]' : 'text-[1.05rem]'} font-extrabold leading-[1.42]`}>{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: prefersReducedMotion ? 0.2 : 0.58, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-x-4 top-[6.15rem] rounded-[1.35rem] border border-white/70 bg-white/72 p-3 text-center shadow-[0_18px_50px_-34px_rgba(15,23,42,0.42)] backdrop-blur-sm md:hidden"
+        >
+          <h1 className={`${isRTL ? 'text-4xl' : 'text-3xl'} font-black leading-tight text-[#06478c]`}>{copy.headline}</h1>
+          <div className={`${isRTL ? 'text-xl' : 'text-base'} mt-2 rounded-xl bg-[#064c99] px-3 py-2 font-black leading-tight text-white`}>{copy.pill}</div>
+          <div className="mt-3 grid grid-cols-3 gap-1.5 text-[#06478c]">
+            {featureItems.map((item) => (
+              <div key={item.title} className="flex flex-col items-center gap-1 text-center">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#064c99] bg-white/35">
+                  <item.icon className="h-5 w-5" strokeWidth={2.35} />
+                </div>
+                <p className="text-[0.68rem] font-black leading-4">{item.title}<br />{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </motion.div>
+    </motion.section>
+  );
+}
+
+void FastDeliveryHero;
+
 export default function Home() {
   const { i18n } = useTranslation();
   const heroRef = useRef<HTMLDivElement>(null);
   const isRTL = i18n.language === 'ar';
   const { totalItems } = useCart();
-  const discountedProducts = products.filter(isDiscountedProduct);
-  const featuredProducts = discountedProducts.slice(0, 8);
-  const discountedCount = discountedProducts.length;
+  const discountedCount = products.filter(isDiscountedProduct).length;
   const brandCount = new Set(products.map((product) => product.brand)).size;
 
   const { scrollYProgress } = useScroll({
@@ -179,6 +483,14 @@ export default function Home() {
 
   return (
     <main className="overflow-x-hidden">
+      <ExactFastDeliveryHero
+        heroRef={heroRef}
+        heroOpacity={heroOpacity}
+        heroScale={heroScale}
+        heroY={heroY}
+        isRTL={isRTL}
+      />
+      {false ? (
       <motion.section
         ref={heroRef}
         style={{ opacity: heroOpacity }}
@@ -425,110 +737,7 @@ export default function Home() {
           </motion.div>
         </motion.div>
       </motion.section>
-
-      <section className="bg-white py-12 sm:py-14">
-        <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-20">
-          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700 ring-1 ring-emerald-100">
-                <Tag className="h-4 w-4" />
-                <span>{isRTL ? 'عروض مختارة' : 'Selected Offers'}</span>
-              </span>
-              <h2 className="mt-4 text-2xl font-black text-slate-900 sm:text-3xl">
-                {isRTL ? 'عروض مميزة من منتجاتنا' : 'Featured deals from our store'}
-              </h2>
-              <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-500 sm:text-base">
-                {isRTL
-                  ? 'عينة سريعة من المنتجات المخفضة فقط، ولو عجبتك كمل على صفحة العروض.'
-                  : 'A quick sample of discounted products only, with the full offers page one tap away.'}
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">
-                  {featuredProducts.length} {isRTL ? 'عروض ظاهرة' : 'shown offers'}
-                </span>
-                <span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">
-                  {brandCount} {isRTL ? 'علامة' : 'brands'}
-                </span>
-                <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">
-                  {discountedCount} {isRTL ? 'إجمالي العروض' : 'total deals'}
-                </span>
-              </div>
-            </div>
-
-            <Link
-              to="/offers"
-              className="inline-flex w-fit items-center gap-2 self-start rounded-full bg-emerald-600 px-4 py-2.5 text-sm font-black text-white shadow-[0_16px_36px_-24px_rgba(5,150,105,0.75)] transition hover:bg-emerald-700 sm:self-end"
-            >
-              <span>{isRTL ? 'عرض كل العروض' : 'Browse all offers'}</span>
-              <ArrowRight className={`h-4 w-4 ${isRTL ? 'rotate-180' : ''}`} />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">
-            {featuredProducts.map((product, index) => (
-              <motion.article
-                key={product.id}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.04 }}
-                className="group overflow-hidden rounded-[1.35rem] border border-slate-200 bg-slate-50 p-2.5 shadow-[0_18px_55px_-34px_rgba(15,23,42,0.22)] transition-all hover:-translate-y-1 hover:bg-white hover:shadow-[0_26px_70px_-34px_rgba(14,165,233,0.2)] sm:rounded-[2rem] sm:p-4"
-              >
-                <Link to={`/product/${product.id}`} className="block">
-                  <ProductImage
-                    product={product}
-                    isRTL={isRTL}
-                    size="card"
-                    className="h-32 sm:h-56"
-                    imageClassName="group-hover:scale-[1.03]"
-                  />
-                </Link>
-
-                <div className="mt-3 flex flex-wrap items-center gap-1.5 sm:mt-4 sm:gap-2">
-                  <span className="rounded-full bg-[#153b66]/10 px-2 py-1 text-[0.65rem] font-semibold text-[#153b66] sm:px-3 sm:py-1.5 sm:text-xs">
-                    {isRTL ? product.brandAr : product.brand}
-                  </span>
-                  <span className="rounded-full bg-white px-2 py-1 text-[0.65rem] font-semibold text-slate-600 ring-1 ring-slate-200 sm:px-3 sm:py-1.5 sm:text-xs">
-                    {product.size}
-                  </span>
-                  <span className="rounded-full bg-white px-2 py-1 text-[0.65rem] font-semibold text-slate-600 ring-1 ring-slate-200 sm:px-3 sm:py-1.5 sm:text-xs">
-                    x{product.quantity}
-                  </span>
-                  {product.pricingMode === 'quote' ? (
-                    <span className="rounded-full bg-amber-50 px-2 py-1 text-[0.65rem] font-semibold text-amber-700 sm:px-3 sm:py-1.5 sm:text-xs">
-                      {isRTL ? 'اسأل عن السعر' : 'Ask for price'}
-                    </span>
-                  ) : null}
-                </div>
-
-                <Link to={`/product/${product.id}`}>
-                  <h3 className="mt-3 line-clamp-2 min-h-[2.5rem] text-sm font-black leading-tight text-slate-900 transition-colors hover:text-[#153b66] sm:mt-4 sm:min-h-0 sm:text-xl">
-                    {isRTL ? product.name.ar : product.name.en}
-                  </h3>
-                </Link>
-                <div className="mt-3 flex flex-wrap items-end gap-1.5 sm:mt-4 sm:gap-3">
-                  {hasFixedPrice(product) ? (
-                    <>
-                      <span className="text-base font-black text-[#153b66] sm:text-2xl">
-                        {formatSarPrice(product.price, isRTL)}
-                      </span>
-                      {product.originalPrice ? (
-                        <span className="text-xs text-slate-400 line-through sm:text-sm">
-                          {formatSarPrice(product.originalPrice, isRTL)}
-                        </span>
-                      ) : null}
-                    </>
-                  ) : (
-                    <span className="text-sm font-black text-amber-700 sm:text-lg">
-                      {isRTL ? 'اسأل عن السعر' : 'Ask for price'}
-                    </span>
-                  )}
-                </div>
-              </motion.article>
-            ))}
-          </div>
-        </div>
-      </section>
+      ) : null}
 
       <section className="bg-[linear-gradient(180deg,#ffffff_0%,#eef6fb_100%)] py-12 sm:py-14">
         <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-20">
