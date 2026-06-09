@@ -231,6 +231,23 @@ export function buildOrderWhatsAppLink(payload: OrderEmailPayload) {
   return `${WHATSAPP_LINK}?text=${encodeURIComponent(lines.join('\n'))}`;
 }
 
+export function openWhatsAppLink(url: string) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  const popup = window.open('', '_blank');
+
+  if (popup) {
+    popup.opener = null;
+    popup.location.href = url;
+    popup.focus();
+    return;
+  }
+
+  window.location.assign(url);
+}
+
 export function sendContactEmail(payload: ContactEmailPayload) {
   const fallback = payload.isRTL ? 'غير متوفر' : 'Not provided';
   const resolvedPhone = withFallback(payload.phone, fallback);

@@ -15,7 +15,7 @@ import {
   MOYASAR_STYLES_URL,
   getMoyasarPublicKey,
 } from '../lib/payments';
-import { BANK_TRANSFER_DETAILS, buildOrderWhatsAppLink } from '../lib/contact';
+import { BANK_TRANSFER_DETAILS, buildOrderWhatsAppLink, openWhatsAppLink } from '../lib/contact';
 import { persistCompletedOrder } from '../services/webAccount';
 import { toAbsoluteUrl, withBasePath } from '../lib/site';
 import { formatSarPrice } from '../lib/utils';
@@ -500,7 +500,7 @@ export default function Checkout() {
       return;
     }
 
-    window.open(buildCurrentOrderWhatsAppLink(), '_blank', 'noopener,noreferrer');
+    openWhatsAppLink(buildCurrentOrderWhatsAppLink());
   };
 
   if (isSuccess) {
