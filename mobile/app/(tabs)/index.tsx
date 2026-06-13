@@ -312,8 +312,8 @@ export default function HomeScreen() {
             title={isRTL ? 'كيف تطلب من التطبيق' : 'How to order in the app'}
             subtitle={
               isRTL
-                ? 'ثلاث خطوات قصيرة من التصفح حتى الدفع.'
-                : 'A short three-step path from browsing to payment.'
+                ? '\u062b\u0644\u0627\u062b \u062e\u0637\u0648\u0627\u062a \u0642\u0635\u064a\u0631\u0629 \u0645\u0646 \u0627\u0644\u062a\u0635\u0641\u062d \u062d\u062a\u0649 \u0627\u0644\u062a\u062d\u0648\u064a\u0644.'
+                : 'A short three-step path from browsing to bank transfer.'
             }
             align={isRTL ? 'right' : 'left'}
           />
@@ -446,8 +446,8 @@ export default function HomeScreen() {
           </Text>
           <Text style={[styles.bottomBody, isRTL && styles.alignRight]}>
             {isRTL
-              ? 'تصفح المنتجات، راجع العروض، اقرأ عن المتجر، تواصل بسرعة، وأكمل الطلب بنفس جسر الدفع الحالي.'
-              : 'Browse products, review offers, learn about the store, reach support quickly, and finish the order through the existing payment bridge.'}
+              ? '\u062a\u0635\u0641\u062d \u0627\u0644\u0645\u0646\u062a\u062c\u0627\u062a\u060c \u0631\u0627\u062c\u0639 \u0627\u0644\u0639\u0631\u0648\u0636\u060c \u0627\u0642\u0631\u0623 \u0639\u0646 \u0627\u0644\u0645\u062a\u062c\u0631\u060c \u062a\u0648\u0627\u0635\u0644 \u0628\u0633\u0631\u0639\u0629\u060c \u0648\u0623\u0643\u0645\u0644 \u0627\u0644\u0637\u0644\u0628 \u0628\u062a\u062d\u0648\u064a\u0644 \u0628\u0646\u0643\u064a \u064a\u062f\u0648\u064a.'
+              : 'Browse products, review offers, learn about the store, reach support quickly, and finish the order with manual bank transfer.'}
           </Text>
           <View style={[styles.heroActions, isRTL && styles.heroActionsRtl]}>
             <ActionButton

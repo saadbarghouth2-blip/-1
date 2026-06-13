@@ -75,9 +75,9 @@ const resources = {
       checkout: {
         title: 'بيانات الطلب',
         subtitle: 'أدخل البيانات الأساسية وحدد العنوان قبل الدفع.',
-        paymentTitle: 'الدفع عبر صفحة الويب',
-        paymentSubtitle: 'سيتم فتح بوابة الدفع الحالية داخل WebView آمن.',
-        resultSuccess: 'تم الدفع بنجاح',
+        paymentTitle: '\u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0627\u0644\u0628\u0646\u0643\u064a \u0639\u0628\u0631 \u0635\u0641\u062d\u0629 \u0627\u0644\u0648\u064a\u0628',
+        paymentSubtitle: '\u0633\u064a\u062a\u0645 \u0641\u062a\u062d \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0627\u0644\u0628\u0646\u0643\u064a \u0648\u062a\u0623\u0643\u064a\u062f \u0627\u0644\u0637\u0644\u0628 \u064a\u062f\u0648\u064a\u064b\u0627 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628.',
+        resultSuccess: '\u062a\u0645 \u062a\u0623\u0643\u064a\u062f \u0627\u0644\u0637\u0644\u0628',
         resultCancelled: 'تم إلغاء الدفع',
         resultError: 'تعذر إكمال الدفع',
       },
@@ -159,8 +159,8 @@ const resources = {
       checkout: {
         title: 'Checkout details',
         subtitle: 'Fill in the basics and pin the address before payment.',
-        paymentTitle: 'Payment via the web bridge',
-        paymentSubtitle: 'The current checkout flow opens inside a secure WebView.',
+        paymentTitle: 'Bank transfer via the web bridge',
+        paymentSubtitle: 'Bank transfer details and manual WhatsApp confirmation open inside the WebView.',
         resultSuccess: 'Payment completed successfully',
         resultCancelled: 'Payment was cancelled',
         resultError: 'Payment could not be completed',

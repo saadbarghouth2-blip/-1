@@ -3,7 +3,7 @@ import { Alert, ScrollView, StyleSheet, Text, TextInput, View } from 'react-nati
 import MapView, { Marker } from 'react-native-maps';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { formatSarPrice } from '@riq/shared';
+import { BANK_TRANSFER_DETAILS, formatSarPrice } from '@riq/shared';
 import { ActionButton } from '../../src/components/ActionButton';
 import { LanguageToggle } from '../../src/components/LanguageToggle';
 import { PageHeader } from '../../src/components/PageHeader';
@@ -397,6 +397,32 @@ export default function CheckoutScreen() {
             onPress={continueToPayment}
           />
         </View>
+
+        <View style={styles.card}>
+          <Text style={[styles.bankTitle, isRTL && styles.alignRight]}>
+            {isRTL ? 'بيانات التحويل البنكي' : 'Bank transfer details'}
+          </Text>
+          <Text style={[styles.bankSubtitle, isRTL && styles.alignRight]}>
+            {isRTL ? BANK_TRANSFER_DETAILS.bankNameAr : BANK_TRANSFER_DETAILS.bankNameEn}
+          </Text>
+          <BankLine
+            label={isRTL ? 'اسم صاحب الحساب' : 'Account holder'}
+            value={isRTL ? BANK_TRANSFER_DETAILS.accountNameAr : BANK_TRANSFER_DETAILS.accountNameEn}
+            isRTL={isRTL}
+          />
+          <BankLine
+            label={isRTL ? 'رقم الحساب' : 'Account number'}
+            value={BANK_TRANSFER_DETAILS.accountNumber}
+            isRTL={isRTL}
+            ltr
+          />
+          <BankLine label="IBAN" value={BANK_TRANSFER_DETAILS.iban} isRTL={isRTL} ltr />
+          <Text style={[styles.bankNote, isRTL && styles.alignRight]}>
+            {isRTL
+              ? 'بعد التحويل، تواصل معنا عبر واتساب لتأكيد الطلب وإرفاق إيصال التحويل.'
+              : 'After transferring, contact us on WhatsApp to confirm the order and attach the transfer receipt.'}
+          </Text>
+        </View>
       </ScrollView>
     </View>
   );
@@ -454,6 +480,25 @@ function Row({
     <View style={[styles.row, isRTL && styles.rowRtl]}>
       <Text style={[styles.rowLabel, strong && styles.strongText]}>{label}</Text>
       <Text style={[styles.rowValue, strong && styles.strongValue]}>{value}</Text>
+    </View>
+  );
+}
+
+function BankLine({
+  label,
+  value,
+  isRTL,
+  ltr,
+}: {
+  label: string;
+  value: string;
+  isRTL: boolean;
+  ltr?: boolean;
+}) {
+  return (
+    <View style={styles.bankLine}>
+      <Text style={[styles.bankLabel, isRTL && styles.alignRight]}>{label}</Text>
+      <Text style={[styles.bankValue, isRTL && styles.alignRight, ltr && styles.ltr]}>{value}</Text>
     </View>
   );
 }
@@ -562,6 +607,40 @@ const styles = StyleSheet.create({
   strongValue: {
     color: theme.colors.accent,
     fontSize: 16,
+  },
+  bankTitle: {
+    color: theme.colors.ink,
+    fontSize: 18,
+    fontWeight: '800',
+  },
+  bankSubtitle: {
+    color: theme.colors.accent,
+    fontWeight: '800',
+  },
+  bankLine: {
+    backgroundColor: theme.colors.sand,
+    borderRadius: 18,
+    padding: 14,
+    gap: 6,
+  },
+  bankLabel: {
+    color: theme.colors.muted,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  bankValue: {
+    color: theme.colors.text,
+    fontWeight: '800',
+    lineHeight: 22,
+  },
+  bankNote: {
+    color: theme.colors.muted,
+    lineHeight: 22,
+    fontWeight: '600',
+  },
+  ltr: {
+    textAlign: 'left',
+    writingDirection: 'ltr',
   },
   errorText: {
     color: theme.colors.danger,

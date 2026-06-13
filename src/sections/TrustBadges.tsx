@@ -53,10 +53,10 @@ const badges = [
   },
   {
     icon: CreditCard,
-    titleAr: 'دفع آمن',
-    titleEn: 'Secure Payment',
-    descAr: 'جميع طرق الدفع مؤمنة ومشفرة',
-    descEn: 'All payment methods secured and encrypted',
+    titleAr: '\u062a\u062d\u0648\u064a\u0644 \u0628\u0646\u0643\u064a',
+    titleEn: 'Bank Transfer',
+    descAr: '\u062a\u0623\u0643\u064a\u062f \u064a\u062f\u0648\u064a \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628 \u0628\u062f\u0648\u0646 \u0631\u0633\u0648\u0645 \u0628\u0648\u0627\u0628\u0629 \u062f\u0641\u0639',
+    descEn: 'Manual WhatsApp confirmation with no payment gateway fees',
   },
   {
     icon: Timer,

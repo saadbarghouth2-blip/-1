@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+﻿import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
@@ -63,21 +63,21 @@ export default function Footer() {
   const isRTL = i18n.language === 'ar';
 
   const footerQuickLinks = [
-    { label: isRTL ? 'الرئيسية' : 'Home', href: '/' },
-    { label: isRTL ? 'المنتجات' : 'Products', href: '/products' },
-    { label: isRTL ? 'العلامات التجارية' : 'Brands', href: '/brands' },
-    { label: isRTL ? 'العروض' : 'Offers', href: '/offers' },
-    { label: isRTL ? 'من نحن' : 'About', href: '/about' },
-    { label: isRTL ? 'كيف أطلب؟' : 'How to Order?', href: '/products#how-to-order' },
+    { label: isRTL ? '\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629' : 'Home', href: '/' },
+    { label: isRTL ? '\u0627\u0644\u0645\u0646\u062a\u062c\u0627\u062a' : 'Products', href: '/products' },
+    { label: isRTL ? '\u0627\u0644\u0639\u0644\u0627\u0645\u0627\u062a' : 'Brands', href: '/brands' },
+    { label: isRTL ? '\u0627\u0644\u0639\u0631\u0648\u0636' : 'Offers', href: '/offers' },
+    { label: isRTL ? '\u0645\u0646 \u0646\u062d\u0646' : 'About', href: '/about' },
+    { label: isRTL ? '\u0643\u064a\u0641 \u0623\u0637\u0644\u0628\u061f' : 'How to Order?', href: '/products#how-to-order' },
   ];
 
   const footerServiceLinks = [
-    { label: isRTL ? 'لماذا تثق فينا؟' : 'Why Trust Us?', href: '/about#why-trust-us' },
-    { label: isRTL ? 'لماذا تختار متجر ريق؟' : 'Why Choose Riq?', href: '/about#why-choose-riq' },
-    { label: isRTL ? 'كيف نضمن لك أنقى مياه؟' : 'How We Ensure Pure Water?', href: '/about#water-process' },
-    { label: isRTL ? 'اعرف الفرق بين أنواع المياه' : 'Water Types Guide', href: '/products#water-comparison' },
-    { label: isRTL ? 'التوصيل' : 'Delivery Coverage', href: '/contact#delivery-coverage' },
-    { label: isRTL ? 'الأسئلة الشائعة' : 'FAQ', href: '/contact#faq' },
+    { label: isRTL ? '\u0644\u0645\u0627\u0630\u0627 \u062a\u062b\u0642 \u0641\u064a\u0646\u0627\u061f' : 'Why Trust Us?', href: '/about#why-trust-us' },
+    { label: isRTL ? '\u0644\u0645\u0627\u0630\u0627 \u062a\u062e\u062a\u0627\u0631 \u0645\u062a\u062c\u0631 \u0631\u064a\u0642\u061f' : 'Why Choose Riq?', href: '/about#why-choose-riq' },
+    { label: isRTL ? '\u0643\u064a\u0641 \u0646\u0636\u0645\u0646 \u0644\u0643 \u0623\u0646\u0642\u0649 \u0645\u064a\u0627\u0647\u061f' : 'How We Ensure Pure Water?', href: '/about#water-process' },
+    { label: isRTL ? '\u0627\u0639\u0631\u0641 \u0627\u0644\u0641\u0631\u0642 \u0628\u064a\u0646 \u0623\u0646\u0648\u0627\u0639 \u0627\u0644\u0645\u064a\u0627\u0647' : 'Water Types Guide', href: '/products#water-comparison' },
+    { label: isRTL ? '\u0627\u0644\u062a\u0648\u0635\u064a\u0644' : 'Delivery Coverage', href: '/contact#delivery-coverage' },
+    { label: isRTL ? '\u0627\u0644\u0623\u0633\u0626\u0644\u0629 \u0627\u0644\u0634\u0627\u0626\u0639\u0629' : 'FAQ', href: '/contact#faq' },
   ];
 
   const socialLinks = [
@@ -88,36 +88,16 @@ export default function Footer() {
     { icon: Music2, href: TIKTOK_LINK, label: 'TikTok' },
   ];
 
-  const paymentMethods = [
-    {
-      name: 'Apple Pay',
-      src: '/images/payments/apple-pay.png',
-      frameClassName: 'h-10 min-w-[4.6rem] border-transparent bg-transparent px-0 shadow-none',
-      imageClassName: 'h-8 w-auto sm:h-[2.15rem]',
-    },
-    {
-      name: 'mada',
-      src: '/images/payments/mada.svg',
-      frameClassName: 'h-10 min-w-[4.75rem] border border-white/15 bg-white px-3 shadow-[0_10px_24px_rgba(15,23,42,0.18)]',
-      imageClassName: 'h-[0.95rem] w-auto sm:h-[1.1rem]',
-    },
-    {
-      name: 'Mastercard',
-      src: '/images/payments/mastercard.png',
-      frameClassName: 'h-10 min-w-[4rem] border border-white/15 bg-white px-2.5 shadow-[0_10px_24px_rgba(15,23,42,0.18)]',
-      imageClassName: 'h-[1.35rem] w-auto sm:h-[1.55rem]',
-    },
-    {
-      name: 'Visa',
-      src: '/images/payments/visa.png',
-      frameClassName: 'h-10 min-w-[4.25rem] border border-white/15 bg-white px-2.5 shadow-[0_10px_24px_rgba(15,23,42,0.18)]',
-      imageClassName: 'h-[0.95rem] w-auto sm:h-[1.08rem]',
-    },
-  ];
+  const paymentMethods: Array<{
+    name: string;
+    src: string;
+    frameClassName: string;
+    imageClassName: string;
+  }> = [];
 
   const officialDetails = [
     {
-      label: isRTL ? 'اسم الشركة' : 'Company Name',
+      label: isRTL ? '\u0627\u0633\u0645 \u0627\u0644\u0634\u0631\u0643\u0629' : 'Company Name',
       value: isRTL ? BUSINESS_LEGAL_NAME_AR : BUSINESS_LEGAL_NAME_EN,
       logo: <LogoMark scaleClassName="scale-[1.05]" />,
       accent: 'text-[#bae6fd]',
@@ -125,7 +105,7 @@ export default function Footer() {
         'flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-[1rem] bg-white/10 p-2 ring-1 ring-white/10 sm:h-16 sm:w-16',
     },
     {
-      label: isRTL ? 'الرقم الضريبي' : 'Tax Number',
+      label: isRTL ? '\u0627\u0644\u0631\u0642\u0645 \u0627\u0644\u0636\u0631\u064a\u0628\u064a' : 'Tax Number',
       value: BUSINESS_TAX_NUMBER,
       logo: <VatLogo />,
       accent: 'text-[#8ad8ff]',
@@ -133,12 +113,12 @@ export default function Footer() {
         'flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-[1rem] bg-white/10 p-1 ring-1 ring-white/10 sm:h-16 sm:w-16',
     },
     {
-      label: isRTL ? 'الرقم الوطني الموحد / السجل التجاري' : 'Unified National / Commercial No.',
+      label: isRTL ? '\u0627\u0644\u0631\u0642\u0645 \u0627\u0644\u0648\u0637\u0646\u064a \u0627\u0644\u0645\u0648\u062d\u062f' : 'Unified National No.',
       value: BUSINESS_COMMERCIAL_REGISTRATION,
       logo: (
         <OfficialImageLogo
           src="/images/ministry-of-commerce-logo.svg"
-          alt={isRTL ? 'وزارة التجارة' : 'Ministry of Commerce'}
+          alt={isRTL ? '\u0648\u0632\u0627\u0631\u0629 \u0627\u0644\u062a\u062c\u0627\u0631\u0629' : 'Ministry of Commerce'}
         />
       ),
       accent: 'text-[#7dd3fc]',
@@ -146,12 +126,12 @@ export default function Footer() {
         'flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-[1rem] bg-white p-2 ring-1 ring-white/10 sm:h-16 sm:w-16',
     },
     {
-      label: isRTL ? 'رقم السجل / الرخصة' : 'CR / License Number',
+      label: isRTL ? '\u0631\u0642\u0645 \u0627\u0644\u0633\u062c\u0644 / \u0627\u0644\u0631\u062e\u0635\u0629' : 'CR / License Number',
       value: BUSINESS_LICENSE_NUMBER,
       logo: (
         <OfficialImageLogo
           src="/images/images.png"
-          alt={isRTL ? 'المركز السعودي للأعمال' : 'Saudi Business Center'}
+          alt={isRTL ? '\u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u0633\u0639\u0648\u062f\u064a \u0644\u0644\u0623\u0639\u0645\u0627\u0644' : 'Saudi Business Center'}
         />
       ),
       accent: 'text-[#5eead4]',
@@ -159,12 +139,12 @@ export default function Footer() {
         'flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-[1rem] bg-white p-0.5 ring-1 ring-white/10 sm:h-16 sm:w-16',
     },
     {
-      label: isRTL ? 'حالة السجل' : 'Registration Status',
+      label: isRTL ? '\u062d\u0627\u0644\u0629 \u0627\u0644\u0633\u062c\u0644' : 'Registration Status',
       value: isRTL ? BUSINESS_REGISTRATION_STATUS_AR : BUSINESS_REGISTRATION_STATUS_EN,
       logo: (
         <OfficialImageLogo
           src="/images/ministry-of-commerce-logo.svg"
-          alt={isRTL ? 'وزارة التجارة' : 'Ministry of Commerce'}
+          alt={isRTL ? '\u0648\u0632\u0627\u0631\u0629 \u0627\u0644\u062a\u062c\u0627\u0631\u0629' : 'Ministry of Commerce'}
         />
       ),
       accent: 'text-[#86efac]',
@@ -172,7 +152,6 @@ export default function Footer() {
         'flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-[1rem] bg-white p-2 ring-1 ring-white/10 sm:h-16 sm:w-16',
     },
   ];
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -239,7 +218,7 @@ export default function Footer() {
             </Link>
             <p className="mb-6 leading-relaxed text-white/70">
               {isRTL
-                ? 'وجهتك الأولى للمياه المعبأة عالية الجودة داخل الرياض. نوفر لك منتجات موثوقة من علامات محلية وعالمية مع تجربة طلب سهلة وسريعة.'
+                ? '\u0648\u062c\u0647\u062a\u0643 \u0627\u0644\u0623\u0648\u0644\u0649 \u0644\u0644\u0645\u064a\u0627\u0647 \u0627\u0644\u0645\u0639\u0628\u0623\u0629 \u0639\u0627\u0644\u064a\u0629 \u0627\u0644\u062c\u0648\u062f\u0629 \u062f\u0627\u062e\u0644 \u0627\u0644\u0631\u064a\u0627\u0636. \u0646\u0648\u0641\u0631 \u0644\u0643 \u0645\u0646\u062a\u062c\u0627\u062a \u0645\u0648\u062b\u0648\u0642\u0629 \u0645\u0646 \u0639\u0644\u0627\u0645\u0627\u062a \u0645\u062d\u0644\u064a\u0629 \u0648\u0639\u0627\u0644\u0645\u064a\u0629 \u0645\u0639 \u062a\u062c\u0631\u0628\u0629 \u0637\u0644\u0628 \u0633\u0647\u0644\u0629 \u0648\u0633\u0631\u064a\u0639\u0629.'
                 : 'Your first destination for high-quality bottled water in Riyadh, with trusted local and international brands and a smoother ordering experience.'}
             </p>
             <div className="flex gap-3">
@@ -263,7 +242,7 @@ export default function Footer() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <h3 className="mb-6 text-lg font-bold">{isRTL ? 'روابط سريعة' : 'Quick Links'}</h3>
+            <h3 className="mb-6 text-lg font-bold">{isRTL ? '\u0631\u0648\u0627\u0628\u0637 \u0633\u0631\u064a\u0639\u0629' : 'Quick Links'}</h3>
             <ul className="space-y-3">
               {footerQuickLinks.map((link) => (
                 <motion.li key={link.href} whileHover={{ x: isRTL ? -5 : 5 }}>
@@ -281,7 +260,7 @@ export default function Footer() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h3 className="mb-6 text-lg font-bold">{isRTL ? 'خدمة العملاء' : 'Customer Service'}</h3>
+            <h3 className="mb-6 text-lg font-bold">{isRTL ? '\u062e\u062f\u0645\u0629 \u0627\u0644\u0639\u0645\u0644\u0627\u0621' : 'Customer Service'}</h3>
             <ul className="space-y-3">
               {footerServiceLinks.map((link) => (
                 <motion.li key={link.href} whileHover={{ x: isRTL ? -5 : 5 }}>
@@ -299,14 +278,14 @@ export default function Footer() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <h3 className="mb-6 text-lg font-bold">{isRTL ? 'تواصل معنا' : 'Contact Us'}</h3>
+            <h3 className="mb-6 text-lg font-bold">{isRTL ? '\u062a\u0648\u0627\u0635\u0644 \u0645\u0639\u0646\u0627' : 'Contact Us'}</h3>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-white/10 sm:h-10 sm:w-10">
                   <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-white/70">{isRTL ? 'الهاتف' : 'Phone'}</p>
+                  <p className="text-sm text-white/70">{isRTL ? '\u0627\u0644\u0647\u0627\u062a\u0641' : 'Phone'}</p>
                   <a href={CONTACT_PHONE_HREF} className="font-medium transition-colors hover:text-[#8ad8ff]">
                     {CONTACT_PHONE_DISPLAY}
                   </a>
@@ -328,7 +307,7 @@ export default function Footer() {
                   <Mail className="h-4 w-4 sm:h-5 sm:w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-white/70">{isRTL ? 'البريد' : 'Email'}</p>
+                  <p className="text-sm text-white/70">{isRTL ? '\u0627\u0644\u0628\u0631\u064a\u062f' : 'Email'}</p>
                   <a href={CONTACT_EMAIL_HREF} className="break-all font-medium transition-colors hover:text-[#8ad8ff]">
                     {CONTACT_EMAIL}
                   </a>
@@ -339,8 +318,8 @@ export default function Footer() {
                   <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-white/70">{isRTL ? 'العنوان' : 'Address'}</p>
-                  <p className="font-medium">{isRTL ? 'توصيل متاح داخل الرياض' : 'Delivery available in Riyadh'}</p>
+                  <p className="text-sm text-white/70">{isRTL ? '\u0627\u0644\u0639\u0646\u0648\u0627\u0646' : 'Address'}</p>
+                  <p className="font-medium">{isRTL ? '\u0627\u0644\u062a\u0648\u0635\u064a\u0644 \u0645\u062a\u0627\u062d \u062f\u0627\u062e\u0644 \u0627\u0644\u0631\u064a\u0627\u0636' : 'Delivery available in Riyadh'}</p>
                 </div>
               </div>
             </div>
@@ -363,7 +342,7 @@ export default function Footer() {
         >
           <div className="mb-5">
             <h3 className="text-xl font-black text-white sm:text-2xl">
-              {isRTL ? 'البيانات الرسمية للمتجر' : 'Official Store Details'}
+              {isRTL ? '\u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0631\u0633\u0645\u064a\u0629 \u0644\u0644\u0645\u062a\u062c\u0631' : 'Official Store Details'}
             </h3>
           </div>
 
@@ -396,7 +375,7 @@ export default function Footer() {
               transition={{ delay: 0.6 }}
               className="text-center text-sm font-medium text-white/85 md:text-right"
             >
-              © 2024 {BRAND_NAME_LOCKUP}. {isRTL ? 'جميع الحقوق محفوظة' : 'All Rights Reserved'}.
+              © 2024 {BRAND_NAME_LOCKUP}. {isRTL ? '\u062c\u0645\u064a\u0639 \u0627\u0644\u062d\u0642\u0648\u0642 \u0645\u062d\u0641\u0648\u0638\u0629' : 'All Rights Reserved'}.
             </motion.p>
             <div dir="ltr" className="flex max-w-full items-center justify-center gap-2 overflow-x-auto pb-1 sm:gap-3 md:justify-start">
               {paymentMethods.map((paymentMethod) => (
@@ -436,3 +415,4 @@ export default function Footer() {
     </footer>
   );
 }
+

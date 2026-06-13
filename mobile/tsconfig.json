@@ -3,6 +3,10 @@
   "compilerOptions": {
     "strict": true,
     "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@riq/shared": ["../packages/shared/src/index.ts"]
+    },
     "types": ["jest", "jest-expo"]
   },
   "include": [

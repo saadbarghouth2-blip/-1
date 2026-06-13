@@ -41,7 +41,7 @@ export const storefrontContent = {
         id: 'speed',
         title: { ar: 'طلب أسرع', en: 'Faster ordering' },
         body: {
-          ar: 'من التصفح إلى السلة ثم الدفع بدون تشتيت أو خطوات إضافية.',
+          ar: '\u0645\u0646 \u0627\u0644\u062a\u0635\u0641\u062d \u0625\u0644\u0649 \u0627\u0644\u0633\u0644\u0629 \u062b\u0645 \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0627\u0644\u0628\u0646\u0643\u064a \u0628\u062f\u0648\u0646 \u062a\u0634\u062a\u064a\u062a \u0623\u0648 \u062e\u0637\u0648\u0627\u062a \u0625\u0636\u0627\u0641\u064a\u0629.',
           en: 'From browsing to cart to checkout without noisy detours or extra steps.',
         },
       },
@@ -73,10 +73,10 @@ export const storefrontContent = {
       },
       {
         id: 'checkout',
-        title: { ar: 'ثبّت العنوان وأكمل الدفع', en: 'Confirm the address and pay' },
+        title: { ar: '\u062b\u0628\u0651\u062a \u0627\u0644\u0639\u0646\u0648\u0627\u0646 \u0648\u0623\u0643\u0645\u0644 \u0627\u0644\u062a\u062d\u0648\u064a\u0644', en: 'Confirm the address and transfer' },
         body: {
-          ar: 'أدخل البيانات الأساسية وحدد الموقع على الخريطة ثم افتح الدفع الحالي بأمان.',
-          en: 'Fill in the essentials, pin the location on the map, then open the current secure payment flow.',
+          ar: '\u0623\u062f\u062e\u0644 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0623\u0633\u0627\u0633\u064a\u0629 \u0648\u062d\u062f\u062f \u0627\u0644\u0645\u0648\u0642\u0639 \u0639\u0644\u0649 \u0627\u0644\u062e\u0631\u064a\u0637\u0629 \u062b\u0645 \u0627\u0641\u062a\u062d \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0627\u0644\u0628\u0646\u0643\u064a.',
+          en: 'Fill in the essentials, pin the location on the map, then open the bank transfer details.',
         },
       },
     ],
@@ -146,8 +146,8 @@ export const storefrontContent = {
       id: 'payment-methods',
       question: { ar: 'كيف يتم الدفع؟', en: 'How does payment work?' },
       answer: {
-        ar: 'يتم الدفع من خلال نفس مسار الويب الحالي داخل WebView آمن، بدون تغيير في آلية الدفع القائمة.',
-        en: 'Payment uses the existing web checkout flow inside a secure WebView, with no change to the current payment setup.',
+        ar: '\u064a\u062a\u0645 \u0627\u0644\u062a\u0623\u0643\u064a\u062f \u062d\u0627\u0644\u064a\u064b\u0627 \u0628\u062a\u062d\u0648\u064a\u0644 \u0628\u0646\u0643\u064a \u064a\u062f\u0648\u064a \u0648\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0625\u064a\u0635\u0627\u0644 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628.',
+        en: 'Checkout is currently confirmed with a manual bank transfer and receipt sent on WhatsApp.',
       },
     },
     {
@@ -244,8 +244,8 @@ export const storefrontContent = {
         id: 'speed',
         title: { ar: 'سرعة عملية', en: 'Practical speed' },
         body: {
-          ar: 'كل شاشة هدفها تقليل خطوات القرار، من البحث وحتى فتح الدفع.',
-          en: 'Each screen is meant to reduce decision friction from search through payment handoff.',
+          ar: '\u0643\u0644 \u0634\u0627\u0634\u0629 \u0647\u062f\u0641\u0647\u0627 \u062a\u0642\u0644\u064a\u0644 \u062e\u0637\u0648\u0627\u062a \u0627\u0644\u0642\u0631\u0627\u0631\u060c \u0645\u0646 \u0627\u0644\u0628\u062d\u062b \u0648\u062d\u062a\u0649 \u0641\u062a\u062d \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062a\u062d\u0648\u064a\u0644.',
+          en: 'Each screen is meant to reduce decision friction from search through bank transfer handoff.',
         },
       },
       {
@@ -276,10 +276,10 @@ export const storefrontContent = {
       },
       {
         id: 'checkout',
-        title: { ar: 'الحفاظ على الدفع الحالي', en: 'Keeping the current checkout flow' },
+        title: { ar: '\u062a\u062d\u0648\u064a\u0644 \u0628\u0646\u0643\u064a \u0645\u0624\u0642\u062a', en: 'Temporary bank transfer' },
         body: {
-          ar: 'تمت إعادة استخدام مسار الدفع الحالي عبر WebView بدل استبداله مبكرًا.',
-          en: 'The current payment flow was reused through WebView instead of being replaced too early.',
+          ar: '\u062a\u0645 \u0625\u064a\u0642\u0627\u0641 \u0628\u0648\u0627\u0628\u0629 \u0627\u0644\u062f\u0641\u0639 \u0648\u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0627\u0644\u0628\u0646\u0643\u064a \u0644\u062d\u064a\u0646 \u0627\u062e\u062a\u064a\u0627\u0631 \u0623\u0641\u0636\u0644 \u0628\u0648\u0627\u0628\u0629.',
+          en: 'The payment gateway is paused in favor of bank transfer until the best provider is selected.',
         },
       },
       {

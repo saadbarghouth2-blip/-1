@@ -122,7 +122,7 @@ export function InstallButton() {
       {(supportsIosManualInstall() || getAndroidAppUrl() || getIosAppUrl()) && !showAndroidPrompt && (
         <motion.button
           onClick={supportsIosManualInstall() ? handleOpenIosGuide : handleInstallClick}
-          className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all z-40 flex items-center gap-2"
+          className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 lg:bottom-6 lg:right-24 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all z-40 flex items-center gap-2"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           title={isRTL ? 'تحميل التطبيق' : 'Download App'}

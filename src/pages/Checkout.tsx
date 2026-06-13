@@ -3,21 +3,20 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ArrowLeft, CheckCircle2, MapPin, Locate, Search, Navigation
+  ArrowLeft, Banknote, CheckCircle2, CreditCard, Landmark, MapPin, Locate, Search, Navigation
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useWebAuth } from '../features/auth/WebAuthProvider';
-import { clearWebCheckoutDraft, loadWebCheckoutDraft, saveWebCheckoutDraft } from '../lib/webCheckoutDraft';
-import { BRAND_NAME_EN } from '../lib/brand';
+import { saveWebCheckoutDraft } from '../lib/webCheckoutDraft';
 import { loadExternalScript, loadExternalStylesheet } from '../lib/externalAssets';
 import {
-  MOYASAR_SCRIPT_URL,
-  MOYASAR_STYLES_URL,
-  getMoyasarPublicKey,
-} from '../lib/payments';
-import { BANK_TRANSFER_DETAILS, buildOrderWhatsAppLink, openWhatsAppLink } from '../lib/contact';
-import { persistCompletedOrder } from '../services/webAccount';
-import { toAbsoluteUrl, withBasePath } from '../lib/site';
+  BANK_TRANSFER_DETAILS,
+  MANUAL_PAYMENT_METHODS,
+  buildOrderWhatsAppLink,
+  getManualPaymentMethodLabel,
+  openWhatsAppLink,
+  type ManualPaymentMethod,
+} from '../lib/contact';
 import { formatSarPrice } from '../lib/utils';
 import {
   DELIVERY_FLOOR_OPTIONS,
@@ -31,7 +30,6 @@ import {
 } from '../lib/deliveryRules';
 import ProductImage from '../components/ProductImage';
 
-const SUCCESS_URL = toAbsoluteUrl(`${withBasePath('/checkout')}?status=success`);
 const LEAFLET_SCRIPT_URL = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
 const LEAFLET_STYLES_URL = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
 
@@ -48,15 +46,13 @@ export default function Checkout() {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { items, totalPrice, totalItems, totalCartons, clearCart } = useCart();
-  const { authReady, isConfigured, session, profile, saveProfile, refreshOrders, openAccountDialog } = useWebAuth();
+  const { items, totalPrice, totalItems, totalCartons } = useCart();
+  const { isConfigured, session, profile, saveProfile, openAccountDialog } = useWebAuth();
   const isRTL = i18n.language === 'ar';
 
   const mapRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const moyasarInitializedRef = useRef(false);
-  const successHandledRef = useRef(false);
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<CheckoutFormData>(() => {
@@ -83,19 +79,13 @@ export default function Checkout() {
 
   const [showMap, setShowMap] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
-  const [isMoyasarReady, setIsMoyasarReady] = useState(false);
   const [isLeafletReady, setIsLeafletReady] = useState(false);
-  const [paymentLoadError, setPaymentLoadError] = useState('');
   const [mapLoadError, setMapLoadError] = useState('');
-  const moyasarPublicKey = getMoyasarPublicKey();
 
   const queryParams = new URLSearchParams(location.search);
-  const isSuccessFromMoyasar = queryParams.get('status') === 'success' || queryParams.get('id');
   const isWhatsAppCheckout = queryParams.get('channel') === 'whatsapp';
-  const paymentReferenceFromQuery = queryParams.get('id')?.trim() || '';
-  const [isSuccess, setIsSuccess] = useState(!!isSuccessFromMoyasar);
   const [accountNotice, setAccountNotice] = useState('');
-  const [orderSyncMessage, setOrderSyncMessage] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<ManualPaymentMethod>('cash_on_delivery');
 
   const deliveryRule = getDeliveryRuleState(totalCartons);
   const deliveryFee = deliveryRule.deliveryFee;
@@ -107,73 +97,12 @@ export default function Checkout() {
   const canSubmitCustomerDetails = Boolean(
     formData.name.trim() && formData.phone.trim() && formData.address.trim()
   );
-
-  // Handle Moyasar Success Return
-  useEffect(() => {
-    if (!isSuccessFromMoyasar || !authReady || successHandledRef.current) {
-      return;
-    }
-
-    successHandledRef.current = true;
-    setIsSuccess(true);
-
-    void (async () => {
-      const draft = loadWebCheckoutDraft();
-
-      try {
-        if (session?.userId && draft) {
-          setOrderSyncMessage(
-            isRTL
-              ? 'تم الدفع بنجاح، وجارٍ حفظ الطلب داخل حسابك.'
-              : 'Payment succeeded, and your order is being saved to your account.',
-          );
-
-          await persistCompletedOrder(session.userId, session.email, {
-            ...draft,
-            reference: paymentReferenceFromQuery || draft.reference,
-          });
-
-          await refreshOrders();
-          setOrderSyncMessage(
-            isRTL
-              ? 'تم حفظ الطلب داخل حسابك بنجاح.'
-              : 'Your order was saved to your account successfully.',
-          );
-        } else if (session?.userId) {
-          setOrderSyncMessage(
-            isRTL
-              ? 'تم الدفع بنجاح، لكن لم نعثر على مسودة الطلب لحفظها داخل الحساب.'
-              : 'Payment succeeded, but no checkout draft was found to save into your account.',
-          );
-        } else {
-          if (!isConfigured) {
-            setOrderSyncMessage(
-              isRTL
-                ? 'تم الدفع بنجاح، وتم تنفيذ هذا الطلب كضيف لأن الحسابات المحفوظة غير مفعلة حالياً.'
-                : 'Payment succeeded, and this order was completed as a guest because saved accounts are not enabled right now.',
-            );
-          } else {
-            setOrderSyncMessage(
-            isRTL
-              ? 'تم الدفع بنجاح. يمكنك التسجيل لاحقًا، لكن هذا الطلب تم كضيف.'
-              : 'Payment succeeded. You can sign in later, but this order was placed as a guest.',
-            );
-          }
-        }
-      } catch (error) {
-        console.error('Unable to save the completed order inside the web account.', error);
-        setOrderSyncMessage(
-          isRTL
-            ? 'تم الدفع بنجاح، لكن تعذر حفظ الطلب داخل حسابك الآن.'
-            : 'Payment succeeded, but the order could not be saved in your account right now.',
-        );
-      } finally {
-        clearCart();
-        localStorage.removeItem('reeq_checkout_data');
-        clearWebCheckoutDraft();
-      }
-    })();
-  }, [authReady, clearCart, isRTL, isSuccessFromMoyasar, paymentReferenceFromQuery, refreshOrders, session]);
+  const selectedPaymentMethodLabel = getManualPaymentMethodLabel(paymentMethod, isRTL);
+  const paymentMethodIcons = {
+    cash_on_delivery: Banknote,
+    bank_transfer: Landmark,
+    pos_on_delivery: CreditCard,
+  } satisfies Record<ManualPaymentMethod, typeof Banknote>;
 
   useEffect(() => {
     if (!profile) {
@@ -189,80 +118,6 @@ export default function Checkout() {
       lng: current.address ? current.lng : (profile.defaultLng ?? current.lng),
     }));
   }, [profile]);
-
-  useEffect(() => {
-    if (step !== 2 || isSuccess) {
-      moyasarInitializedRef.current = false;
-      return;
-    }
-
-    let isCancelled = false;
-    setPaymentLoadError('');
-
-    if (!moyasarPublicKey) {
-      setPaymentLoadError(
-        isRTL
-          ? 'يرجى ضبط إعدادات ميسر قبل تفعيل نموذج التأكيد على الموقع.'
-          : 'Set the Moyasar settings before enabling the production confirmation form.'
-      );
-      return;
-    }
-
-    Promise.all([
-      loadExternalStylesheet(MOYASAR_STYLES_URL),
-      loadExternalScript(MOYASAR_SCRIPT_URL),
-    ])
-      .then(() => {
-        if (!isCancelled) {
-          setIsMoyasarReady(true);
-        }
-      })
-      .catch(() => {
-        if (!isCancelled) {
-          setPaymentLoadError(
-            isRTL
-              ? 'تعذر تحميل نموذج التأكيد الآن. حاول مرة أخرى خلال لحظات.'
-              : 'Unable to load the confirmation form right now. Please try again shortly.'
-          );
-        }
-      });
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [isSuccess, isRTL, moyasarPublicKey, step]);
-
-  // Handle Moyasar Initialization
-  useEffect(() => {
-    if (step !== 2 || isSuccess || !isMoyasarReady || moyasarInitializedRef.current) {
-      return;
-    }
-
-    const timer = window.setTimeout(() => {
-      const moyasar = (window as any).Moyasar;
-      const container = document.querySelector<HTMLElement>('.moyasar-form-container');
-
-      if (!moyasar || !container) {
-        return;
-      }
-
-      container.innerHTML = '';
-      moyasar.init({
-        element: '.moyasar-form-container',
-        amount: finalTotal * 100,
-        currency: 'SAR',
-        description: `Order from ${BRAND_NAME_EN} - ${totalCartons} cartons`,
-        publishable_api_key: moyasarPublicKey,
-        callback_url: SUCCESS_URL,
-        methods: ['creditcard', 'applepay'],
-      });
-      moyasarInitializedRef.current = true;
-    }, 300);
-
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, [finalTotal, isMoyasarReady, isSuccess, moyasarPublicKey, step, totalCartons]);
 
   useEffect(() => {
     if (!showMap) {
@@ -430,15 +285,15 @@ export default function Checkout() {
           });
           setAccountNotice(
             isRTL
-              ? 'تم تحديث بياناتك داخل الحساب قبل الانتقال للدفع.'
-              : 'Your account details were updated before payment.',
+              ? '\u062a\u0645 \u062a\u062d\u062f\u064a\u062b \u0628\u064a\u0627\u0646\u0627\u062a\u0643 \u062f\u0627\u062e\u0644 \u0627\u0644\u062d\u0633\u0627\u0628 \u0642\u0628\u0644 \u0639\u0631\u0636 \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062a\u062d\u0648\u064a\u0644.'
+              : 'Your account details were updated before showing bank transfer details.',
           );
         } catch (error) {
           console.error('Unable to save the signed-in shopper profile before checkout.', error);
           setAccountNotice(
             isRTL
-              ? 'تعذر تحديث بيانات الحساب الآن، لكن يمكنك إكمال الدفع وسيبقى الطلب محفوظًا إذا نجح لاحقًا.'
-              : 'We could not update your profile right now, but you can continue to payment and the order can still be saved after success.',
+              ? '\u062a\u0639\u0630\u0631 \u062a\u062d\u062f\u064a\u062b \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062d\u0633\u0627\u0628 \u0627\u0644\u0622\u0646\u060c \u0644\u0643\u0646 \u064a\u0645\u0643\u0646\u0643 \u0645\u062a\u0627\u0628\u0639\u0629 \u0627\u0644\u0637\u0644\u0628 \u0628\u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0627\u0644\u0628\u0646\u0643\u064a.'
+              : 'We could not update your profile right now, but you can continue the order with bank transfer.',
           );
         }
       } else {
@@ -489,6 +344,7 @@ export default function Checkout() {
       deliveryFee: totalDeliveryFee,
       discount: 0,
       finalTotal,
+      paymentMethod,
       isRTL,
     });
 
@@ -505,37 +361,6 @@ export default function Checkout() {
 
     openWhatsAppLink(buildCurrentOrderWhatsAppLink());
   };
-
-  if (isSuccess) {
-    return (
-      <main className="min-h-screen py-20 flex items-center justify-center px-4 relative z-10">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="max-w-md w-full p-8 md:p-12 text-center bg-white rounded-[3rem] shadow-2xl relative overflow-hidden">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8 text-green-600 sm:w-24 sm:h-24">
-            <CheckCircle2 className="w-10 h-10 sm:w-12 sm:h-12" />
-          </div>
-          <h1 className="text-3xl font-black mb-4">{isRTL ? 'تم الطلب بنجاح!' : 'Order Placed!'}</h1>
-          <p className="text-gray-600 mb-10 leading-relaxed font-medium">{isRTL ? 'سنتواصل معك قريباً لتوصيل طلبك المبرد لموقعك في الرياض.' : 'We will contact you soon to deliver your order in Riyadh.'}</p>
-          {orderSyncMessage ? (
-            <div className="mb-4 rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm font-semibold leading-7 text-slate-600">
-              {orderSyncMessage}
-            </div>
-          ) : null}
-          {session && isConfigured ? (
-            <button
-              type="button"
-              onClick={openAccountDialog}
-              className="mb-3 w-full rounded-3xl border border-[#153b66]/15 bg-white py-4 font-black text-[#153b66] transition hover:bg-slate-50"
-            >
-              {isRTL ? 'افتح حسابي' : 'Open My Account'}
-            </button>
-          ) : null}
-          <button onClick={() => navigate('/')} className="w-full py-5 bg-[#153b66] text-white rounded-3xl font-black text-lg hover:shadow-2xl transition-all">
-            {isRTL ? 'العودة للرئيسية' : 'Back to Home'}
-          </button>
-        </motion.div>
-      </main>
-    );
-  }
 
   if (items.length === 0 || !deliveryRule.canDeliver) {
     return (
@@ -659,6 +484,35 @@ export default function Checkout() {
                   </div>
                 </div>
 
+                  <div className="rounded-[2rem] border-2 border-emerald-200 bg-emerald-50/90 p-5 shadow-lg shadow-emerald-100/40">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="text-sm font-black text-emerald-700">
+                          {isRTL ? '\u0637\u0631\u0642 \u0627\u0644\u062f\u0641\u0639 \u0627\u0644\u0645\u062a\u0627\u062d\u0629' : 'Available payment methods'}
+                        </p>
+                        <h2 className="mt-1 text-xl font-black text-gray-900">
+                          {selectedPaymentMethodLabel}
+                        </h2>
+                        <p className="mt-2 text-sm font-semibold leading-7 text-gray-600">
+                          {isRTL
+                            ? '\u0627\u062e\u062a\u0631 \u0643\u0627\u0634 \u0639\u0646\u062f \u0627\u0644\u0627\u0633\u062a\u0644\u0627\u0645\u060c \u0623\u0648 \u062a\u062d\u0648\u064a\u0644 \u0628\u0646\u0643\u064a\u060c \u0623\u0648 \u0634\u0628\u0643\u0629 \u0645\u0639 \u0627\u0644\u0645\u0646\u062f\u0648\u0628. \u0627\u0644\u0627\u062e\u062a\u064a\u0627\u0631 \u0633\u064a\u0635\u0644 \u0644\u0646\u0627 \u0641\u064a \u0631\u0633\u0627\u0644\u0629 \u0648\u0627\u062a\u0633\u0627\u0628.'
+                            : 'Choose cash on delivery, bank transfer, or a card machine with the delivery representative. The choice will be sent in WhatsApp.'}
+                        </p>
+                      </div>
+                      {paymentMethod === 'bank_transfer' ? (
+                        <div className="rounded-2xl bg-white p-4 text-sm shadow-sm sm:min-w-[17rem]">
+                          <p className="font-black text-[#153b66]">
+                            {isRTL ? BANK_TRANSFER_DETAILS.bankNameAr : BANK_TRANSFER_DETAILS.bankNameEn}
+                          </p>
+                          <p className="mt-2 text-xs font-bold text-gray-500">IBAN</p>
+                          <p dir="ltr" className="mt-1 break-all text-base font-black text-gray-900">
+                            {BANK_TRANSFER_DETAILS.iban}
+                          </p>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+
                   <div className="bg-white rounded-[2.5rem] p-6 sm:p-10 shadow-xl shadow-gray-200/30 border border-gray-100 space-y-10">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-3">
@@ -771,6 +625,72 @@ export default function Checkout() {
                       </div>
                     </div>
 
+                    <div className="space-y-3">
+                      <label className="text-sm font-bold text-gray-500">
+                        {isRTL ? '\u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u062f\u0641\u0639' : 'Payment method'}
+                      </label>
+                      <div className="grid gap-3 sm:grid-cols-3">
+                        {MANUAL_PAYMENT_METHODS.map((option) => {
+                          const selected = paymentMethod === option.id;
+                          const Icon = paymentMethodIcons[option.id];
+
+                          return (
+                            <button
+                              key={option.id}
+                              type="button"
+                              onClick={() => setPaymentMethod(option.id)}
+                              className={`min-h-[9.5rem] rounded-2xl border px-4 py-4 text-start transition-all ${
+                                selected
+                                  ? 'border-[#153b66] bg-[#153b66] text-white shadow-lg shadow-[#153b66]/15'
+                                  : 'border-gray-100 bg-gray-50 text-gray-700 hover:border-[#153b66]/30 hover:bg-[#edf4fa]'
+                              }`}
+                            >
+                              <span className={`mb-3 flex h-10 w-10 items-center justify-center rounded-xl ${selected ? 'bg-white/15 text-white' : 'bg-white text-[#153b66]'}`}>
+                                <Icon className="h-5 w-5" />
+                              </span>
+                              <span className="block text-sm font-black">
+                                {isRTL ? option.labelAr : option.labelEn}
+                              </span>
+                              <span className={`mt-2 block text-xs font-semibold leading-6 ${selected ? 'text-white/75' : 'text-gray-500'}`}>
+                                {isRTL ? option.descriptionAr : option.descriptionEn}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {paymentMethod === 'bank_transfer' ? (
+                        <div className="grid gap-3 rounded-[1.5rem] border border-emerald-100 bg-emerald-50 p-4 sm:grid-cols-2">
+                          <div>
+                            <p className="text-xs font-bold text-emerald-700">
+                              {isRTL ? '\u0627\u0644\u0628\u0646\u0643' : 'Bank'}
+                            </p>
+                            <p className="mt-1 text-sm font-black text-gray-900">
+                              {isRTL ? BANK_TRANSFER_DETAILS.bankNameAr : BANK_TRANSFER_DETAILS.bankNameEn}
+                            </p>
+                          </div>
+                          <div dir="ltr">
+                            <p className="text-xs font-bold text-emerald-700">
+                              {isRTL ? '\u0631\u0642\u0645 \u0627\u0644\u062d\u0633\u0627\u0628' : 'Account number'}
+                            </p>
+                            <p className="mt-1 break-all text-sm font-black text-gray-900">
+                              {BANK_TRANSFER_DETAILS.accountNumber}
+                            </p>
+                          </div>
+                          <div className="sm:col-span-2" dir="ltr">
+                            <p className="text-xs font-bold text-emerald-700">IBAN</p>
+                            <p className="mt-1 break-all text-base font-black text-[#153b66]">
+                              {BANK_TRANSFER_DETAILS.iban}
+                            </p>
+                          </div>
+                          <p className="rounded-2xl bg-white/80 px-4 py-3 text-sm font-black leading-7 text-emerald-800 sm:col-span-2">
+                            {isRTL
+                              ? '\u0628\u0631\u062c\u0627\u0621 \u0625\u0631\u0633\u0627\u0644 \u0635\u0648\u0631\u0629 \u0625\u064a\u0635\u0627\u0644 \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0639\u0644\u0649 \u0648\u0627\u062a\u0633\u0627\u0628 \u0628\u0639\u062f \u0625\u062a\u0645\u0627\u0645 \u0627\u0644\u062a\u062d\u0648\u064a\u0644.'
+                              : 'Please send a receipt photo on WhatsApp after completing the transfer.'}
+                          </p>
+                        </div>
+                      ) : null}
+                    </div>
+
                     {isWhatsAppCheckout ? (
                       <div className="rounded-[1.7rem] border border-green-200 bg-green-50 px-4 py-3 text-center text-sm font-bold leading-7 text-green-700">
                         {isRTL
@@ -807,13 +727,13 @@ export default function Checkout() {
                   <div className="rounded-[2rem] border border-[#153b66]/10 bg-white p-5 shadow-lg shadow-gray-200/30 sm:p-6">
                     <div className="mb-4">
                       <p className="text-sm font-black text-[#153b66]">
-                        {isRTL ? 'خيار التحويل البنكي' : 'Bank transfer option'}
+                        {isRTL ? '\u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u062f\u0641\u0639 \u0627\u0644\u0645\u062e\u062a\u0627\u0631\u0629' : 'Selected payment method'}
                       </p>
                       <h2 className="mt-1 text-xl font-black text-gray-900">
-                        {isRTL ? BANK_TRANSFER_DETAILS.bankNameAr : BANK_TRANSFER_DETAILS.bankNameEn}
+                        {selectedPaymentMethodLabel}
                       </h2>
                     </div>
-                    <div className="grid gap-3 sm:grid-cols-2">
+                    <div className={paymentMethod === 'bank_transfer' ? 'grid gap-3 sm:grid-cols-2' : 'hidden'}>
                       <div className="rounded-2xl bg-gray-50 p-4">
                         <p className="text-xs font-bold text-gray-500">{isRTL ? 'اسم صاحب الحساب' : 'Account holder'}</p>
                         <p className="mt-2 text-sm font-black leading-6 text-gray-900">
@@ -828,25 +748,51 @@ export default function Checkout() {
                         <p className="text-xs font-bold text-gray-500">IBAN</p>
                         <p className="mt-2 break-all text-base font-black text-[#153b66]">{BANK_TRANSFER_DETAILS.iban}</p>
                       </div>
+                      <p className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-black leading-7 text-emerald-800 sm:col-span-2">
+                        {isRTL
+                          ? '\u0628\u0631\u062c\u0627\u0621 \u0625\u0631\u0633\u0627\u0644 \u0635\u0648\u0631\u0629 \u0625\u064a\u0635\u0627\u0644 \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0639\u0644\u0649 \u0648\u0627\u062a\u0633\u0627\u0628 \u0628\u0639\u062f \u0625\u062a\u0645\u0627\u0645 \u0627\u0644\u062a\u062d\u0648\u064a\u0644.'
+                          : 'Please send a receipt photo on WhatsApp after completing the transfer.'}
+                      </p>
                     </div>
+                    {paymentMethod !== 'bank_transfer' ? (
+                      <div className="rounded-2xl bg-gray-50 p-4 text-sm font-semibold leading-7 text-gray-600">
+                        {paymentMethod === 'pos_on_delivery'
+                          ? (isRTL
+                              ? '\u0633\u064a\u062a\u0645 \u062a\u062c\u0647\u064a\u0632 \u0645\u0646\u062f\u0648\u0628 \u0627\u0644\u062a\u0648\u0635\u064a\u0644 \u0628\u0645\u0643\u064a\u0646\u0629 \u0634\u0628\u0643\u0629 \u0644\u0644\u062f\u0641\u0639 \u0639\u0646\u062f \u0648\u0635\u0648\u0644 \u0627\u0644\u0637\u0644\u0628.'
+                              : 'The delivery representative will bring a card machine when the order arrives.')
+                          : (isRTL
+                              ? '\u0633\u064a\u062a\u0645 \u0627\u0644\u062f\u0641\u0639 \u0643\u0627\u0634 \u0644\u0645\u0646\u062f\u0648\u0628 \u0627\u0644\u062a\u0648\u0635\u064a\u0644 \u0639\u0646\u062f \u0648\u0635\u0648\u0644 \u0627\u0644\u0637\u0644\u0628.'
+                              : 'Payment will be collected in cash by the delivery representative when the order arrives.')}
+                      </div>
+                    ) : null}
                     <p className="mt-4 text-sm font-semibold leading-7 text-gray-500">
                       {isRTL
-                        ? 'بعد التحويل، تواصل معنا عبر واتساب لتأكيد الطلب وإرفاق إيصال التحويل.'
-                        : 'After transferring, contact us on WhatsApp to confirm the order and attach the transfer receipt.'}
+                        ? paymentMethod === 'bank_transfer'
+                          ? '\u0627\u0636\u063a\u0637 \u0625\u0631\u0633\u0627\u0644 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628\u060c \u0648\u0628\u0639\u062f \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0628\u0631\u062c\u0627\u0621 \u0625\u0631\u0633\u0627\u0644 \u0635\u0648\u0631\u0629 \u0625\u064a\u0635\u0627\u0644 \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0644\u062a\u0623\u0643\u064a\u062f \u0627\u0644\u0637\u0644\u0628.'
+                          : '\u0627\u0636\u063a\u0637 \u0625\u0631\u0633\u0627\u0644 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628 \u0644\u064a\u0635\u0644\u0646\u0627 \u0627\u0644\u0637\u0644\u0628 \u0645\u0639 \u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u062f\u0641\u0639 \u0627\u0644\u0645\u062e\u062a\u0627\u0631\u0629.'
+                        : 'Send via WhatsApp so we receive the order with the selected payment method.'}
                     </p>
                   </div>
                   <div className="bg-white rounded-[2.5rem] p-6 sm:p-10 shadow-xl shadow-gray-200/30 border border-gray-100 overflow-hidden">
-                    {paymentLoadError && (
-                      <div className="mb-4 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
-                        {paymentLoadError}
-                      </div>
-                    )}
-                    <div className="moyasar-form-container min-h-[400px]">
-                      <div className="flex flex-col items-center justify-center h-full py-20 space-y-4">
-                        <div className="w-10 h-10 border-4 border-[#153b66] border-t-transparent rounded-full animate-spin sm:w-12 sm:h-12" />
-                        <p className="text-gray-400 font-bold">{isRTL ? 'جاري تجهيز نموذج التأكيد...' : 'Loading confirmation form...'}</p>
-                      </div>
+                    <div className="rounded-[1.7rem] border border-amber-100 bg-amber-50 px-5 py-4 text-sm font-semibold leading-7 text-amber-800">
+                      {isRTL
+                        ? '\u0628\u0648\u0627\u0628\u0629 \u0627\u0644\u062f\u0641\u0639 \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a \u0645\u062a\u0648\u0642\u0641\u0629 \u0645\u0624\u0642\u062a\u064b\u0627. \u0633\u0646\u0624\u0643\u062f \u0627\u0644\u0637\u0644\u0628 \u064a\u062f\u0648\u064a\u064b\u0627 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628 \u062d\u0633\u0628 \u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u062f\u0641\u0639 \u0627\u0644\u062a\u064a \u0627\u062e\u062a\u0631\u062a\u0647\u0627.'
+                        : 'Online gateway payments are paused temporarily. We will manually confirm the order on WhatsApp using your selected payment method.'}
                     </div>
+                    <button
+                      type="button"
+                      onClick={handleWhatsAppOrder}
+                      className="mt-5 w-full rounded-[1.7rem] bg-green-600 px-5 py-5 text-lg font-black text-white transition hover:bg-green-700 hover:shadow-2xl"
+                    >
+                      {isRTL ? '\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0637\u0644\u0628 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628' : 'Send order on WhatsApp'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setStep(1)}
+                      className="mt-3 w-full rounded-[1.4rem] border-2 border-[#153b66]/10 bg-white px-5 py-4 font-black text-[#153b66] transition hover:bg-[#edf4fa]"
+                    >
+                      {isRTL ? '\u062a\u0639\u062f\u064a\u0644 \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062a\u0648\u0635\u064a\u0644' : 'Edit delivery details'}
+                    </button>
                   </div>
                 </motion.div>
               )}

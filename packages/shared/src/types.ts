@@ -2,13 +2,19 @@ export type BrandSummary = {
   id: string;
   name: string;
   nameAr: string;
-  logo: string;
+  logo?: string;
 };
 
 export type ContactConfig = {
   phoneRaw: string;
   phoneDisplay: string;
   phoneHref: string;
+  phoneNumbers: Array<{
+    raw: string;
+    display: string;
+    href: string;
+    primary: boolean;
+  }>;
   email: string;
   emailHref: string;
   whatsappLink: string;

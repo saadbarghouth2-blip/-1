@@ -14,6 +14,8 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   buildContactWhatsAppLink,
+  BUSINESS_ADDRESS_AR,
+  BUSINESS_ADDRESS_EN,
   CONTACT_CONFIG,
   localizeText,
   sendContactEmail,
@@ -105,7 +107,7 @@ export default function ContactScreen() {
     {
       id: 'call',
       title: isRTL ? 'اتصال مباشر' : 'Call now',
-      body: CONTACT_CONFIG.phoneDisplay,
+      body: CONTACT_CONFIG.phoneNumbers.map((phone) => phone.display).join(' / '),
       icon: 'call-outline' as const,
       action: () => openExternalUrl(CONTACT_CONFIG.phoneHref),
     },
@@ -126,7 +128,7 @@ export default function ContactScreen() {
     {
       id: 'maps',
       title: isRTL ? 'الموقع' : 'Maps',
-      body: isRTL ? 'الرياض، السعودية' : 'Riyadh, Saudi Arabia',
+      body: isRTL ? BUSINESS_ADDRESS_AR : BUSINESS_ADDRESS_EN,
       icon: 'location-outline' as const,
       action: () => openExternalUrl(MAPS_LINK),
     },

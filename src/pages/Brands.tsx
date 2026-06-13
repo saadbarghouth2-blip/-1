@@ -56,7 +56,7 @@ export default function Brands() {
               </div>
               <h1 className="max-w-4xl text-3xl font-black leading-tight sm:text-4xl lg:text-5xl">
                 {isRTL
-                  ? 'كل علامة هنا مرتبطة مباشرة بمنتجاتها الحالية داخل ملف الإكسل'
+                  ? 'كل علامة هنا مرتبطة مباشرة بمنتجاتها الحالية '
                   : 'Every brand here now comes directly from the active spreadsheet-backed products'}
               </h1>
               <p className="mt-4 max-w-3xl text-sm leading-7 text-white/80 sm:text-base">

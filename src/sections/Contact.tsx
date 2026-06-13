@@ -7,9 +7,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import {
   CONTACT_EMAIL,
-  CONTACT_PHONE_DISPLAY,
+  CONTACT_PHONE_NUMBERS,
   WHATSAPP_LINK,
 } from '../lib/contact';
+import { SITE_ADDRESS_AR, SITE_ADDRESS_EN } from '../lib/site';
 
 export default function Contact() {
   const { t, i18n } = useTranslation();
@@ -35,7 +36,7 @@ export default function Contact() {
     {
       icon: Phone,
       title: isRTL ? 'الهاتف' : 'Phone',
-      content: CONTACT_PHONE_DISPLAY,
+      content: CONTACT_PHONE_NUMBERS.map((phone) => phone.display).join(' / '),
       subContent: isRTL ? 'متاح على مدار الساعة' : 'Available 24/7',
     },
     {
@@ -47,7 +48,7 @@ export default function Contact() {
     {
       icon: MapPin,
       title: isRTL ? 'العنوان' : 'Address',
-      content: isRTL ? 'الرياض، المملكة العربية السعودية' : 'Riyadh, Saudi Arabia',
+      content: isRTL ? SITE_ADDRESS_AR : SITE_ADDRESS_EN,
       subContent: isRTL ? 'توصيل لجميع المناطق' : 'Delivery to all areas',
     },
     {

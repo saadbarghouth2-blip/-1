@@ -657,7 +657,7 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
     },
     '/checkout': {
       title: isRTL ? 'إتمام الطلب | متجر ريق' : 'Checkout | Riq Store',
-      description: isRTL ? 'إتمام الطلب والدفع الآمن داخل متجر ريق.' : 'Secure checkout and payment at Riq Store.',
+      description: isRTL ? '\u0625\u062a\u0645\u0627\u0645 \u0627\u0644\u0637\u0644\u0628 \u0628\u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0627\u0644\u0628\u0646\u0643\u064a \u0627\u0644\u064a\u062f\u0648\u064a \u062f\u0627\u062e\u0644 \u0645\u062a\u062c\u0631 \u0631\u064a\u0642.' : 'Complete your order with manual bank transfer at Riq Store.',
       pageType: 'WebPage',
       robots: 'noindex, nofollow',
     },
