@@ -21,7 +21,7 @@ import {
 import { useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import { useCart } from '../context/CartContext';
 import ProductImage from '../components/ProductImage';
-import { WHATSAPP_LINK } from '../lib/contact';
+import { buildWhatsAppMessageLink } from '../lib/contact';
 import { formatSarPrice } from '../lib/utils';
 
 const CATEGORY_LABELS = {
@@ -68,11 +68,11 @@ export default function ProductDetail() {
   const productFacts = product.quickFacts ?? [];
   const packageDetails = getProductPackageDetails(product, isRTL);
   const categoryLabel = CATEGORY_LABELS[product.category];
-  const quoteLink = `${WHATSAPP_LINK}?text=${encodeURIComponent(
+  const quoteLink = buildWhatsAppMessageLink(
     isRTL
       ? `أرغب في معرفة سعر ${product.name.ar}`
-      : `I would like to know the current price for ${product.name.en}`,
-  )}`;
+      : `I would like to know the current price for ${product.name.en}`
+  );
 
   const handleAddToCart = () => {
     if (!hasPrice) {
@@ -357,11 +357,11 @@ export default function ProductDetail() {
                       </button>
                     ) : (
                       <a
-                        href={`${WHATSAPP_LINK}?text=${encodeURIComponent(
+                        href={buildWhatsAppMessageLink(
                           isRTL
                             ? `أرغب في معرفة سعر ${related.name.ar}`
-                            : `I would like to know the current price for ${related.name.en}`,
-                        )}`}
+                            : `I would like to know the current price for ${related.name.en}`
+                        )}
                         target="_blank"
                         rel="noreferrer"
                         className="rounded-full border border-amber-200 px-4 py-2 text-xs font-semibold text-amber-700 transition-colors hover:bg-amber-50"

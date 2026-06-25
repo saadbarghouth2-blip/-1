@@ -8,7 +8,7 @@ import { getBrandEntryPrice, useProductCatalog } from '../features/catalog/Produ
 import { useCart } from '../context/CartContext';
 import ProductImage from '../components/ProductImage';
 import BrandVisual from '../components/BrandVisual';
-import { WHATSAPP_LINK } from '../lib/contact';
+import { buildWhatsAppMessageLink } from '../lib/contact';
 import { formatSarPrice } from '../lib/utils';
 
 export default function BrandDetail() {
@@ -176,11 +176,11 @@ export default function BrandDetail() {
                     </button>
                   ) : (
                     <a
-                      href={`${WHATSAPP_LINK}?text=${encodeURIComponent(
+                      href={buildWhatsAppMessageLink(
                         isRTL
                           ? `أرغب في معرفة سعر ${product.name.ar}`
-                          : `I would like to know the current price for ${product.name.en}`,
-                      )}`}
+                          : `I would like to know the current price for ${product.name.en}`
+                      )}
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-2 rounded-full border border-amber-200 px-4 py-2 text-xs font-semibold text-amber-700 transition-colors hover:bg-amber-50"

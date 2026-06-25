@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
+  WHATSAPP_PHONE_RAW,
   buildContactWhatsAppLink,
+  buildOrderWhatsAppLink,
   formatSarPrice,
   localizeText,
   products,
@@ -29,8 +31,34 @@ describe('shared helpers', () => {
       false
     );
 
-    expect(link).toContain('wa.me');
+    expect(link).toContain('api.whatsapp.com/send');
+    expect(link).toContain(`phone=${WHATSAPP_PHONE_RAW}`);
     expect(decodeURIComponent(link)).toContain('Sara');
+  });
+
+  it('compacts very large whatsapp orders so the link stays practical', () => {
+    const link = buildOrderWhatsAppLink({
+      customerName: 'Sara',
+      phone: '0500000000',
+      address: 'Riyadh',
+      items: Array.from({ length: 80 }, (_, index) => ({
+        name: `Water carton product with a very long display name ${index + 1}`,
+        quantity: 2,
+        unitPrice: 10,
+        lineTotal: 20,
+      })),
+      totalItems: 160,
+      subtotal: 1600,
+      deliveryFee: 0,
+      discount: 0,
+      finalTotal: 1600,
+      isRTL: false,
+    });
+
+    const message = new URL(link).searchParams.get('text') ?? '';
+    expect(message).toContain('Compact summary');
+    expect(message).toContain('+ 45 more cart items');
+    expect(message).not.toContain('Unit price');
   });
 
   it('exposes the shared catalog', () => {

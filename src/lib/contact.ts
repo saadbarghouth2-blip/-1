@@ -22,9 +22,9 @@ export const CONTACT_PHONE_NUMBERS = [
 ];
 export const CONTACT_EMAIL = 'saadsaad50begiseralex6@gmail.com';
 export const CONTACT_EMAIL_HREF = `mailto:${CONTACT_EMAIL}`;
-export const WHATSAPP_PHONE_RAW = '966505457251';
-export const WHATSAPP_PHONE_DISPLAY = '+966 50 545 7251';
-export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_PHONE_RAW}`;
+export const WHATSAPP_PHONE_RAW = '966570323534';
+export const WHATSAPP_PHONE_DISPLAY = '+966 57 032 3534';
+export const WHATSAPP_LINK = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE_RAW}`;
 export const TIKTOK_LINK = 'https://www.tiktok.com/@moya.ksaa?_r=1&_t=ZS-96ucaLw51Tc';
 export const BUSINESS_LEGAL_NAME_AR = '\u0634\u0631\u0643\u0629 \u0625\u0634\u0631\u0627\u0642 \u0627\u0644\u0648\u0627\u062f\u064a \u0644\u0644\u062a\u062c\u0627\u0631\u0629 \u0634\u0631\u0643\u0629 \u0634\u062e\u0635 \u0648\u0627\u062d\u062f';
 export const BUSINESS_LEGAL_NAME_EN = 'Ashraq Alwady Trading One Person Company';
@@ -147,6 +147,39 @@ function buildGoogleMapsLink(lat?: number, lng?: number) {
   return `https://maps.google.com/?q=${lat},${lng}`;
 }
 
+const MAX_WHATSAPP_MESSAGE_LENGTH = 3000;
+const MAX_COMPACT_ORDER_ITEMS = 35;
+
+export function buildWhatsAppMessageLink(message: string) {
+  const params = new URLSearchParams({
+    phone: WHATSAPP_PHONE_RAW,
+    text: message,
+  });
+
+  return `https://api.whatsapp.com/send?${params.toString()}`;
+}
+
+function compactOrderItems(items: OrderEmailItem[], isRTL: boolean) {
+  const visibleItems = items.slice(0, MAX_COMPACT_ORDER_ITEMS);
+  const remainingItems = items.length - visibleItems.length;
+  const lines = visibleItems
+    .map((item, index) =>
+      isRTL
+        ? `${index + 1}. ${item.name} - \u0627\u0644\u0643\u0645\u064a\u0629: ${item.quantity}`
+        : `${index + 1}. ${item.name} - Qty: ${item.quantity}`
+    );
+
+  if (remainingItems > 0) {
+    lines.push(
+      isRTL
+        ? `+ ${remainingItems} \u0645\u0646\u062a\u062c \u0625\u0636\u0627\u0641\u064a \u0641\u064a \u0627\u0644\u0633\u0644\u0629`
+        : `+ ${remainingItems} more cart items`
+    );
+  }
+
+  return lines.join('\n');
+}
+
 function buildTemplateLocaleParams(isRTL: boolean) {
   return {
     lang: isRTL ? 'ar' : 'en',
@@ -239,7 +272,7 @@ export function buildContactWhatsAppLink(
   lines.push(`${isRTL ? 'Ø§Ù„Ø±Ø³Ø§Ù„Ø©' : 'Message'}:`);
   lines.push(payload.message || fallback);
 
-  return `${WHATSAPP_LINK}?text=${encodeURIComponent(lines.join('\n'))}`;
+  return buildWhatsAppMessageLink(lines.join('\n'));
 }
 
 export function buildOrderWhatsAppLink(payload: OrderEmailPayload) {
@@ -318,18 +351,65 @@ export function buildOrderWhatsAppLink(payload: OrderEmailPayload) {
       : 'Please confirm item availability and delivery time.'
   );
 
-  return `${WHATSAPP_LINK}?text=${encodeURIComponent(lines.join('\n'))}`;
+  const message = lines.join('\n');
+
+  if (message.length <= MAX_WHATSAPP_MESSAGE_LENGTH) {
+    return buildWhatsAppMessageLink(message);
+  }
+
+  const compactLines = [
+    payload.isRTL ? '\u0637\u0644\u0628 \u062c\u062f\u064a\u062f - \u0645\u062a\u062c\u0631 \u0631\u064a\u0642' : 'New order - Riq Store',
+    payload.isRTL ? '------------------------' : '----------------------',
+    '',
+    payload.isRTL ? '\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0639\u0645\u064a\u0644' : 'Customer details',
+    `${payload.isRTL ? '\u0627\u0644\u0627\u0633\u0645' : 'Name'}: ${withFallback(payload.customerName, fallback)}`,
+    `${payload.isRTL ? '\u0627\u0644\u062c\u0648\u0627\u0644' : 'Phone'}: ${withFallback(payload.phone, fallback)}`,
+    `${payload.isRTL ? '\u0627\u0644\u0628\u0631\u064a\u062f' : 'Email'}: ${withFallback(payload.email, fallback)}`,
+    `${payload.isRTL ? '\u0648\u0642\u062a \u0627\u0644\u0637\u0644\u0628' : 'Order time'}: ${formatTimestamp()}`,
+    '',
+    payload.isRTL ? '\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062a\u0648\u0635\u064a\u0644' : 'Delivery details',
+    `${payload.isRTL ? '\u0627\u0644\u0639\u0646\u0648\u0627\u0646' : 'Address'}: ${withFallback(payload.address, fallback)}`,
+    `${payload.isRTL ? '\u0631\u0627\u0628\u0637 \u0627\u0644\u0645\u0648\u0642\u0639' : 'Location link'}: ${locationUrl || fallback}`,
+    '',
+    payload.isRTL ? '\u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u062f\u0641\u0639' : 'Payment method',
+    `${payload.isRTL ? '\u0627\u0644\u0627\u062e\u062a\u064a\u0627\u0631' : 'Selected'}: ${paymentMethodLabel}`,
+    ...bankTransferLines,
+    '',
+    payload.isRTL ? '\u062a\u0641\u0627\u0635\u064a\u0644 \u0627\u0644\u0645\u0646\u062a\u062c\u0627\u062a' : 'Order items',
+    compactOrderItems(payload.items, payload.isRTL) || fallback,
+    '',
+    payload.isRTL ? '\u0645\u0644\u062e\u0635 \u0627\u0644\u0641\u0627\u062a\u0648\u0631\u0629' : 'Invoice summary',
+    `${payload.isRTL ? '\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u0643\u0631\u0627\u062a\u064a\u0646' : 'Total cartons'}: ${payload.totalItems}`,
+    `${payload.isRTL ? '\u0627\u0644\u0645\u062c\u0645\u0648\u0639 \u0627\u0644\u0641\u0631\u0639\u064a' : 'Subtotal'}: ${formatSarPrice(payload.subtotal, payload.isRTL)}`,
+    `${payload.isRTL ? '\u0631\u0633\u0648\u0645 \u0627\u0644\u062a\u0648\u0635\u064a\u0644' : 'Delivery fee'}: ${formatSarPrice(payload.deliveryFee, payload.isRTL)}`,
+    `${payload.isRTL ? '\u0627\u0644\u062e\u0635\u0645' : 'Discount'}: ${formatSarPrice(payload.discount, payload.isRTL)}`,
+    `${payload.isRTL ? '\u0627\u0644\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u0646\u0647\u0627\u0626\u064a' : 'Final total'}: ${formatSarPrice(payload.finalTotal, payload.isRTL)}`,
+  ];
+
+  if (payload.notes?.trim()) {
+    compactLines.push('');
+    compactLines.push(payload.isRTL ? '\u0645\u0644\u0627\u062d\u0638\u0627\u062a' : 'Notes');
+    compactLines.push(payload.notes.trim());
+  }
+
+  compactLines.push('');
+  compactLines.push(
+    payload.isRTL
+      ? '\u0645\u0644\u062e\u0635 \u0645\u062e\u062a\u0635\u0631 \u0644\u0636\u0645\u0627\u0646 \u0641\u062a\u062d \u0648\u0627\u062a\u0633\u0627\u0628 \u0628\u0633\u0631\u0639\u0629.'
+      : 'Compact summary to keep WhatsApp opening quickly.'
+  );
+
+  return buildWhatsAppMessageLink(compactLines.join('\n'));
 }
 export function openWhatsAppLink(url: string) {
   if (typeof window === 'undefined') {
     return;
   }
 
-  const popup = window.open('', '_blank');
+  const popup = window.open(url, '_blank', 'noopener,noreferrer');
 
   if (popup) {
     popup.opener = null;
-    popup.location.href = url;
     popup.focus();
     return;
   }

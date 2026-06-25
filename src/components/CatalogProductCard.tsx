@@ -2,7 +2,7 @@ import { ArrowRight, MessageCircle, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { Product } from '../data/products';
 import { hasFixedPrice, isDiscountedProduct } from '../data/products';
-import { WHATSAPP_LINK } from '../lib/contact';
+import { buildWhatsAppMessageLink } from '../lib/contact';
 import { cn, formatSarPrice } from '../lib/utils';
 import ProductImage from './ProductImage';
 
@@ -35,11 +35,11 @@ export default function CatalogProductCard({
         }
       : null;
   const packFacts = `${product.size} | x${product.quantity}`;
-  const quoteHref = `${WHATSAPP_LINK}?text=${encodeURIComponent(
+  const quoteHref = buildWhatsAppMessageLink(
     isRTL
       ? `أرغب في معرفة سعر ${product.name.ar}`
-      : `I would like to know the current price for ${product.name.en}`,
-  )}`;
+      : `I would like to know the current price for ${product.name.en}`
+  );
 
   return (
     <article
