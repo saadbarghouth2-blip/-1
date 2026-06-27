@@ -9,17 +9,7 @@ import {
 } from 'react';
 import type { OrderSummary, ProfileRecord, SaveProfileInput, WebAuthSession } from '../account/types';
 import { clearWebCheckoutDraft } from '../../lib/webCheckoutDraft';
-import { getSupabaseConfigError, isSupabaseConfigured } from '../../lib/supabase';
-import {
-  getCurrentWebSession,
-  listUserOrders,
-  loadUserProfile,
-  sendWebEmailOtp,
-  signOutWebAccount,
-  subscribeToWebAuthChanges,
-  upsertUserProfile,
-  verifyWebEmailOtp,
-} from '../../services/webAccount';
+import { getSupabaseConfigError, isSupabaseConfigured } from '../../lib/supabaseConfig';
 
 type WebAuthContextValue = {
   authReady: boolean;
@@ -39,6 +29,7 @@ type WebAuthContextValue = {
 };
 
 const WebAuthContext = createContext<WebAuthContextValue | undefined>(undefined);
+const loadWebAccountService = () => import('../../services/webAccount');
 
 export function WebAuthProvider({ children }: { children: ReactNode }) {
   const configured = isSupabaseConfigured();
@@ -56,6 +47,7 @@ export function WebAuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    const { listUserOrders, loadUserProfile } = await loadWebAccountService();
     const [profileData, orderData] = await Promise.all([
       loadUserProfile(activeSession.userId),
       listUserOrders(activeSession.userId),
@@ -71,15 +63,31 @@ export function WebAuthProvider({ children }: { children: ReactNode }) {
     }
 
     let isActive = true;
+    let unsubscribe: (() => void) | undefined;
 
-    void getCurrentWebSession()
-      .then(async (currentSession) => {
+    void loadWebAccountService()
+      .then(async ({ getCurrentWebSession, subscribeToWebAuthChanges }) => {
+        const currentSession = await getCurrentWebSession();
         if (!isActive) {
           return;
         }
 
         setSession(currentSession);
         await loadAccountData(currentSession);
+
+        if (!isActive) {
+          return;
+        }
+
+        unsubscribe = subscribeToWebAuthChanges((_, nextSession) => {
+          if (!isActive) {
+            return;
+          }
+
+          setSession(nextSession);
+          void loadAccountData(nextSession);
+          setAuthReady(true);
+        });
       })
       .catch(() => {
         if (!isActive) {
@@ -96,19 +104,9 @@ export function WebAuthProvider({ children }: { children: ReactNode }) {
         }
       });
 
-    const unsubscribe = subscribeToWebAuthChanges((_, nextSession) => {
-      if (!isActive) {
-        return;
-      }
-
-      setSession(nextSession);
-      void loadAccountData(nextSession);
-      setAuthReady(true);
-    });
-
     return () => {
       isActive = false;
-      unsubscribe();
+      unsubscribe?.();
     };
   }, [configured, loadAccountData]);
 
@@ -131,9 +129,11 @@ export function WebAuthProvider({ children }: { children: ReactNode }) {
       setIsDialogOpen(false);
     },
     async requestEmailOtp(email: string) {
+      const { sendWebEmailOtp } = await loadWebAccountService();
       await sendWebEmailOtp(email.trim().toLowerCase());
     },
     async confirmEmailOtp(email: string, token: string) {
+      const { getCurrentWebSession, verifyWebEmailOtp } = await loadWebAccountService();
       await verifyWebEmailOtp(email.trim().toLowerCase(), token.trim());
       const currentSession = await getCurrentWebSession();
       setSession(currentSession);
@@ -144,6 +144,7 @@ export function WebAuthProvider({ children }: { children: ReactNode }) {
         throw new Error('No authenticated account is available.');
       }
 
+      const { upsertUserProfile } = await loadWebAccountService();
       const nextProfile = await upsertUserProfile({
         ...input,
         userId: session.userId,
@@ -159,9 +160,11 @@ export function WebAuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
+      const { listUserOrders } = await loadWebAccountService();
       setOrders(await listUserOrders(session.userId));
     },
     async signOut() {
+      const { signOutWebAccount } = await loadWebAccountService();
       await signOutWebAccount();
       clearWebCheckoutDraft();
       setSession(null);

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { hasFixedPrice, type Product } from '../data/products';
+import type { Product } from '../data/products';
 
 interface CartItem {
   product: Product;
@@ -21,13 +21,17 @@ function getProductCartonCount(product: Product) {
   return product.category === 'offer' ? Math.max(product.quantity, 1) : 1;
 }
 
+function isFixedPriceProduct(product: Product): product is Product & { price: number } {
+  return product.pricingMode === 'fixed' && typeof product.price === 'number';
+}
+
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
   const addToCart = useCallback((product: Product, quantity: number = 1) => {
-    if (!product.isPurchasable || !hasFixedPrice(product)) {
+    if (!product.isPurchasable || !isFixedPriceProduct(product)) {
       return;
     }
 

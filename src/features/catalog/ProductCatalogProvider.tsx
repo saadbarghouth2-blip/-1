@@ -20,7 +20,7 @@ import {
   type ProductSize,
   type ProductSizeOption,
 } from '../../data/products';
-import { isSupabaseConfigured } from '../../lib/supabase';
+import { isSupabaseConfigured } from '../../lib/supabaseConfig';
 import { listPublishedProducts } from '../../services/productAdmin';
 
 type ProductCatalogContextValue = {

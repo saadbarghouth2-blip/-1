@@ -13,11 +13,10 @@ import { InstallButton } from './components/InstallButton';
 import SplashScreen from './components/SplashScreen';
 import AnimatedBackground from './components/AnimatedBackground';
 import MobileBottomNav from './components/MobileBottomNav';
-import SeoManager from './components/SeoManager';
 import { cancelIdleTask, scheduleIdleTask } from './lib/idle';
-import Home from './pages/Home';
 import { getRouterBasename } from './lib/site';
 
+const loadHomePage = () => import('./pages/Home');
 const loadProductsPage = () => import('./pages/Products');
 const loadProductCatalogGroupPage = () => import('./pages/ProductCatalogGroup');
 const loadProductDetailPage = () => import('./pages/ProductDetail');
@@ -33,7 +32,13 @@ const loadAppInstallPage = () => import('./pages/AppInstall');
 const loadAdminDashboardPage = () => import('./pages/AdminDashboard');
 const loadAdminProductsPage = () => import('./pages/AdminProducts');
 const loadNotFoundPage = () => import('./pages/NotFound');
+const loadSeoManager = () => import('./components/SeoManager');
+const loadProductCatalogProvider = () =>
+  import('./features/catalog/ProductCatalogProvider').then(({ ProductCatalogProvider }) => ({
+    default: ProductCatalogProvider,
+  }));
 
+const Home = lazy(loadHomePage);
 const Products = lazy(loadProductsPage);
 const ProductCatalogGroup = lazy(loadProductCatalogGroupPage);
 const ProductDetail = lazy(loadProductDetailPage);
@@ -49,6 +54,8 @@ const AppInstall = lazy(loadAppInstallPage);
 const AdminDashboard = lazy(loadAdminDashboardPage);
 const AdminProducts = lazy(loadAdminProductsPage);
 const NotFound = lazy(loadNotFoundPage);
+const SeoManager = lazy(loadSeoManager);
+const ProductCatalogProvider = lazy(loadProductCatalogProvider);
 
 const PAGE_TRANSITION_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -225,7 +232,9 @@ function AppContent() {
       }`}
       dir={isRTL ? 'rtl' : 'ltr'}
     >
-      <SeoManager />
+      <Suspense fallback={null}>
+        <SeoManager />
+      </Suspense>
       {!isMobileCheckoutBridge && <AnimatedBackground />}
       {!isMobileCheckoutBridge && <SplashScreen />}
       {!isMobileCheckoutBridge && <Navigation />}
@@ -235,24 +244,26 @@ function AppContent() {
       <div className={hasFloatingNavOffset ? 'pt-6 sm:pt-7' : ''}>
         <AnimatePresence initial={false} mode="wait">
           <Suspense fallback={<RouteLoader isRTL={isRTL} />}>
-            <Routes location={location} key={location.pathname}>
-              <Route path="/" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Home /></PageTransition>} />
-              <Route path="/products" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Products /></PageTransition>} />
-              <Route path="/products/:groupSlug" element={<PageTransition direction={routeDirection} isRTL={isRTL}><ProductCatalogGroup /></PageTransition>} />
-              <Route path="/product/:id" element={<PageTransition direction={routeDirection} isRTL={isRTL}><ProductDetail /></PageTransition>} />
-              <Route path="/brands" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Brands /></PageTransition>} />
-              <Route path="/brand/:brandId" element={<PageTransition direction={routeDirection} isRTL={isRTL}><BrandDetail /></PageTransition>} />
-              <Route path="/offers" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Offers /></PageTransition>} />
-              <Route path="/contact" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Contact /></PageTransition>} />
-              <Route path="/about" element={<PageTransition direction={routeDirection} isRTL={isRTL}><About /></PageTransition>} />
-              <Route path="/cart" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Cart /></PageTransition>} />
-              <Route path="/checkout" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Checkout /></PageTransition>} />
-              <Route path="/checkout/mobile" element={<PageTransition direction={routeDirection} isRTL={isRTL}><MobileCheckoutBridge /></PageTransition>} />
-              <Route path="/app" element={<PageTransition direction={routeDirection} isRTL={isRTL}><AppInstall /></PageTransition>} />
-              <Route path="/admin" element={<PageTransition direction={routeDirection} isRTL={isRTL}><AdminDashboard /></PageTransition>} />
-              <Route path="/admin/products" element={<PageTransition direction={routeDirection} isRTL={isRTL}><AdminProducts /></PageTransition>} />
-              <Route path="*" element={<PageTransition direction={routeDirection} isRTL={isRTL}><NotFound /></PageTransition>} />
-            </Routes>
+            <ProductCatalogProvider>
+              <Routes location={location} key={location.pathname}>
+                <Route path="/" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Home /></PageTransition>} />
+                <Route path="/products" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Products /></PageTransition>} />
+                <Route path="/products/:groupSlug" element={<PageTransition direction={routeDirection} isRTL={isRTL}><ProductCatalogGroup /></PageTransition>} />
+                <Route path="/product/:id" element={<PageTransition direction={routeDirection} isRTL={isRTL}><ProductDetail /></PageTransition>} />
+                <Route path="/brands" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Brands /></PageTransition>} />
+                <Route path="/brand/:brandId" element={<PageTransition direction={routeDirection} isRTL={isRTL}><BrandDetail /></PageTransition>} />
+                <Route path="/offers" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Offers /></PageTransition>} />
+                <Route path="/contact" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Contact /></PageTransition>} />
+                <Route path="/about" element={<PageTransition direction={routeDirection} isRTL={isRTL}><About /></PageTransition>} />
+                <Route path="/cart" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Cart /></PageTransition>} />
+                <Route path="/checkout" element={<PageTransition direction={routeDirection} isRTL={isRTL}><Checkout /></PageTransition>} />
+                <Route path="/checkout/mobile" element={<PageTransition direction={routeDirection} isRTL={isRTL}><MobileCheckoutBridge /></PageTransition>} />
+                <Route path="/app" element={<PageTransition direction={routeDirection} isRTL={isRTL}><AppInstall /></PageTransition>} />
+                <Route path="/admin" element={<PageTransition direction={routeDirection} isRTL={isRTL}><AdminDashboard /></PageTransition>} />
+                <Route path="/admin/products" element={<PageTransition direction={routeDirection} isRTL={isRTL}><AdminProducts /></PageTransition>} />
+                <Route path="*" element={<PageTransition direction={routeDirection} isRTL={isRTL}><NotFound /></PageTransition>} />
+              </Routes>
+            </ProductCatalogProvider>
           </Suspense>
         </AnimatePresence>
       </div>
