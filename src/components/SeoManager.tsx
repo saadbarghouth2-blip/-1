@@ -393,6 +393,28 @@ function buildStaticPagePayload({
 
 function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): SeoPayload {
   const normalizedPath = normalizeCanonicalPath(pathname);
+
+  if (normalizedPath === '/') {
+    return buildStaticPagePayload({
+      title: isRTL
+        ? 'متجر ريق | توصيل مياه الشرب والعروض في الرياض'
+        : 'Riq Store | Bottled Water Delivery and Offers in Riyadh',
+      description: isRTL ? SITE_DEFAULT_DESCRIPTION.ar : SITE_DEFAULT_DESCRIPTION.en,
+      path: '/',
+      keywords: isRTL
+        ? 'مياه، توصيل مياه الرياض، طلب مياه، مياه شرب، مياه معبأة، عروض مياه، متجر ريق، ريق'
+        : 'water delivery Riyadh, bottled water, water offers, Riq Store',
+      breadcrumbs: [{ name: isRTL ? 'الرئيسية' : 'Home', path: '/' }],
+      items: products.slice(0, 10).map((product) => ({
+        name: isRTL ? product.name.ar : product.name.en,
+        path: `/product/${product.id}`,
+      })),
+      pageType: 'WebPage',
+      isRTL,
+      siteOrigin,
+    });
+  }
+
   const homeBreadcrumbs: BreadcrumbItem[] = [
     { name: isRTL ? 'الرئيسية' : 'Home', path: '/' },
   ];

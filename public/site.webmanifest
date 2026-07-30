@@ -1,86 +1,42 @@
 {
-  "id": "/",
-  "name": "متجر ريق - Riq Store",
-  "short_name": "ريق",
-  "description": "ريق.com هو الموقع الرسمي لمتجر ريق. ثبت متجر ريق كتطبيق ويب على جوالك لطلب المياه المعبأة بسرعة.",
+  "name": "متجر ريق - توصيل مياه الشرب",
+  "short_name": "متجر ريق",
+  "description": "اطلب مياه الشرب المعبأة والعروض مع توصيل سريع داخل الرياض.",
+  "lang": "ar-SA",
+  "dir": "rtl",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui", "browser"],
-  "orientation": "portrait-primary",
-  "background_color": "#edf4fa",
+  "background_color": "#f4fbff",
   "theme_color": "#153b66",
-  "lang": "ar",
-  "dir": "rtl",
-  "categories": ["shopping", "utilities"],
-  "screenshots": [
-    {
-      "src": "/icons/app-icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "form_factor": "wide"
-    },
-    {
-      "src": "/icons/app-icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "form_factor": "narrow"
-    }
-  ],
   "icons": [
     {
       "src": "/icons/app-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "/icons/app-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/app-icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/icons/app-icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
     {
       "name": "المنتجات",
       "short_name": "المنتجات",
-      "description": "اطلع على كل منتجات المياه المتاحة",
+      "description": "تصفّح جميع منتجات المياه المتاحة",
       "url": "/products",
-      "icons": [
-        {
-          "src": "/icons/app-icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
+      "icons": [{ "src": "/icons/app-icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "العروض",
       "short_name": "العروض",
-      "description": "أفضل عروض المياه والتخفيضات",
+      "description": "اكتشف عروض المياه الحالية",
       "url": "/offers",
-      "icons": [
-        {
-          "src": "/icons/app-icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
+      "icons": [{ "src": "/icons/app-icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
-  ],
-  "prefer_related_applications": false,
-  "prefer_native_display": false
+  ]
 }
