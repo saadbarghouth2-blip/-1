@@ -31,12 +31,10 @@ import { formatSarPrice } from '../lib/utils';
 const loadStatsTickerSection = () => import('../sections/StatsTicker');
 const loadParallaxShowcaseSection = () => import('../sections/ParallaxShowcase');
 const loadTestimonialsCarouselSection = () => import('../sections/TestimonialsCarousel');
-const loadPremiumCTASection = () => import('../sections/PremiumCTA');
 
 const StatsTicker = lazy(loadStatsTickerSection);
 const ParallaxShowcase = lazy(loadParallaxShowcaseSection);
 const TestimonialsCarousel = lazy(loadTestimonialsCarouselSection);
-const PremiumCTA = lazy(loadPremiumCTASection);
 
 const HERO_BUBBLE_CONFIGS = Array.from({ length: 14 }, (_, index) => ({
   id: index,
@@ -314,9 +312,9 @@ function ExactFastDeliveryHero({
         </>
       ) : null}
       <motion.img
-        src="/images/home-hero-riq-water.png"
+        src="/images/29448fae-193d-4937-9cc8-2eda5e4f2de7.jpg"
         alt={isRTL ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في الرياض' : 'Riq fast pure water delivery to your door in Riyadh'}
-        className="relative z-10 block aspect-video h-auto w-full rounded-[0.7rem] border border-sky-100/80 object-cover object-center shadow-[0_22px_60px_-34px_rgba(15,63,123,0.46)] sm:rounded-[1.1rem] lg:rounded-[1.5rem]"
+        className="relative z-10 block h-auto w-full rounded-[0.7rem] border border-sky-100/80 object-contain object-center shadow-[0_22px_60px_-34px_rgba(15,63,123,0.46)] sm:rounded-[1.1rem] lg:rounded-[1.5rem]"
         initial={prefersReducedMotion ? false : { opacity: 0, y: 18, scale: 0.985, filter: 'blur(5px)' }}
         animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
         whileHover={prefersReducedMotion ? undefined : { scale: 1.004 }}
@@ -564,7 +562,7 @@ function HomeOffersShowcase({
                     product={product}
                     isRTL={isRTL}
                     size="card"
-                    className="h-36 rounded-[0.65rem] sm:h-44 md:rounded-[1.1rem]"
+                    className="aspect-square rounded-[0.65rem] md:rounded-[1.1rem]"
                     imageClassName="group-hover:scale-[1.035]"
                   />
                 </Link>
@@ -649,7 +647,6 @@ export default function Home() {
         loadStatsTickerSection,
         loadParallaxShowcaseSection,
         loadTestimonialsCarouselSection,
-        loadPremiumCTASection,
       ];
 
       void Promise.all(preloaders.map((preload) => preload().catch(() => null)));
@@ -1107,7 +1104,6 @@ export default function Home() {
         <StatsTicker key="stats" isRTL={isRTL} />,
         <ParallaxShowcase key="parallax" isRTL={isRTL} />,
         <TestimonialsCarousel key="testimonials" isRTL={isRTL} />,
-        <PremiumCTA key="premium" isRTL={isRTL} />,
       ].map((section, index) => (
         <motion.div
           key={section.key}

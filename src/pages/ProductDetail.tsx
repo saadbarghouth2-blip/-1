@@ -333,7 +333,7 @@ export default function ProductDetail() {
                   className="overflow-hidden rounded-[1.9rem] border border-slate-200 bg-white p-4 shadow-[0_18px_55px_-34px_rgba(15,23,42,0.28)]"
                 >
                   <Link to={`/product/${related.id}`} className="block">
-                    <ProductImage product={related} isRTL={isRTL} size="card" className="h-52" />
+                    <ProductImage product={related} isRTL={isRTL} size="card" className="aspect-square" />
                   </Link>
                   <Link to={`/product/${related.id}`}>
                     <h3 className="mt-4 line-clamp-2 text-lg font-bold text-slate-900 transition-colors hover:text-[#153b66]">

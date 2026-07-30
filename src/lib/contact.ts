@@ -4,13 +4,11 @@ import { BRAND_NAME_EN, BRAND_NAME_LOCKUP } from './brand';
 export const CONTACT_PHONE_RAW = '966505457251';
 export const CONTACT_PHONE_DISPLAY = '+966 50 545 7251';
 export const CONTACT_PHONE_HREF = `tel:+${CONTACT_PHONE_RAW}`;
-export const CONTACT_ADDITIONAL_PHONES = [
-  {
-    raw: '966573734946',
-    display: '+966 57 373 4946',
-    href: 'tel:+966573734946',
-  },
-];
+export const CONTACT_ADDITIONAL_PHONES: Array<{
+  raw: string;
+  display: string;
+  href: string;
+}> = [];
 export const CONTACT_PHONE_NUMBERS = [
   {
     raw: CONTACT_PHONE_RAW,

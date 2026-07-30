@@ -160,7 +160,7 @@ export default function Offers() {
                       product={product}
                       isRTL={isRTL}
                       size="card"
-                      className="h-56"
+                      className="aspect-square"
                       imageClassName="group-hover:scale-[1.03]"
                     />
                   </Link>

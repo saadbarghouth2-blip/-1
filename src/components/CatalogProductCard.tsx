@@ -73,7 +73,7 @@ export default function CatalogProductCard({
           product={product}
           isRTL={isRTL}
           size="card"
-          className="h-32 min-[430px]:h-36 sm:h-52"
+          className="aspect-square"
           imageClassName="group-hover:scale-[1.03]"
         />
       </Link>

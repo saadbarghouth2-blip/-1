@@ -13,7 +13,7 @@ interface ProductImageProps {
 }
 
 const frameClasses: Record<ProductImageSize, string> = {
-  card: 'aspect-[4/3] rounded-[1.3rem] sm:rounded-[1.75rem]',
+  card: 'aspect-square rounded-[1.3rem] sm:rounded-[1.75rem]',
   list: 'aspect-square rounded-2xl',
   detail: 'aspect-[5/4] rounded-[2rem] sm:rounded-[2.25rem]',
   thumb: 'aspect-square rounded-xl',
@@ -22,7 +22,7 @@ const frameClasses: Record<ProductImageSize, string> = {
 
 const shellClasses: Record<NonNullable<Product['imageType']>, string> = {
   case: 'bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.98),rgba(239,249,255,0.94)_55%,rgba(191,219,254,0.9))]',
-  offer: 'bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.98),rgba(254,242,242,0.95)_48%,rgba(254,215,170,0.88))]',
+  offer: 'bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.99),rgba(239,249,255,0.96)_48%,rgba(186,230,253,0.82))]',
   bottle: 'bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.98),rgba(240,253,250,0.93)_48%,rgba(186,230,253,0.88))]',
   gallon: 'bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.98),rgba(224,242,254,0.94)_52%,rgba(191,219,254,0.9))]',
 };
