@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -294,7 +294,7 @@ function ExactFastDeliveryHero({
     <motion.section
       ref={heroRef}
       style={{ opacity: heroOpacity }}
-      className="group/hero relative isolate overflow-hidden bg-[#f4f9fc] px-2 pb-2 pt-[5.15rem] sm:px-4 sm:pb-4 md:flex md:min-h-screen md:items-center md:justify-center md:px-6 md:pb-5 md:pt-[7.35rem] xl:px-8"
+      className="group/hero relative isolate overflow-hidden bg-[#f4f9fc] px-2 pb-2 pt-[5.15rem] sm:px-4 sm:pb-4 md:px-6 md:pb-6 md:pt-[7.35rem] xl:px-8"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
       {!prefersReducedMotion ? (
@@ -316,7 +316,7 @@ function ExactFastDeliveryHero({
       <motion.img
         src="/images/home-hero-riq-water.png"
         alt={isRTL ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في الرياض' : 'Riq fast pure water delivery to your door in Riyadh'}
-        className="relative z-10 mx-auto block aspect-video h-auto w-full rounded-[0.7rem] border border-sky-100/80 object-contain object-center shadow-[0_22px_60px_-34px_rgba(15,63,123,0.46)] sm:rounded-[1.1rem] md:aspect-auto md:h-auto md:max-h-[calc(100dvh-8.6rem)] md:w-auto md:max-w-full lg:rounded-[1.5rem]"
+        className="relative z-10 block aspect-video h-auto w-full rounded-[0.7rem] border border-sky-100/80 object-cover object-center shadow-[0_22px_60px_-34px_rgba(15,63,123,0.46)] sm:rounded-[1.1rem] lg:rounded-[1.5rem]"
         initial={prefersReducedMotion ? false : { opacity: 0, y: 18, scale: 0.985, filter: 'blur(5px)' }}
         animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
         whileHover={prefersReducedMotion ? undefined : { scale: 1.004 }}
@@ -626,6 +626,12 @@ export default function Home() {
     target: heroRef,
     offset: ['start start', 'end start'],
   });
+  const { scrollYProgress: pageScrollProgress } = useScroll();
+  const smoothPageProgress = useSpring(pageScrollProgress, {
+    stiffness: 120,
+    damping: 24,
+    mass: 0.35,
+  });
 
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.9]);
@@ -701,6 +707,11 @@ export default function Home() {
 
   return (
     <main className="overflow-x-hidden">
+      <motion.div
+        aria-hidden="true"
+        className="fixed inset-x-0 top-0 z-[100] h-[3px] origin-left bg-gradient-to-r from-[#075985] via-[#22b8d6] to-[#2563eb] shadow-[0_2px_12px_rgba(14,116,144,0.38)]"
+        style={{ scaleX: prefersReducedMotion ? pageScrollProgress : smoothPageProgress }}
+      />
       <ExactFastDeliveryHero
         heroRef={heroRef}
         heroOpacity={heroOpacity}
@@ -1092,21 +1103,26 @@ export default function Home() {
         </div>
       </motion.section>
 
-      <Suspense fallback={<HomeSectionFallback />}>
-        <StatsTicker isRTL={isRTL} />
-      </Suspense>
-
-      <Suspense fallback={<HomeSectionFallback />}>
-        <ParallaxShowcase isRTL={isRTL} />
-      </Suspense>
-
-      <Suspense fallback={<HomeSectionFallback />}>
-        <TestimonialsCarousel isRTL={isRTL} />
-      </Suspense>
-
-      <Suspense fallback={<HomeSectionFallback />}>
-        <PremiumCTA isRTL={isRTL} />
-      </Suspense>
+      {[
+        <StatsTicker key="stats" isRTL={isRTL} />,
+        <ParallaxShowcase key="parallax" isRTL={isRTL} />,
+        <TestimonialsCarousel key="testimonials" isRTL={isRTL} />,
+        <PremiumCTA key="premium" isRTL={isRTL} />,
+      ].map((section, index) => (
+        <motion.div
+          key={section.key}
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 34, scale: 0.992 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.08, margin: '-45px' }}
+          transition={{
+            duration: prefersReducedMotion ? 0.2 : 0.68,
+            delay: prefersReducedMotion ? 0 : Math.min(index * 0.04, 0.12),
+            ease: [0.22, 1, 0.36, 1],
+          }}
+        >
+          <Suspense fallback={<HomeSectionFallback />}>{section}</Suspense>
+        </motion.div>
+      ))}
     </main>
   );
 }
