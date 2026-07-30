@@ -294,7 +294,7 @@ function ExactFastDeliveryHero({
     <motion.section
       ref={heroRef}
       style={{ opacity: heroOpacity }}
-      className="group/hero relative isolate overflow-hidden bg-[#f4f9fc] px-2.5 pb-2.5 pt-[5.15rem] sm:px-4 sm:pb-4 md:px-6 md:pb-6 md:pt-[7.35rem]"
+      className="group/hero relative isolate overflow-hidden bg-[#f4f9fc] px-2 pb-2 pt-[5.15rem] sm:px-4 sm:pb-4 md:flex md:min-h-screen md:items-center md:justify-center md:px-6 md:pb-5 md:pt-[7.35rem] xl:px-8"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
       {!prefersReducedMotion ? (
@@ -315,8 +315,8 @@ function ExactFastDeliveryHero({
       ) : null}
       <motion.img
         src="/images/home-hero-riq-water.png"
-        alt={isRTL ? 'مياه ريق النقية وخدمات التوصيل في جميع مناطق المملكة' : 'Riq pure water and delivery services across Saudi Arabia'}
-        className="relative z-10 block h-auto w-full rounded-[0.85rem] border border-sky-100 object-contain shadow-[0_20px_55px_-36px_rgba(15,63,123,0.42)] sm:rounded-[1.2rem]"
+        alt={isRTL ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في الرياض' : 'Riq fast pure water delivery to your door in Riyadh'}
+        className="relative z-10 mx-auto block aspect-video h-auto w-full rounded-[0.7rem] border border-sky-100/80 object-contain object-center shadow-[0_22px_60px_-34px_rgba(15,63,123,0.46)] sm:rounded-[1.1rem] md:aspect-auto md:h-auto md:max-h-[calc(100dvh-8.6rem)] md:w-auto md:max-w-full lg:rounded-[1.5rem]"
         initial={prefersReducedMotion ? false : { opacity: 0, y: 18, scale: 0.985, filter: 'blur(5px)' }}
         animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
         whileHover={prefersReducedMotion ? undefined : { scale: 1.004 }}
@@ -573,7 +573,7 @@ function HomeOffersShowcase({
                     <span className="rounded-full bg-[#e8f5ff] px-2 py-1 text-[9px] font-black text-[#075985] sm:text-xs md:px-2.5">
                       {isRTL ? product.brandAr : product.brand}
                     </span>
-                    <span className="rounded-full bg-red-600 px-2 py-1 text-[9px] font-black text-white sm:text-xs md:bg-red-50 md:px-2.5 md:text-red-600">
+                    <span className="rounded-full bg-[#0b6fa4] px-2 py-1 text-[9px] font-black text-white shadow-[0_6px_16px_-10px_rgba(11,111,164,0.9)] sm:text-xs md:bg-[#e8f5ff] md:px-2.5 md:text-[#075985] md:shadow-none">
                       {isRTL ? `وفر ${formatSarPrice(savings, true)}` : `Save ${formatSarPrice(savings, false)}`}
                     </span>
                   </div>
@@ -583,7 +583,7 @@ function HomeOffersShowcase({
                     </h3>
                   </Link>
                   <div className="mt-2 flex flex-wrap items-end gap-x-2 gap-y-1 border-t border-slate-100 pt-2.5 md:mt-3 md:pt-3">
-                    <span className="text-base font-black text-red-600 sm:text-xl md:text-[#075985]">
+                    <span className="text-base font-black text-[#075985] sm:text-xl">
                       {formatSarPrice(product.price, isRTL)}
                     </span>
                     <span className="text-[11px] text-slate-400 line-through sm:text-xs">

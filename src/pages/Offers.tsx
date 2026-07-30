@@ -46,22 +46,22 @@ export default function Offers() {
         <motion.section
           initial={{ opacity: 0, y: 24 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#7f1d1d] via-[#dc2626] to-[#450a0a] px-6 py-8 text-white shadow-[0_34px_95px_-42px_rgba(127,29,29,0.86)] sm:px-8 sm:py-10"
+          className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#0b5685] via-[#0b78ad] to-[#07345f] px-6 py-8 text-white shadow-[0_34px_95px_-42px_rgba(7,67,111,0.72)] sm:px-8 sm:py-10"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_18%,rgba(254,202,202,0.26),rgba(254,202,202,0)_34%),radial-gradient(circle_at_18%_92%,rgba(251,146,60,0.16),rgba(251,146,60,0)_38%)]" />
-          <div className="absolute -left-14 top-0 h-40 w-40 rounded-full bg-red-200/30 blur-3xl" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_18%,rgba(186,230,253,0.30),rgba(186,230,253,0)_34%),radial-gradient(circle_at_18%_92%,rgba(34,211,238,0.16),rgba(34,211,238,0)_38%)]" />
+          <div className="absolute -left-14 top-0 h-40 w-40 rounded-full bg-sky-200/30 blur-3xl" />
           <motion.div
-            className="absolute right-8 top-8 h-28 w-28 rounded-full bg-red-100/24 blur-3xl"
+            className="absolute right-8 top-8 h-28 w-28 rounded-full bg-cyan-100/25 blur-3xl"
             animate={{ scale: [0.9, 1.25, 0.9], opacity: [0.35, 0.72, 0.35] }}
             transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
           />
-          <div className="absolute bottom-0 right-0 h-48 w-48 rounded-full bg-orange-200/18 blur-3xl" />
+          <div className="absolute bottom-0 right-0 h-48 w-48 rounded-full bg-blue-200/20 blur-3xl" />
 
           <div className="relative grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
             <div>
               <motion.div
-                className="relative mb-4 inline-flex items-center gap-2 overflow-hidden rounded-full border border-red-200/60 bg-gradient-to-r from-red-600 via-rose-600 to-red-500 px-4 py-2 text-sm font-black text-white shadow-[0_18px_42px_-20px_rgba(220,38,38,0.78)]"
-                animate={{ y: [0, -2, 0], boxShadow: ['0 18px 42px -24px rgba(220,38,38,0.72)', '0 22px 54px -18px rgba(248,113,113,0.9)', '0 18px 42px -24px rgba(220,38,38,0.72)'] }}
+                className="relative mb-4 inline-flex items-center gap-2 overflow-hidden rounded-full border border-sky-200/60 bg-gradient-to-r from-[#086b9d] via-[#0b83b8] to-[#168fc0] px-4 py-2 text-sm font-black text-white shadow-[0_18px_42px_-20px_rgba(14,116,144,0.78)]"
+                animate={{ y: [0, -2, 0], boxShadow: ['0 18px 42px -24px rgba(14,116,144,0.70)', '0 22px 54px -18px rgba(56,189,248,0.82)', '0 18px 42px -24px rgba(14,116,144,0.70)'] }}
                 transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
               >
                 <motion.span
@@ -113,9 +113,9 @@ export default function Offers() {
                   initial={{ opacity: 0, y: 14 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.14 + index * 0.06 }}
-                  className="rounded-[1.5rem] border border-red-100/30 bg-red-950/18 p-4 backdrop-blur-sm transition-colors hover:bg-red-500/20"
+                  className="rounded-[1.5rem] border border-sky-100/30 bg-[#063b67]/25 p-4 backdrop-blur-sm transition-colors hover:bg-sky-400/20"
                 >
-                  <item.icon className="mb-3 h-5 w-5 text-red-100" />
+                  <item.icon className="mb-3 h-5 w-5 text-sky-100" />
                   <div className="text-2xl font-black">{item.value}</div>
                   <div className="text-sm text-white/70">{item.label}</div>
                 </motion.div>
@@ -136,7 +136,7 @@ export default function Offers() {
             </p>
             <Link
               to="/"
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#075985] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#064b70]"
             >
               <span>{isRTL ? 'العودة للرئيسية' : 'Back home'}</span>
               <ArrowRight className={`h-4 w-4 ${isRTL ? 'rotate-180' : ''}`} />
@@ -153,7 +153,7 @@ export default function Offers() {
                   initial={{ opacity: 0, y: 18 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.05 * index }}
-                  className="group overflow-hidden rounded-[2rem] border border-red-100 bg-white p-4 shadow-[0_20px_60px_-34px_rgba(127,29,29,0.34)] transition-all hover:-translate-y-1 hover:border-red-200 hover:shadow-[0_28px_76px_-36px_rgba(220,38,38,0.32)] sm:p-5"
+                  className="group overflow-hidden rounded-[2rem] border border-sky-100 bg-white p-4 shadow-[0_20px_60px_-34px_rgba(7,89,133,0.28)] transition-all hover:-translate-y-1 hover:border-sky-200 hover:shadow-[0_28px_76px_-36px_rgba(14,116,144,0.30)] sm:p-5"
                 >
                   <Link to={`/product/${product.id}`} className="block">
                     <ProductImage
@@ -166,10 +166,10 @@ export default function Offers() {
                   </Link>
 
                   <div className="mt-5 flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700">
+                    <span className="rounded-full bg-sky-50 px-3 py-1.5 text-xs font-semibold text-[#075985]">
                       {isRTL ? product.brandAr : product.brand}
                     </span>
-                    <span className="rounded-full bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700">
+                    <span className="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
                       {product.size}
                     </span>
                     <span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">
@@ -178,7 +178,7 @@ export default function Offers() {
                   </div>
 
                   <Link to={`/product/${product.id}`}>
-                    <h2 className="mt-4 line-clamp-2 text-xl font-black leading-tight text-slate-900 transition-colors hover:text-red-700">
+                    <h2 className="mt-4 line-clamp-2 text-xl font-black leading-tight text-slate-900 transition-colors hover:text-[#075985]">
                       {isRTL ? product.name.ar : product.name.en}
                     </h2>
                   </Link>
@@ -187,14 +187,14 @@ export default function Offers() {
                   </p>
 
                   <div className="mt-5 flex items-end gap-3">
-                    <span className="text-2xl font-black text-red-700">
+                    <span className="text-2xl font-black text-[#075985]">
                       {formatSarPrice(product.price, isRTL)}
                     </span>
                     <span className="text-sm text-slate-400 line-through">
                       {formatSarPrice(product.originalPrice ?? product.price, isRTL)}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm font-semibold text-red-700">
+                  <p className="mt-2 text-sm font-semibold text-[#087da1]">
                     {isRTL
                       ? `توفر ${formatSarPrice(savings, isRTL)} على هذا المقاس`
                       : `Save ${formatSarPrice(savings, isRTL)} on this pack`}
@@ -203,14 +203,14 @@ export default function Offers() {
                   <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                     <Link
                       to={`/product/${product.id}`}
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#075985] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#064b70]"
                     >
                       <span>{isRTL ? 'عرض التفاصيل' : 'View details'}</span>
                       <ArrowRight className={`h-4 w-4 ${isRTL ? 'rotate-180' : ''}`} />
                     </Link>
                     <button
                       onClick={() => addToCart(product)}
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-red-100 px-5 py-3 text-sm font-semibold text-red-700 transition-colors hover:border-red-300 hover:bg-red-50"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-sky-200 px-5 py-3 text-sm font-semibold text-[#075985] transition-colors hover:border-sky-400 hover:bg-sky-50"
                     >
                       <ShoppingCart className="h-4 w-4" />
                       <span>{isRTL ? 'أضف للسلة' : 'Add to cart'}</span>
