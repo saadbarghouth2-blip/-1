@@ -1,4 +1,5 @@
 import { ArrowRight, MessageCircle, ShoppingCart } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import type { Product } from '../data/products';
 import { hasFixedPrice, isDiscountedProduct } from '../data/products';
@@ -21,6 +22,7 @@ export default function CatalogProductCard({
   groupBadge,
   className,
 }: CatalogProductCardProps) {
+  const prefersReducedMotion = useReducedMotion();
   const hasPrice = hasFixedPrice(product);
   const hasDiscount = isDiscountedProduct(product);
   const statusBadge = product.pricingMode === 'quote'
@@ -42,12 +44,19 @@ export default function CatalogProductCard({
   );
 
   return (
-    <article
+    <motion.article
+      initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 34, scale: 0.96 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: '-45px' }}
+      transition={{ duration: prefersReducedMotion ? 0.2 : 0.5, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={prefersReducedMotion ? undefined : { y: -8, scale: 1.012 }}
+      whileTap={prefersReducedMotion ? undefined : { scale: 0.988 }}
       className={cn(
-        'group flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white/92 p-2 shadow-[0_18px_40px_-34px_rgba(15,23,42,0.26)] min-[430px]:rounded-[1.55rem] min-[430px]:p-3 sm:rounded-[1.75rem] sm:p-4',
+        'group relative flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white/92 p-2 shadow-[0_18px_40px_-34px_rgba(15,23,42,0.26)] transition-shadow duration-300 hover:shadow-[0_28px_64px_-32px_rgba(21,59,102,0.42)] min-[430px]:rounded-[1.55rem] min-[430px]:p-3 sm:rounded-[1.75rem] sm:p-4',
         className,
       )}
     >
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_5%,rgba(56,189,248,0.12),transparent_38%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       <Link to={`/product/${product.id}`} className="relative block">
         {statusBadge ? (
           <span
@@ -151,6 +160,6 @@ export default function CatalogProductCard({
           )}
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }

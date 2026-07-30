@@ -294,19 +294,56 @@ function ExactFastDeliveryHero({
     <motion.section
       ref={heroRef}
       style={{ opacity: heroOpacity }}
-      className="relative isolate overflow-hidden bg-[#f4f9fc] px-2.5 pb-2.5 pt-[5.15rem] sm:px-4 sm:pb-4 md:px-6 md:pb-6 md:pt-[7.35rem]"
+      className="group/hero relative isolate overflow-hidden bg-[#f4f9fc] px-2.5 pb-2.5 pt-[5.15rem] sm:px-4 sm:pb-4 md:px-6 md:pb-6 md:pt-[7.35rem]"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
+      {!prefersReducedMotion ? (
+        <>
+          <motion.span
+            aria-hidden="true"
+            className="pointer-events-none absolute left-[7%] top-[24%] z-20 h-3 w-3 rounded-full border border-white/80 bg-sky-300/45 shadow-[0_0_24px_rgba(56,189,248,0.72)]"
+            animate={{ y: [0, -24, 0], x: [0, 8, 0], scale: [0.8, 1.25, 0.8], opacity: [0.35, 0.9, 0.35] }}
+            transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.span
+            aria-hidden="true"
+            className="pointer-events-none absolute right-[10%] top-[38%] z-20 h-5 w-5 rounded-full border border-white/80 bg-cyan-200/35 shadow-[0_0_28px_rgba(34,211,238,0.55)]"
+            animate={{ y: [0, -34, 0], x: [0, -11, 0], scale: [1, 0.72, 1], opacity: [0.28, 0.78, 0.28] }}
+            transition={{ duration: 5.4, repeat: Infinity, delay: 0.45, ease: 'easeInOut' }}
+          />
+        </>
+      ) : null}
       <motion.img
         src="/images/home-hero-riq-water.png"
         alt={isRTL ? 'مياه ريق النقية وخدمات التوصيل في جميع مناطق المملكة' : 'Riq pure water and delivery services across Saudi Arabia'}
         className="relative z-10 block h-auto w-full rounded-[0.85rem] border border-sky-100 object-contain shadow-[0_20px_55px_-36px_rgba(15,63,123,0.42)] sm:rounded-[1.2rem]"
-        initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: prefersReducedMotion ? 0.2 : 0.58, ease: [0.22, 1, 0.36, 1] }}
+        initial={prefersReducedMotion ? false : { opacity: 0, y: 18, scale: 0.985, filter: 'blur(5px)' }}
+        animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+        whileHover={prefersReducedMotion ? undefined : { scale: 1.004 }}
+        transition={{ duration: prefersReducedMotion ? 0.2 : 0.82, ease: [0.22, 1, 0.36, 1] }}
         loading="eager"
         fetchPriority="high"
       />
+
+      {!prefersReducedMotion ? (
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-2 top-[5.15rem] z-20 w-[22%] -skew-x-12 bg-gradient-to-r from-transparent via-white/35 to-transparent blur-xl md:top-[7.35rem]"
+          initial={{ left: '-35%', opacity: 0 }}
+          animate={{ left: ['-35%', '118%'], opacity: [0, 0.68, 0] }}
+          transition={{ duration: 2.4, delay: 0.9, repeat: Infinity, repeatDelay: 5.2, ease: 'easeInOut' }}
+        />
+      ) : null}
+
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-5 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-1.5 rounded-full border border-white/55 bg-white/65 px-3 py-2 text-[#075985] shadow-lg backdrop-blur-md md:flex"
+        animate={prefersReducedMotion ? undefined : { y: [0, 7, 0] }}
+        transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <span className="text-[10px] font-black">{isRTL ? 'اكتشف المزيد' : 'Explore more'}</span>
+        <ChevronDown className="h-4 w-4" />
+      </motion.div>
 
       <div className="hidden">
       <motion.div style={{ scale: heroScale, y: heroY }} className="absolute inset-0 hidden md:block">
@@ -459,6 +496,8 @@ function HomeOffersShowcase({
   isRTL: boolean;
   onAddToCart: (product: Product) => void;
 }) {
+  const prefersReducedMotion = useReducedMotion();
+
   if (offers.length === 0) {
     return null;
   }
@@ -467,7 +506,13 @@ function HomeOffersShowcase({
     <section className="relative overflow-hidden bg-[#f4f9fc] pb-10 pt-5 text-slate-900 md:bg-[#071d35] md:py-16 md:text-white">
       <div className="pointer-events-none absolute inset-0 hidden bg-[radial-gradient(circle_at_8%_20%,rgba(56,189,248,0.2),transparent_34%),radial-gradient(circle_at_92%_82%,rgba(14,165,233,0.14),transparent_32%)] md:block" />
       <div className="relative w-full px-3 sm:px-6 lg:px-12 xl:px-20">
-        <div className="mb-4 flex items-end justify-between gap-3 md:mb-7 md:flex-row md:gap-5">
+        <motion.div
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 26 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-70px' }}
+          transition={{ duration: prefersReducedMotion ? 0.2 : 0.65, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-4 flex items-end justify-between gap-3 md:mb-7 md:flex-row md:gap-5"
+        >
           <div>
             <span className="hidden items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-xs font-black text-cyan-100 md:inline-flex">
               <BadgePercent className="h-4 w-4" />
@@ -489,7 +534,7 @@ function HomeOffersShowcase({
             <span>{isRTL ? 'عرض الكل' : 'View all'}</span>
             <ArrowRight className={`h-4 w-4 ${isRTL ? 'rotate-180' : ''}`} />
           </Link>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4 lg:gap-5">
           {offers.map((product, index) => {
@@ -498,12 +543,22 @@ function HomeOffersShowcase({
             return (
               <motion.article
                 key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-70px' }}
-                transition={{ delay: index * 0.06 }}
-                className="group overflow-hidden rounded-[0.9rem] border border-slate-200 bg-white p-1.5 text-slate-900 shadow-[0_14px_35px_-28px_rgba(15,23,42,0.38)] md:rounded-[1.5rem] md:border-white/10 md:p-3 md:shadow-[0_24px_60px_-35px_rgba(56,189,248,0.65)]"
+                initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 52, scale: 0.94, rotateX: 9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+                viewport={{ once: true, margin: '-55px' }}
+                transition={{ delay: prefersReducedMotion ? 0 : index * 0.09, duration: prefersReducedMotion ? 0.2 : 0.64, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={prefersReducedMotion ? undefined : { y: -10, scale: 1.018, rotateY: index % 2 === 0 ? 1.2 : -1.2 }}
+                whileTap={prefersReducedMotion ? undefined : { scale: 0.985 }}
+                className="group relative overflow-hidden rounded-[0.9rem] border border-slate-200 bg-white p-1.5 text-slate-900 shadow-[0_14px_35px_-28px_rgba(15,23,42,0.38)] transition-shadow duration-300 hover:shadow-[0_28px_70px_-34px_rgba(14,116,144,0.58)] md:rounded-[1.5rem] md:border-white/10 md:p-3 md:shadow-[0_24px_60px_-35px_rgba(56,189,248,0.65)]"
+                style={{ transformPerspective: 1100 }}
               >
+                <motion.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 z-20 w-20 -skew-x-12 bg-gradient-to-r from-transparent via-white/55 to-transparent opacity-0 group-hover:opacity-100"
+                  initial={{ left: '-45%' }}
+                  whileHover={{ left: '125%' }}
+                  transition={{ duration: 0.75, ease: 'easeOut' }}
+                />
                 <Link to={`/product/${product.id}`} className="block">
                   <ProductImage
                     product={product}
@@ -538,7 +593,7 @@ function HomeOffersShowcase({
                   <button
                     type="button"
                     onClick={() => onAddToCart(product)}
-                    className="mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-[#087da1] bg-white px-2 py-2 text-[0.7rem] font-black text-[#08708f] transition hover:bg-[#eaf8fb] md:mt-3 md:rounded-full md:border-cyan-100 md:bg-cyan-50 md:text-xs md:text-[#075985]"
+                    className="mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-[#087da1] bg-white px-2 py-2 text-[0.7rem] font-black text-[#08708f] transition duration-300 hover:-translate-y-0.5 hover:bg-[#075985] hover:text-white active:scale-[0.97] md:mt-3 md:rounded-full md:border-cyan-100 md:bg-cyan-50 md:text-xs md:text-[#075985]"
                   >
                     <ShoppingCart className="h-3.5 w-3.5" />
                     <span>{isRTL ? 'إضافة للسلة' : 'Add to cart'}</span>
@@ -557,6 +612,7 @@ void FastDeliveryHero;
 
 export default function Home() {
   const { i18n } = useTranslation();
+  const prefersReducedMotion = useReducedMotion();
   const heroRef = useRef<HTMLDivElement>(null);
   const isRTL = i18n.language === 'ar';
   const { totalItems, addToCart } = useCart();
@@ -902,7 +958,19 @@ export default function Home() {
       </motion.section>
       ) : null}
 
-      <section className="bg-[linear-gradient(180deg,#ffffff_0%,#eef6fb_100%)] py-12 sm:py-14">
+      <motion.section
+        initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 38 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-90px' }}
+        transition={{ duration: prefersReducedMotion ? 0.2 : 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="relative overflow-hidden bg-[linear-gradient(180deg,#ffffff_0%,#eef6fb_100%)] py-12 sm:py-14"
+      >
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-32 top-10 h-72 w-72 rounded-full bg-sky-300/20 blur-3xl"
+          animate={prefersReducedMotion ? undefined : { x: [0, 46, 0], y: [0, 24, 0], scale: [1, 1.14, 1] }}
+          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+        />
         <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-20">
           <div className="mb-5 flex items-end justify-between gap-3">
             <div>
@@ -927,11 +995,12 @@ export default function Home() {
             {quickDestinations.map((item, index) => (
               <motion.div
                 key={item.href}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.045 }}
-                whileHover={{ y: index === 0 ? -4 : -2 }}
+                initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 34, x: index % 2 === 0 ? -18 : 18, scale: 0.97 }}
+                whileInView={{ opacity: 1, y: 0, x: 0, scale: 1 }}
+                viewport={{ once: true, margin: '-45px' }}
+                transition={{ delay: prefersReducedMotion ? 0 : index * 0.065, duration: prefersReducedMotion ? 0.2 : 0.55, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={prefersReducedMotion ? undefined : { y: index === 0 ? -8 : -5, scale: 1.012 }}
+                whileTap={prefersReducedMotion ? undefined : { scale: 0.985 }}
                 className={index === 0 ? 'lg:row-span-3' : ''}
               >
                 <Link
@@ -979,9 +1048,15 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section className="bg-white py-6 shadow-sm sm:py-8">
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: '-70px' }}
+        transition={{ duration: 0.55 }}
+        className="bg-white py-6 shadow-sm sm:py-8"
+      >
         <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-20">
           <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
             {[
@@ -992,15 +1067,21 @@ export default function Home() {
             ].map((feature, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="flex items-center gap-3"
+                initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 28, scale: 0.93 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: '-35px' }}
+                transition={{ delay: prefersReducedMotion ? 0 : index * 0.1, duration: prefersReducedMotion ? 0.2 : 0.5, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={prefersReducedMotion ? undefined : { y: -6, scale: 1.025 }}
+                whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
+                className="group flex items-center gap-3 rounded-2xl p-2 transition-colors hover:bg-sky-50/80"
               >
-                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#153b66] to-[#2b648c] text-white sm:h-12 sm:w-12">
+                <motion.div
+                  className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#153b66] to-[#2b648c] text-white shadow-[0_12px_28px_-16px_rgba(21,59,102,0.8)] sm:h-12 sm:w-12"
+                  whileHover={prefersReducedMotion ? undefined : { rotate: [0, -7, 7, 0], scale: 1.1 }}
+                  transition={{ duration: 0.45 }}
+                >
                   <feature.icon className="h-4 w-4 sm:h-6 sm:w-6" />
-                </div>
+                </motion.div>
                 <div>
                   <h4 className="text-sm font-bold text-gray-800 sm:text-base">{feature.title}</h4>
                   <p className="text-xs text-gray-500 sm:text-sm">{feature.desc}</p>
@@ -1009,7 +1090,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       <Suspense fallback={<HomeSectionFallback />}>
         <StatsTicker isRTL={isRTL} />

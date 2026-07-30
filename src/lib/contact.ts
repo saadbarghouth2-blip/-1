@@ -1,4 +1,4 @@
-﻿import { formatSarPrice } from './utils';
+import { formatSarPrice } from './utils';
 import { BRAND_NAME_EN, BRAND_NAME_LOCKUP } from './brand';
 
 export const CONTACT_PHONE_RAW = '966505457251';
@@ -185,48 +185,48 @@ function buildTemplateLocaleParams(isRTL: boolean) {
     lang: isRTL ? 'ar' : 'en',
     direction: isRTL ? 'rtl' : 'ltr',
     text_align: isRTL ? 'right' : 'left',
-    intro_overline: isRTL ? 'Ø¥Ø´Ø¹Ø§Ø± Ø¥Ø¯Ø§Ø±ÙŠ Ù…Ù† Ø§Ù„Ù…ÙˆÙ‚Ø¹' : 'Administrative website notification',
+    intro_overline: isRTL ? 'إشعار إداري من الموقع' : 'Administrative website notification',
     brand_name: BRAND_NAME_LOCKUP,
     intro_text: isRTL
-      ? 'ØªÙ… Ø§Ø³ØªÙ„Ø§Ù… Ø±Ø³Ø§Ù„Ø© Ø£Ùˆ Ø·Ù„Ø¨ Ø¬Ø¯ÙŠØ¯ Ù…Ù† Ø§Ù„Ù…ÙˆÙ‚Ø¹ØŒ ÙˆÙŠÙ…ÙƒÙ†Ùƒ Ù…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„ØªÙØ§ØµÙŠÙ„ ÙˆØ§Ù„Ø±Ø¯ Ø¨Ø³Ø±Ø¹Ø© Ù…Ù† Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„ØªØ§Ù„ÙŠØ©.'
+      ? 'تم استلام رسالة أو طلب جديد من الموقع، ويمكنك مراجعة التفاصيل والرد بسرعة من البيانات التالية.'
       : 'A new message or order has been received from the website. You can review the details and respond quickly using the information below.',
-    time_label: isRTL ? 'ÙˆÙ‚Øª Ø§Ù„Ø§Ø³ØªÙ„Ø§Ù…' : 'Received at',
-    sender_info_label: isRTL ? 'Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ø±Ø³Ù„' : 'Sender details',
-    name_label: isRTL ? 'Ø§Ù„Ø§Ø³Ù…' : 'Name',
-    phone_label: isRTL ? 'Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ' : 'Phone number',
-    email_label: isRTL ? 'Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ' : 'Email address',
-    subject_label: isRTL ? 'Ø§Ù„Ù…ÙˆØ¶ÙˆØ¹' : 'Subject',
-    source_label: isRTL ? 'Ù…ØµØ¯Ø± Ø§Ù„Ø±Ø³Ø§Ù„Ø©' : 'Message source',
-    message_label: isRTL ? 'Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ø±Ø³Ø§Ù„Ø©' : 'Message content',
-    order_details_label: isRTL ? 'ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ø·Ù„Ø¨' : 'Order details',
-    total_items_label: isRTL ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù‚Ø·Ø¹' : 'Total items',
-    subtotal_label: isRTL ? 'Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„ÙØ±Ø¹ÙŠ' : 'Subtotal',
-    delivery_fee_label: isRTL ? 'Ø±Ø³ÙˆÙ… Ø§Ù„ØªÙˆØµÙŠÙ„' : 'Delivery fee',
-    discount_label: isRTL ? 'Ø§Ù„Ø®ØµÙ…' : 'Discount',
-    order_total_label: isRTL ? 'Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ' : 'Final total',
-    address_label: isRTL ? 'Ø§Ù„Ø¹Ù†ÙˆØ§Ù†' : 'Address',
-    notes_label: isRTL ? 'Ø§Ù„Ù…Ù„Ø§Ø­Ø¸Ø§Øª' : 'Notes',
-    reply_button_label: isRTL ? 'Ø±Ø¯ Ø³Ø±ÙŠØ¹ Ø¹Ù„Ù‰ Ø§Ù„Ù…Ø±Ø³Ù„' : 'Quick reply to sender',
-    whatsapp_admin_label: isRTL ? 'ÙˆØ§ØªØ³Ø§Ø¨ Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©' : 'Admin WhatsApp',
+    time_label: isRTL ? 'وقت الاستلام' : 'Received at',
+    sender_info_label: isRTL ? 'بيانات المرسل' : 'Sender details',
+    name_label: isRTL ? 'الاسم' : 'Name',
+    phone_label: isRTL ? 'رقم الهاتف' : 'Phone number',
+    email_label: isRTL ? 'البريد الإلكتروني' : 'Email address',
+    subject_label: isRTL ? 'الموضوع' : 'Subject',
+    source_label: isRTL ? 'مصدر الرسالة' : 'Message source',
+    message_label: isRTL ? 'محتوى الرسالة' : 'Message content',
+    order_details_label: isRTL ? 'تفاصيل الطلب' : 'Order details',
+    total_items_label: isRTL ? 'إجمالي القطع' : 'Total items',
+    subtotal_label: isRTL ? 'المجموع الفرعي' : 'Subtotal',
+    delivery_fee_label: isRTL ? 'رسوم التوصيل' : 'Delivery fee',
+    discount_label: isRTL ? 'الخصم' : 'Discount',
+    order_total_label: isRTL ? 'الإجمالي النهائي' : 'Final total',
+    address_label: isRTL ? 'العنوان' : 'Address',
+    notes_label: isRTL ? 'الملاحظات' : 'Notes',
+    reply_button_label: isRTL ? 'رد سريع على المرسل' : 'Quick reply to sender',
+    whatsapp_admin_label: isRTL ? 'واتساب الإدارة' : 'Admin WhatsApp',
     footer_note: isRTL
-      ? 'Ù‡Ø°Ù‡ Ø±Ø³Ø§Ù„Ø© Ø¢Ù„ÙŠØ© ØªÙ… Ø¥Ù†Ø´Ø§Ø¤Ù‡Ø§ Ù…Ù† Ù†Ù…ÙˆØ°Ø¬ Ø§Ù„Ù…ÙˆÙ‚Ø¹ØŒ ÙŠØ±Ø¬Ù‰ Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯ Ø¹Ù„Ù‰ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ø±Ø³Ù„ Ø¨Ø§Ù„Ø£Ø¹Ù„Ù‰ Ø¹Ù†Ø¯ Ø§Ù„Ù…ØªØ§Ø¨Ø¹Ø©.'
+      ? 'هذه رسالة آلية تم إنشاؤها من نموذج الموقع، يرجى الاعتماد على بيانات المرسل بالأعلى عند المتابعة.'
       : 'This is an automated message generated from the website form. Please use the sender details above when following up.',
-    auto_reply_subject: isRTL ? 'Ø§Ø³ØªÙ„Ù…Ù†Ø§ Ø±Ø³Ø§Ù„ØªÙƒ Ø¨Ù†Ø¬Ø§Ø­' : 'We received your message successfully',
-    auto_reply_overline: isRTL ? 'Ø±Ø³Ø§Ù„Ø© ØªØ£ÙƒÙŠØ¯ ØªÙ„Ù‚Ø§Ø¦ÙŠØ©' : 'Automatic confirmation message',
-    auto_reply_heading: isRTL ? 'Ø´ÙƒØ±Ù‹Ø§ Ù„ØªÙˆØ§ØµÙ„Ùƒ Ù…Ø¹Ù†Ø§' : 'Thank you for contacting us',
-    auto_reply_greeting: isRTL ? 'Ù…Ø±Ø­Ø¨Ù‹Ø§ {{name}}ØŒ' : 'Hello {{name}},',
+    auto_reply_subject: isRTL ? 'استلمنا رسالتك بنجاح' : 'We received your message successfully',
+    auto_reply_overline: isRTL ? 'رسالة تأكيد تلقائية' : 'Automatic confirmation message',
+    auto_reply_heading: isRTL ? 'شكرًا لتواصلك معنا' : 'Thank you for contacting us',
+    auto_reply_greeting: isRTL ? 'مرحبًا {{name}}،' : 'Hello {{name}},',
     auto_reply_intro: isRTL
-      ? 'ØªÙ… Ø§Ø³ØªÙ„Ø§Ù… Ø±Ø³Ø§Ù„ØªÙƒ Ø¨Ù†Ø¬Ø§Ø­ØŒ ÙˆÙØ±ÙŠÙ‚Ù†Ø§ Ø³ÙŠÙ‚ÙˆÙ… Ø¨Ù…Ø±Ø§Ø¬Ø¹ØªÙ‡Ø§ ÙˆØ§Ù„Ø±Ø¯ Ø¹Ù„ÙŠÙƒ ÙÙŠ Ø£Ù‚Ø±Ø¨ ÙˆÙ‚Øª Ù…Ù…ÙƒÙ†.'
+      ? 'تم استلام رسالتك بنجاح، وفريقنا سيقوم بمراجعتها والرد عليك في أقرب وقت ممكن.'
       : 'Your message has been received successfully, and our team will review it and get back to you as soon as possible.',
-    auto_reply_summary_label: isRTL ? 'Ù…Ù„Ø®Øµ Ø±Ø³Ø§Ù„ØªÙƒ' : 'Your message summary',
-    auto_reply_request_type_label: isRTL ? 'Ù†ÙˆØ¹ Ø§Ù„Ø·Ù„Ø¨' : 'Request type',
-    auto_reply_time_label: isRTL ? 'ÙˆÙ‚Øª Ø§Ù„Ø¥Ø±Ø³Ø§Ù„' : 'Sent at',
-    auto_reply_message_label: isRTL ? 'Ù†Øµ Ø§Ù„Ø±Ø³Ø§Ù„Ø©' : 'Message',
+    auto_reply_summary_label: isRTL ? 'ملخص رسالتك' : 'Your message summary',
+    auto_reply_request_type_label: isRTL ? 'نوع الطلب' : 'Request type',
+    auto_reply_time_label: isRTL ? 'وقت الإرسال' : 'Sent at',
+    auto_reply_message_label: isRTL ? 'نص الرسالة' : 'Message',
     auto_reply_order_note: isRTL
-      ? 'Ø¥Ø°Ø§ ÙƒØ§Ù†Øª Ø±Ø³Ø§Ù„ØªÙƒ ØªØ®Øµ Ø·Ù„Ø¨Ù‹Ø§ Ø¬Ø¯ÙŠØ¯Ù‹Ø§ØŒ ÙØ³ÙŠØªÙ… Ø§Ù„ØªÙˆØ§ØµÙ„ Ù…Ø¹Ùƒ Ù„ØªØ£ÙƒÙŠØ¯ Ø§Ù„ØªÙØ§ØµÙŠÙ„ ÙˆØ®Ø·ÙˆØ§Øª Ø§Ù„ØªÙ†ÙÙŠØ°.'
+      ? 'إذا كانت رسالتك تخص طلبًا جديدًا، فسيتم التواصل معك لتأكيد التفاصيل وخطوات التنفيذ.'
       : 'If your message is about a new order, we will contact you to confirm the details and the next steps.',
-    auto_reply_support_label: isRTL ? 'Ù„Ù„ØªÙˆØ§ØµÙ„ Ø§Ù„Ø³Ø±ÙŠØ¹' : 'For quick contact',
-    auto_reply_signature: isRTL ? 'ÙØ±ÙŠÙ‚ Ø®Ø¯Ù…Ø© Ø§Ù„Ø¹Ù…Ù„Ø§Ø¡ - Ù…ØªØ¬Ø± Ø±ÙŠÙ‚' : `Customer Support Team - ${BRAND_NAME_EN}`,
+    auto_reply_support_label: isRTL ? 'للتواصل السريع' : 'For quick contact',
+    auto_reply_signature: isRTL ? 'فريق خدمة العملاء - متجر ريق' : `Customer Support Team - ${BRAND_NAME_EN}`,
   };
 }
 
@@ -256,20 +256,20 @@ export function buildContactWhatsAppLink(
   payload: Omit<ContactEmailPayload, 'isRTL'>,
   isRTL: boolean
 ) {
-  const fallback = isRTL ? 'ØºÙŠØ± Ù…ØªÙˆÙØ±' : 'Not provided';
+  const fallback = isRTL ? 'غير متوفر' : 'Not provided';
   const lines = [
-    isRTL ? 'Ø±Ø³Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù…Ù† Ø§Ù„Ù…ÙˆÙ‚Ø¹' : 'New website message',
-    `${isRTL ? 'Ø§Ù„Ø§Ø³Ù…' : 'Name'}: ${payload.name || fallback}`,
-    `${isRTL ? 'Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ' : 'Email'}: ${payload.email || fallback}`,
-    `${isRTL ? 'Ø§Ù„Ù‡Ø§ØªÙ' : 'Phone'}: ${withFallback(payload.phone, fallback)}`,
+    isRTL ? 'رسالة جديدة من الموقع' : 'New website message',
+    `${isRTL ? 'الاسم' : 'Name'}: ${payload.name || fallback}`,
+    `${isRTL ? 'البريد الإلكتروني' : 'Email'}: ${payload.email || fallback}`,
+    `${isRTL ? 'الهاتف' : 'Phone'}: ${withFallback(payload.phone, fallback)}`,
   ];
 
   if (payload.subject?.trim()) {
-    lines.push(`${isRTL ? 'Ø§Ù„Ù…ÙˆØ¶ÙˆØ¹' : 'Subject'}: ${payload.subject.trim()}`);
+    lines.push(`${isRTL ? 'الموضوع' : 'Subject'}: ${payload.subject.trim()}`);
   }
 
   lines.push('');
-  lines.push(`${isRTL ? 'Ø§Ù„Ø±Ø³Ø§Ù„Ø©' : 'Message'}:`);
+  lines.push(`${isRTL ? 'الرسالة' : 'Message'}:`);
   lines.push(payload.message || fallback);
 
   return buildWhatsAppMessageLink(lines.join('\n'));
@@ -418,27 +418,27 @@ export function openWhatsAppLink(url: string) {
 }
 
 export function sendContactEmail(payload: ContactEmailPayload) {
-  const fallback = payload.isRTL ? 'ØºÙŠØ± Ù…ØªÙˆÙØ±' : 'Not provided';
+  const fallback = payload.isRTL ? 'غير متوفر' : 'Not provided';
   const resolvedPhone = withFallback(payload.phone, fallback);
   const resolvedSubject = withFallback(
     payload.subject,
-    payload.isRTL ? 'Ø±Ø³Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù…Ù† Ù†Ù…ÙˆØ°Ø¬ Ø§Ù„ØªÙˆØ§ØµÙ„' : 'New contact form message'
+    payload.isRTL ? 'رسالة جديدة من نموذج التواصل' : 'New contact form message'
   );
   const composedMessage = [
-    `${payload.isRTL ? 'Ø§Ù„Ø§Ø³Ù…' : 'Name'}: ${payload.name}`,
-    `${payload.isRTL ? 'Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ' : 'Email'}: ${payload.email}`,
-    `${payload.isRTL ? 'Ø§Ù„Ù‡Ø§ØªÙ' : 'Phone'}: ${resolvedPhone}`,
-    `${payload.isRTL ? 'Ø§Ù„Ù…ÙˆØ¶ÙˆØ¹' : 'Subject'}: ${resolvedSubject}`,
+    `${payload.isRTL ? 'الاسم' : 'Name'}: ${payload.name}`,
+    `${payload.isRTL ? 'البريد الإلكتروني' : 'Email'}: ${payload.email}`,
+    `${payload.isRTL ? 'الهاتف' : 'Phone'}: ${resolvedPhone}`,
+    `${payload.isRTL ? 'الموضوع' : 'Subject'}: ${resolvedSubject}`,
     '',
-    `${payload.isRTL ? 'Ù†Øµ Ø§Ù„Ø±Ø³Ø§Ù„Ø©' : 'Message body'}:`,
+    `${payload.isRTL ? 'نص الرسالة' : 'Message body'}:`,
     payload.message,
   ].join('\n');
   const localeParams = buildTemplateLocaleParams(payload.isRTL);
 
   return sendEmail({
-    title: payload.isRTL ? 'Ø±Ø³Ø§Ù„Ø© ØªÙˆØ§ØµÙ„ Ø¬Ø¯ÙŠØ¯Ø©' : 'New contact message',
-    request_type: payload.isRTL ? 'Ø±Ø³Ø§Ù„Ø© ØªÙˆØ§ØµÙ„' : 'Contact message',
-    source: payload.isRTL ? 'ØµÙØ­Ø© Ø§Ù„ØªÙˆØ§ØµÙ„' : 'Contact page',
+    title: payload.isRTL ? 'رسالة تواصل جديدة' : 'New contact message',
+    request_type: payload.isRTL ? 'رسالة تواصل' : 'Contact message',
+    source: payload.isRTL ? 'صفحة التواصل' : 'Contact page',
     time: formatTimestamp(),
     name: payload.name,
     from_name: payload.name,
@@ -456,7 +456,7 @@ export function sendContactEmail(payload: ContactEmailPayload) {
 }
 
 export function sendOrderEmail(payload: OrderEmailPayload) {
-  const fallback = payload.isRTL ? 'ØºÙŠØ± Ù…ØªÙˆÙØ±' : 'Not provided';
+  const fallback = payload.isRTL ? 'غير متوفر' : 'Not provided';
   const locationUrl = buildGoogleMapsLink(payload.lat, payload.lng);
   const orderItems = payload.items
     .map(
@@ -469,39 +469,39 @@ export function sendOrderEmail(payload: OrderEmailPayload) {
     .join('\n');
 
   const composedMessage = [
-    `${payload.isRTL ? 'Ø§Ù„Ø§Ø³Ù…' : 'Name'}: ${payload.customerName}`,
-    `${payload.isRTL ? 'Ø§Ù„Ù‡Ø§ØªÙ' : 'Phone'}: ${payload.phone}`,
-    `${payload.isRTL ? 'Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ' : 'Email'}: ${withFallback(
+    `${payload.isRTL ? 'الاسم' : 'Name'}: ${payload.customerName}`,
+    `${payload.isRTL ? 'الهاتف' : 'Phone'}: ${payload.phone}`,
+    `${payload.isRTL ? 'البريد الإلكتروني' : 'Email'}: ${withFallback(
       payload.email,
       fallback
     )}`,
-    `${payload.isRTL ? 'Ø§Ù„Ø¹Ù†ÙˆØ§Ù†' : 'Address'}: ${withFallback(
+    `${payload.isRTL ? 'العنوان' : 'Address'}: ${withFallback(
       payload.address,
       fallback
     )}`,
-    `${payload.isRTL ? 'Ù„ÙŠÙ†Ùƒ Ø§Ù„Ù…ÙˆÙ‚Ø¹' : 'Location link'}: ${locationUrl || fallback}`,
-    `${payload.isRTL ? 'Ø§Ù„Ù…Ù„Ø§Ø­Ø¸Ø§Øª' : 'Notes'}: ${withFallback(
+    `${payload.isRTL ? 'لينك الموقع' : 'Location link'}: ${locationUrl || fallback}`,
+    `${payload.isRTL ? 'الملاحظات' : 'Notes'}: ${withFallback(
       payload.notes,
       fallback
     )}`,
     '',
-    `${payload.isRTL ? 'ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ø·Ù„Ø¨' : 'Order items'}:`,
+    `${payload.isRTL ? 'تفاصيل الطلب' : 'Order items'}:`,
     orderItems,
     '',
-    `${payload.isRTL ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„ÙƒØ±Ø§ØªÙŠÙ†' : 'Total cartons'}: ${payload.totalItems}`,
-    `${payload.isRTL ? 'Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„ÙØ±Ø¹ÙŠ' : 'Subtotal'}: ${formatSarPrice(
+    `${payload.isRTL ? 'إجمالي الكراتين' : 'Total cartons'}: ${payload.totalItems}`,
+    `${payload.isRTL ? 'المجموع الفرعي' : 'Subtotal'}: ${formatSarPrice(
       payload.subtotal,
       payload.isRTL
     )}`,
-    `${payload.isRTL ? 'Ø±Ø³ÙˆÙ… Ø§Ù„ØªÙˆØµÙŠÙ„' : 'Delivery fee'}: ${formatSarPrice(
+    `${payload.isRTL ? 'رسوم التوصيل' : 'Delivery fee'}: ${formatSarPrice(
       payload.deliveryFee,
       payload.isRTL
     )}`,
-    `${payload.isRTL ? 'Ø§Ù„Ø®ØµÙ…' : 'Discount'}: ${formatSarPrice(
+    `${payload.isRTL ? 'الخصم' : 'Discount'}: ${formatSarPrice(
       payload.discount,
       payload.isRTL
     )}`,
-    `${payload.isRTL ? 'Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ' : 'Final total'}: ${formatSarPrice(
+    `${payload.isRTL ? 'الإجمالي النهائي' : 'Final total'}: ${formatSarPrice(
       payload.finalTotal,
       payload.isRTL
     )}`,
@@ -509,9 +509,9 @@ export function sendOrderEmail(payload: OrderEmailPayload) {
   const localeParams = buildTemplateLocaleParams(payload.isRTL);
 
   return sendEmail({
-    title: payload.isRTL ? 'Ø·Ù„Ø¨ Ø¬Ø¯ÙŠØ¯ Ù…Ù† Ø§Ù„Ø³Ù„Ø©' : 'New cart order',
-    request_type: payload.isRTL ? 'Ø·Ù„Ø¨ Ø¬Ø¯ÙŠØ¯' : 'New order',
-    source: payload.isRTL ? 'ØµÙØ­Ø© Ø§Ù„Ø³Ù„Ø©' : 'Cart page',
+    title: payload.isRTL ? 'طلب جديد من السلة' : 'New cart order',
+    request_type: payload.isRTL ? 'طلب جديد' : 'New order',
+    source: payload.isRTL ? 'صفحة السلة' : 'Cart page',
     time: formatTimestamp(),
     name: payload.customerName,
     from_name: payload.customerName,
@@ -519,7 +519,7 @@ export function sendOrderEmail(payload: OrderEmailPayload) {
     from_email: withFallback(payload.email, fallback),
     reply_to: withFallback(payload.email, CONTACT_EMAIL),
     phone: payload.phone,
-    subject: payload.isRTL ? 'Ø·Ù„Ø¨ Ø¬Ø¯ÙŠØ¯ Ù…Ù† Ø§Ù„Ù…ÙˆÙ‚Ø¹' : 'New order from website',
+    subject: payload.isRTL ? 'طلب جديد من الموقع' : 'New order from website',
     message: composedMessage,
     order_items: orderItems,
     order_total: formatSarPrice(payload.finalTotal, payload.isRTL),

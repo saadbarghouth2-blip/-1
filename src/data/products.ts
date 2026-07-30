@@ -1,4 +1,4 @@
-﻿import type { LocalizedText } from '../lib/utils';
+import type { LocalizedText } from '../lib/utils';
 
 export interface OfferVariantOption {
   sizeLabel: LocalizedText;
@@ -236,33 +236,33 @@ function cleanProduct(product: Product): Product {
 }
 
 const BRAND_META = {
-  neutral: { id: 'neotrel', en: 'Neotrel', ar: 'Ù†ÙŠÙˆØªØ±Ù„' },
-  nirvana: { id: 'nirvana', en: 'Nirvana', ar: 'Ù†ÙŠØ±ÙØ§Ù†Ø§' },
-  nova: { id: 'nova', en: 'Nova', ar: 'Ù†ÙˆÙØ§' },
-  falin: { id: 'falin', en: 'Falin', ar: 'ÙØ§Ù„ÙŠÙ†' },
-  alShafiyah: { id: 'al-shafiyah', en: 'Al Shafiyah', ar: 'Ø§Ù„Ø´Ø§ÙÙŠØ©' },
-  alRaneemDiamond: { id: 'al-raneem-diamond', en: 'Ø§Ù„Ø±Ù†ÙŠÙ… Ø§Ù„Ù…Ø§Ø³ÙŠ', ar: 'Ø§Ù„Ø±Ù†ÙŠÙ… Ø§Ù„Ù…Ø§Ø³ÙŠ' },
-  alRafeemDiamond: { id: 'al-rafeem-diamond', en: 'Ø§Ù„Ø±ÙÙŠÙ… Ø§Ù„Ù…Ø§Ø³ÙŠ', ar: 'Ø§Ù„Ø±ÙÙŠÙ… Ø§Ù„Ù…Ø§Ø³ÙŠ' },
-  naqi: { id: 'naqi', en: 'Naqi', ar: 'Ù†Ù‚ÙŠ' },
-  mana: { id: 'mana', en: 'Mana', ar: 'Ù…Ø§Ù†Ø§' },
-  adhari: { id: 'adhari', en: 'Adhari', ar: 'Ø¹Ø°Ø§Ø±ÙŠ' },
-  safaMakkah: { id: 'safa-makkah', en: 'Safa Makkah', ar: 'ØµÙØ§ Ù…ÙƒØ©' },
-  sehtak: { id: 'sehtak', en: 'Sehtak', ar: 'ØµØ­ØªÙƒ' },
-  sky: { id: 'sky', en: 'Sky', ar: 'Ø³ÙƒØ§ÙŠ' },
-  berain: { id: 'berain', en: 'Berain', ar: 'Ø¨ÙŠØ±ÙŠÙ†' },
-  ival: { id: 'ival', en: 'Ival', ar: 'Ø§ÙŠÙØ§Ù„' },
-  oska: { id: 'oska', en: 'Oska', ar: 'Ø§ÙˆØ³ÙƒØ§' },
-  oubi: { id: 'oubi', en: 'Oubi', ar: 'Ø§ÙˆØ¨ÙŠ' },
-  agadir: { id: 'agadir', en: 'Agadir', ar: 'Ø§ØºØ§Ø¯ÙŠØ±' },
-  tala: { id: 'tala', en: 'Tala', ar: 'ØªØ§Ù„Ø§' },
-  hittin: { id: 'hittin', en: 'Hittin', ar: 'Ø­Ø·ÙŠÙ†' },
-  larina: { id: 'larina', en: 'Larina', ar: 'Ù„Ø§Ø±ÙŠÙ†Ø§' },
-  ava: { id: 'ava', en: 'Ava', ar: 'Ø§ÙØ§' },
-  rode: { id: 'rode', en: 'Rode Water', ar: 'Ø±ÙˆØ¯' },
-  view: { id: 'view', en: 'View', ar: 'ÙÙŠÙˆ' },
-  marina: { id: 'marina', en: 'Marina', ar: 'Ù…Ø§Ø±ÙŠÙ†Ø§' },
-  safa: { id: 'safa', en: 'Safa', ar: 'ØµÙØ§' },
-  fly: { id: 'fly', en: 'Fly Water', ar: 'ÙÙ„Ø§ÙŠ' },
+  neutral: { id: 'neotrel', en: 'Neotrel', ar: 'نيوترل' },
+  nirvana: { id: 'nirvana', en: 'Nirvana', ar: 'نيرفانا' },
+  nova: { id: 'nova', en: 'Nova', ar: 'نوفا' },
+  falin: { id: 'falin', en: 'Falin', ar: 'فالين' },
+  alShafiyah: { id: 'al-shafiyah', en: 'Al Shafiyah', ar: 'الشافية' },
+  alRaneemDiamond: { id: 'al-raneem-diamond', en: 'الرنيم الماسي', ar: 'الرنيم الماسي' },
+  alRafeemDiamond: { id: 'al-rafeem-diamond', en: 'الرفيم الماسي', ar: 'الرفيم الماسي' },
+  naqi: { id: 'naqi', en: 'Naqi', ar: 'نقي' },
+  mana: { id: 'mana', en: 'Mana', ar: 'مانا' },
+  adhari: { id: 'adhari', en: 'Adhari', ar: 'عذاري' },
+  safaMakkah: { id: 'safa-makkah', en: 'Safa Makkah', ar: 'صفا مكة' },
+  sehtak: { id: 'sehtak', en: 'Sehtak', ar: 'صحتك' },
+  sky: { id: 'sky', en: 'Sky', ar: 'سكاي' },
+  berain: { id: 'berain', en: 'Berain', ar: 'بيرين' },
+  ival: { id: 'ival', en: 'Ival', ar: 'ايفال' },
+  oska: { id: 'oska', en: 'Oska', ar: 'اوسكا' },
+  oubi: { id: 'oubi', en: 'Oubi', ar: 'اوبي' },
+  agadir: { id: 'agadir', en: 'Agadir', ar: 'اغادير' },
+  tala: { id: 'tala', en: 'Tala', ar: 'تالا' },
+  hittin: { id: 'hittin', en: 'Hittin', ar: 'حطين' },
+  larina: { id: 'larina', en: 'Larina', ar: 'لارينا' },
+  ava: { id: 'ava', en: 'Ava', ar: 'افا' },
+  rode: { id: 'rode', en: 'Rode Water', ar: 'رود' },
+  view: { id: 'view', en: 'View', ar: 'فيو' },
+  marina: { id: 'marina', en: 'Marina', ar: 'مارينا' },
+  safa: { id: 'safa', en: 'Safa', ar: 'صفا' },
+  fly: { id: 'fly', en: 'Fly Water', ar: 'فلاي' },
 } satisfies Record<string, BrandMeta>;
 
 const PRODUCTS_BASE_DIR = '/images/New Products';
@@ -284,15 +284,15 @@ export function isOfferProduct(product: Product) {
 }
 
 const rawProductSizeOptions: ProductSizeOption[] = [
-  { id: '200ml', labelAr: '200 Ù…Ù„', labelEn: '200ml' },
-  { id: '250ml', labelAr: '250 Ù…Ù„', labelEn: '250ml' },
-  { id: '330ml', labelAr: '330 Ù…Ù„', labelEn: '330ml' },
-  { id: '500ml', labelAr: '500 Ù…Ù„', labelEn: '500ml' },
-  { id: '600ml', labelAr: '600 Ù…Ù„', labelEn: '600ml' },
-  { id: '750ml', labelAr: '750 Ù…Ù„', labelEn: '750ml' },
-  { id: '1.5L', labelAr: '1.5 Ù„ØªØ±', labelEn: '1.5L' },
-  { id: '5L', labelAr: '5 Ù„ØªØ±', labelEn: '5L' },
-  { id: '12L', labelAr: '12 Ù„ØªØ±', labelEn: '12L' },
+  { id: '200ml', labelAr: '200 مل', labelEn: '200ml' },
+  { id: '250ml', labelAr: '250 مل', labelEn: '250ml' },
+  { id: '330ml', labelAr: '330 مل', labelEn: '330ml' },
+  { id: '500ml', labelAr: '500 مل', labelEn: '500ml' },
+  { id: '600ml', labelAr: '600 مل', labelEn: '600ml' },
+  { id: '750ml', labelAr: '750 مل', labelEn: '750ml' },
+  { id: '1.5L', labelAr: '1.5 لتر', labelEn: '1.5L' },
+  { id: '5L', labelAr: '5 لتر', labelEn: '5L' },
+  { id: '12L', labelAr: '12 لتر', labelEn: '12L' },
 ];
 
 export const productSizeOptions: ProductSizeOption[] = rawProductSizeOptions.map((option) => ({
@@ -329,34 +329,36 @@ function offerImage(fileName: string) {
   return encodeURI(`/images/offers/${fileName}`);
 }
 
+const FLY_CAMPAIGN_IMAGE = 'https://rxfbllanfnxymgpijden.supabase.co/storage/v1/object/public/product-images/offer-fly-140-plus-5/1785410720484.jpeg';
+
 const productSeeds: ProductSeed[] = [
   {
     id: 'neotrel-200-24',
     order: 1,
     brandKey: 'neutral',
-    displayNameAr: 'Ù†ÙŠÙˆØªØ±Ù„',
+    displayNameAr: 'نيوترل',
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 24,
-    countLabelAr: '24 Ø­Ø¨Ø©',
+    countLabelAr: '24 حبة',
     countLabelEn: '24 bottles',
     price: 6,
     originalPrice: 6.75,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.38 PM (1).jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.38 PM (1).jpeg'),
   },
   {
     id: 'nirvana-200-24',
     order: 2,
     brandKey: 'nirvana',
-    displayNameAr: 'Ù†ÙŠØ±ÙØ§Ù†Ø§',
+    displayNameAr: 'نيرفانا',
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 24,
-    countLabelAr: '24 Ø­Ø¨Ø©',
+    countLabelAr: '24 حبة',
     countLabelEn: '24 bottles',
     pricingMode: 'quote',
   },
@@ -367,12 +369,12 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 24,
-    countLabelAr: '24 Ø­Ø¨Ø©',
+    countLabelAr: '24 حبة',
     countLabelEn: '24 bottles',
     price: 12.5,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.37 PM (3).jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.37 PM (3).jpeg'),
   },
   {
     id: 'falin-200-24',
@@ -381,28 +383,28 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 24,
-    countLabelAr: '24 Ø­Ø¨Ø©',
+    countLabelAr: '24 حبة',
     countLabelEn: '24 bottles',
     price: 5.9,
     originalPrice: 6.75,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.37 PM.jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.37 PM.jpeg'),
   },
   {
     id: 'al-shafiyah-200-24',
     order: 5,
     brandKey: 'alShafiyah',
-    displayNameAr: 'Ø§Ù„Ø´Ø§ÙÙŠØ©',
+    displayNameAr: 'الشافية',
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 24,
-    countLabelAr: '24 Ø­Ø¨Ø©',
+    countLabelAr: '24 حبة',
     countLabelEn: '24 bottles',
     pricingMode: 'quote',
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.39 PM (2).jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.39 PM (2).jpeg'),
   },
   {
     id: 'al-raneem-almasi-200-24',
@@ -411,9 +413,9 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 24,
-    countLabelAr: '24 Ø­Ø¨Ø©',
+    countLabelAr: '24 حبة',
     countLabelEn: '24 bottles',
     pricingMode: 'quote',
   },
@@ -424,29 +426,29 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 10.9,
     originalPrice: 13.75,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.37 PM (1).jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.37 PM (1).jpeg'),
   },
   {
     id: 'neotrel-200-48',
     order: 8,
     brandKey: 'neutral',
-    displayNameAr: 'Ù†ÙŠÙˆØªØ±ÙŠÙ„',
+    displayNameAr: 'نيوتريل',
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     price: 11,
     originalPrice: 14.75,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.39 PM.jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.39 PM.jpeg'),
   },
   {
     id: 'naqi-200-48',
@@ -455,13 +457,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     price: 14.9,
     originalPrice: 16.5,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.37 PM (2).jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.37 PM (2).jpeg'),
   },
   {
     id: 'mana-200-48',
@@ -470,9 +472,9 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     pricingMode: 'quote',
     image: assetPath('New', 'WhatsApp Image 2026-04-17 at 10.01.00 PM (1).jpeg'),
@@ -484,29 +486,29 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     price: 10.9,
     originalPrice: 12,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.36 PM.jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.36 PM.jpeg'),
   },
   {
     id: 'safa-makkah-200-48',
     order: 12,
     brandKey: 'safaMakkah',
-    displayNameAr: 'ØµÙØ§ Ù…ÙƒÙ‡',
+    displayNameAr: 'صفا مكه',
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     price: 19.9,
     originalPrice: 21,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.41 PM (3).jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.41 PM (3).jpeg'),
   },
   {
     id: 'sehtak-200-48',
@@ -515,13 +517,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     price: 11.9,
     originalPrice: 14.5,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.41 PM (2).jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.41 PM (2).jpeg'),
   },
   {
     id: 'sky-200-48',
@@ -530,13 +532,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     price: 11.5,
     originalPrice: 14.75,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.41 PM (1).jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.41 PM (1).jpeg'),
   },
   {
     id: 'berain-200-48',
@@ -545,13 +547,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     price: 17.9,
     originalPrice: 21,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.41 PM.jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.41 PM.jpeg'),
   },
   {
     id: 'ival-200-48',
@@ -560,12 +562,12 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     price: 19.9,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.40 PM (2).jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.40 PM (2).jpeg'),
   },
   {
     id: 'oska-200-48',
@@ -574,13 +576,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     price: 13,
     originalPrice: 15,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.40 PM (1).jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.40 PM (1).jpeg'),
   },
   {
     id: 'oubi-200-48',
@@ -589,13 +591,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     price: 11.5,
     originalPrice: 12,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.40 PM.jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.40 PM.jpeg'),
   },
   {
     id: 'agadir-200-48',
@@ -604,13 +606,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     price: 10,
     originalPrice: 10.75,
-    image: assetPath('200 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.04.39 PM (1).jpeg'),
+    image: assetPath('200 مل 👇', 'WhatsApp Image 2026-04-18 at 11.04.39 PM (1).jpeg'),
   },
   {
     id: 'falin-330-20',
@@ -619,13 +621,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 20,
-    countLabelAr: '20 Ø­Ø¨Ø©',
+    countLabelAr: '20 حبة',
     countLabelEn: '20 bottles',
     price: 5.75,
     originalPrice: 6.75,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.20 PM (2).jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.20 PM (2).jpeg'),
   },
   {
     id: 'al-rafeem-almasi-330-20',
@@ -634,9 +636,9 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 20,
-    countLabelAr: '20 Ø­Ø¨Ø©',
+    countLabelAr: '20 حبة',
     countLabelEn: '20 bottles',
     pricingMode: 'quote',
   },
@@ -647,9 +649,9 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 20,
-    countLabelAr: '20 Ø­Ø¨Ø©',
+    countLabelAr: '20 حبة',
     countLabelEn: '20 bottles',
     pricingMode: 'quote',
   },
@@ -657,17 +659,17 @@ const productSeeds: ProductSeed[] = [
     id: 'neotrel-330-40',
     order: 23,
     brandKey: 'neutral',
-    displayNameAr: 'Ù†ÙŠÙˆØªØ±Ù„',
+    displayNameAr: 'نيوترل',
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 11,
     originalPrice: 15.5,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.16 PM.jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.16 PM.jpeg'),
   },
   {
     id: 'tala-330-40',
@@ -676,13 +678,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 13,
     originalPrice: 15.5,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.19 PM.jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.19 PM.jpeg'),
   },
   {
     id: 'sky-330-40',
@@ -691,13 +693,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 11.5,
     originalPrice: 15.5,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.19 PM (1).jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.19 PM (1).jpeg'),
   },
   {
     id: 'oubi-330-40',
@@ -706,13 +708,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 11.5,
     originalPrice: 12,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.18 PM.jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.18 PM.jpeg'),
   },
   {
     id: 'adhari-330-40',
@@ -721,13 +723,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 10.9,
     originalPrice: 12,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.20 PM (1).jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.20 PM (1).jpeg'),
   },
   {
     id: 'agadir-330-40',
@@ -736,13 +738,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 10,
     originalPrice: 10.75,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.17 PM.jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.17 PM.jpeg'),
   },
   {
     id: 'nova-330-40',
@@ -751,13 +753,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 17.5,
     originalPrice: 21,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.15 PM.jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.15 PM.jpeg'),
   },
   {
     id: 'berain-330-40',
@@ -766,13 +768,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 17.9,
     originalPrice: 20,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.18 PM (3).jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.18 PM (3).jpeg'),
   },
   {
     id: 'safa-makkah-330-40',
@@ -781,13 +783,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 17.9,
     originalPrice: 20,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.20 PM.jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.20 PM.jpeg'),
   },
   {
     id: 'naqi-330-40',
@@ -796,13 +798,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 14.9,
     originalPrice: 16.5,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.14 PM.jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.14 PM.jpeg'),
   },
   {
     id: 'ival-330-40',
@@ -811,12 +813,12 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 19.9,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.18 PM (2).jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.18 PM (2).jpeg'),
   },
   {
     id: 'oska-330-40',
@@ -825,13 +827,13 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 13,
     originalPrice: 15,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.18 PM (1).jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.18 PM (1).jpeg'),
   },
   {
     id: 'mana-330-40',
@@ -840,9 +842,9 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     pricingMode: 'quote',
   },
@@ -853,29 +855,29 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 11.9,
     originalPrice: 14.5,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.19 PM (2).jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.19 PM (2).jpeg'),
   },
   {
     id: 'al-shafiyah-330-40',
     order: 37,
     brandKey: 'alShafiyah',
-    displayNameAr: 'Ø§Ù„Ø´Ø§ÙÙŠØ©',
+    displayNameAr: 'الشافية',
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     price: 10,
     originalPrice: 15.5,
-    image: assetPath('330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.17 PM (1).jpeg'),
+    image: assetPath('330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.17 PM (1).jpeg'),
   },
   {
     id: 'nova-500-24',
@@ -884,13 +886,13 @@ const productSeeds: ProductSeed[] = [
     category: 'medium',
     catalogGroup: 'over-330ml',
     size: '500ml',
-    sizeAr: '500 Ù…Ù„',
+    sizeAr: '500 مل',
     quantity: 24,
-    countLabelAr: '24 Ù‚Ø§Ø±ÙˆØ±Ø©',
+    countLabelAr: '24 قارورة',
     countLabelEn: '24 bottles',
     price: 12,
     originalPrice: 14,
-    image: assetPath('Ø§ÙƒØªØ± Ù…Ù† 330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.45 PM.jpeg'),
+    image: assetPath('اكتر من 330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.45 PM.jpeg'),
   },
   {
     id: 'berain-600-28',
@@ -899,12 +901,12 @@ const productSeeds: ProductSeed[] = [
     category: 'medium',
     catalogGroup: 'over-330ml',
     size: '600ml',
-    sizeAr: '600 Ù…Ù„',
+    sizeAr: '600 مل',
     quantity: 28,
-    countLabelAr: '28 Ù‚Ø§Ø±ÙˆØ±Ø©',
+    countLabelAr: '28 قارورة',
     countLabelEn: '28 bottles',
     price: 16,
-    image: assetPath('Ø§ÙƒØªØ± Ù…Ù† 330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.47 PM (1).jpeg'),
+    image: assetPath('اكتر من 330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.47 PM (1).jpeg'),
   },
   {
     id: 'hittin-600-30',
@@ -913,13 +915,13 @@ const productSeeds: ProductSeed[] = [
     category: 'medium',
     catalogGroup: 'over-330ml',
     size: '600ml',
-    sizeAr: '600 Ù…Ù„',
+    sizeAr: '600 مل',
     quantity: 30,
-    countLabelAr: '30 Ø­Ø¨Ø©',
+    countLabelAr: '30 حبة',
     countLabelEn: '30 bottles',
     price: 11,
     originalPrice: 15,
-    image: assetPath('Ø§ÙƒØªØ± Ù…Ù† 330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.48 PM.jpeg'),
+    image: assetPath('اكتر من 330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.48 PM.jpeg'),
   },
   {
     id: 'berain-1.5l-12',
@@ -928,78 +930,78 @@ const productSeeds: ProductSeed[] = [
     category: 'large',
     catalogGroup: 'over-330ml',
     size: '1.5L',
-    sizeAr: '1.5 Ù„ØªØ±',
+    sizeAr: '1.5 لتر',
     quantity: 12,
-    countLabelAr: '12 Ù‚Ø§Ø±ÙˆØ±Ø©',
+    countLabelAr: '12 قارورة',
     countLabelEn: '12 bottles',
     price: 16,
-    image: assetPath('Ø§ÙƒØªØ± Ù…Ù† 330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.47 PM.jpeg'),
+    image: assetPath('اكتر من 330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.47 PM.jpeg'),
     imageFit: 'tight',
   },
   {
     id: 'larina-shrink-1.5l-6',
     order: 42,
     brandKey: 'larina',
-    displayNameAr: 'Ù„Ø§Ø±ÙŠÙ†Ø§ Ø´Ø±ÙŠÙ†Ùƒ',
+    displayNameAr: 'لارينا شرينك',
     displayNameEn: 'Larina Shrink',
     category: 'large',
     catalogGroup: 'over-330ml',
     size: '1.5L',
-    sizeAr: '1.5 Ù„ØªØ±',
+    sizeAr: '1.5 لتر',
     quantity: 6,
-    countLabelAr: '6 Ø­Ø¨Ø©',
+    countLabelAr: '6 حبة',
     countLabelEn: '6 bottles',
     price: 7,
     originalPrice: 12,
-    image: assetPath('Ø§ÙƒØªØ± Ù…Ù† 330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.48 PM (2).jpeg'),
+    image: assetPath('اكتر من 330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.48 PM (2).jpeg'),
     imageFit: 'tight',
   },
   {
     id: 'larina-carton-1.5l-12',
     order: 43,
     brandKey: 'larina',
-    displayNameAr: 'Ù„Ø§Ø±ÙŠÙ†Ø§ ÙƒØ±ØªÙˆÙ†',
+    displayNameAr: 'لارينا كرتون',
     displayNameEn: 'Larina Carton',
     category: 'large',
     catalogGroup: 'over-330ml',
     size: '1.5L',
-    sizeAr: '1.5 Ù„ØªØ±',
+    sizeAr: '1.5 لتر',
     quantity: 12,
-    countLabelAr: '12 Ø­Ø¨Ø©',
+    countLabelAr: '12 حبة',
     countLabelEn: '12 bottles',
     price: 16.25,
     originalPrice: 19.25,
-    image: assetPath('Ø§ÙƒØªØ± Ù…Ù† 330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.48 PM (3).jpeg'),
+    image: assetPath('اكتر من 330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.48 PM (3).jpeg'),
     imageFit: 'tight',
   },
   {
     id: 'safa-makkah-1.5l-12',
     order: 44,
     brandKey: 'safaMakkah',
-    displayNameAr: 'ØµÙØ§ Ù…ÙƒØ©',
+    displayNameAr: 'صفا مكة',
     category: 'large',
     catalogGroup: 'over-330ml',
     size: '1.5L',
-    sizeAr: '1.5 Ù„ØªØ±',
+    sizeAr: '1.5 لتر',
     quantity: 12,
-    countLabelAr: '12 Ø­Ø¨Ø©',
+    countLabelAr: '12 حبة',
     countLabelEn: '12 bottles',
     price: 16.5,
     originalPrice: 19.5,
-    image: assetPath('Ø§ÙƒØªØ± Ù…Ù† 330 Ù…Ù„ ðŸ‘‡', 'WhatsApp Image 2026-04-18 at 11.05.48 PM (1).jpeg'),
+    image: assetPath('اكتر من 330 مل 👇', 'WhatsApp Image 2026-04-18 at 11.05.48 PM (1).jpeg'),
     imageFit: 'tight',
   },
   {
     id: 'neotrel-1.5l-6',
     order: 45,
     brandKey: 'neutral',
-    displayNameAr: 'Ù†ÙŠÙˆØªØ±Ù„',
+    displayNameAr: 'نيوترل',
     category: 'large',
     catalogGroup: 'over-330ml',
     size: '1.5L',
-    sizeAr: '1.5 Ù„ØªØ±',
+    sizeAr: '1.5 لتر',
     quantity: 6,
-    countLabelAr: '6 Ø­Ø¨Ø©',
+    countLabelAr: '6 حبة',
     countLabelEn: '6 bottles',
     price: 7,
     originalPrice: 12,
@@ -1012,12 +1014,12 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 24,
-    countLabelAr: '24 Ø­Ø¨Ø©',
+    countLabelAr: '24 حبة',
     countLabelEn: '24 bottles',
     pricingMode: 'quote',
-    image: newProductImage('Ø§ÙØ§ 200 Ù…Ù„ÙŠ.png'),
+    image: newProductImage('افا 200 ملي.png'),
   },
   {
     id: 'oubi-1.5l-12',
@@ -1026,29 +1028,29 @@ const productSeeds: ProductSeed[] = [
     category: 'large',
     catalogGroup: 'over-330ml',
     size: '1.5L',
-    sizeAr: '1.5 Ù„ØªØ±',
+    sizeAr: '1.5 لتر',
     quantity: 12,
-    countLabelAr: '12 Ù‚Ø§Ø±ÙˆØ±Ø©',
+    countLabelAr: '12 قارورة',
     countLabelEn: '12 bottles',
     pricingMode: 'quote',
-    image: newProductImage('Ø§ÙˆØ¨ÙŠ 1.5 Ù„ØªØ±.png'),
+    image: newProductImage('اوبي 1.5 لتر.png'),
     imageFit: 'tight',
   },
   {
     id: 'oubi-real-600-28',
     order: 48,
     brandKey: 'oubi',
-    displayNameAr: 'Ø§ÙˆØ¨ÙŠ Ø±ÙŠØ§Ù„',
+    displayNameAr: 'اوبي ريال',
     displayNameEn: 'Oubi Real',
     category: 'medium',
     catalogGroup: 'over-330ml',
     size: '600ml',
-    sizeAr: '600 Ù…Ù„',
+    sizeAr: '600 مل',
     quantity: 28,
-    countLabelAr: '28 Ù‚Ø§Ø±ÙˆØ±Ø©',
+    countLabelAr: '28 قارورة',
     countLabelEn: '28 bottles',
     pricingMode: 'quote',
-    image: newProductImage('Ø§ÙˆØ¨ÙŠ Ø±ÙŠØ§Ù„ 600 Ù…Ù„.png'),
+    image: newProductImage('اوبي ريال 600 مل.png'),
   },
   {
     id: 'berain-600-28-new',
@@ -1057,12 +1059,12 @@ const productSeeds: ProductSeed[] = [
     category: 'medium',
     catalogGroup: 'over-330ml',
     size: '600ml',
-    sizeAr: '600 Ù…Ù„',
+    sizeAr: '600 مل',
     quantity: 28,
-    countLabelAr: '28 Ù‚Ø§Ø±ÙˆØ±Ø©',
+    countLabelAr: '28 قارورة',
     countLabelEn: '28 bottles',
     pricingMode: 'quote',
-    image: newProductImage('Ø¨ÙŠØ±ÙŠÙ† 600 Ù…Ù„ÙŠ_.png'),
+    image: newProductImage('بيرين 600 ملي_.png'),
   },
   {
     id: 'rode-200-48',
@@ -1071,12 +1073,12 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     pricingMode: 'quote',
-    image: newProductImage('Ø±ÙˆØ¯ 200 Ù…Ù„ÙŠ.png'),
+    image: newProductImage('رود 200 ملي.png'),
   },
   {
     id: 'rode-330-40',
@@ -1085,12 +1087,12 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     pricingMode: 'quote',
-    image: newProductImage('Ø±ÙˆØ¯ 330 Ù…Ù„ÙŠ.png'),
+    image: newProductImage('رود 330 ملي.png'),
   },
   {
     id: 'rode-600-24',
@@ -1099,12 +1101,12 @@ const productSeeds: ProductSeed[] = [
     category: 'medium',
     catalogGroup: 'over-330ml',
     size: '600ml',
-    sizeAr: '600 Ù…Ù„',
+    sizeAr: '600 مل',
     quantity: 24,
-    countLabelAr: '24 Ù‚Ø§Ø±ÙˆØ±Ø©',
+    countLabelAr: '24 قارورة',
     countLabelEn: '24 bottles',
     pricingMode: 'quote',
-    image: newProductImage('Ø±ÙˆØ¯ 600 Ù…Ù„ÙŠ_.png'),
+    image: newProductImage('رود 600 ملي_.png'),
   },
   {
     id: 'sky-330-40-new',
@@ -1113,28 +1115,28 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     pricingMode: 'quote',
-    image: newProductImage('Ø³ÙƒØ§ÙŠ 330 Ù…Ù„ÙŠ_.png'),
+    image: newProductImage('سكاي 330 ملي_.png'),
   },
   {
     id: 'safa-5l-4',
     order: 54,
     brandKey: 'safa',
-    displayNameAr: 'ØµÙØ§ Ù…ÙƒØ©',
+    displayNameAr: 'صفا مكة',
     displayNameEn: 'Safa Makkah',
     category: 'gallon',
     catalogGroup: 'over-330ml',
     size: '5L',
-    sizeAr: '5 Ù„ØªØ±',
+    sizeAr: '5 لتر',
     quantity: 4,
-    countLabelAr: '4 Ø¹Ø¨ÙˆØ§Øª',
+    countLabelAr: '4 عبوات',
     countLabelEn: '4 bottles',
     pricingMode: 'quote',
-    image: newProductImage('ØµÙØ§ 5 Ù„ØªØ±.png'),
+    image: newProductImage('صفا 5 لتر.png'),
     imageType: 'gallon',
     imageFit: 'tight',
   },
@@ -1145,12 +1147,12 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '200ml',
     size: '200ml',
-    sizeAr: '200 Ù…Ù„',
+    sizeAr: '200 مل',
     quantity: 48,
-    countLabelAr: '48 Ø­Ø¨Ø©',
+    countLabelAr: '48 حبة',
     countLabelEn: '48 bottles',
     pricingMode: 'quote',
-    image: newProductImage('ÙÙŠÙˆ 200 Ù…Ù„ÙŠ_.png'),
+    image: newProductImage('فيو 200 ملي_.png'),
   },
   {
     id: 'view-330-40',
@@ -1159,12 +1161,12 @@ const productSeeds: ProductSeed[] = [
     category: 'small',
     catalogGroup: '330ml',
     size: '330ml',
-    sizeAr: '330 Ù…Ù„',
+    sizeAr: '330 مل',
     quantity: 40,
-    countLabelAr: '40 Ø­Ø¨Ø©',
+    countLabelAr: '40 حبة',
     countLabelEn: '40 bottles',
     pricingMode: 'quote',
-    image: newProductImage('ÙÙŠÙˆ 330 Ù…Ù„ÙŠ_.png'),
+    image: newProductImage('فيو 330 ملي_.png'),
   },
   {
     id: 'marina-5l-1',
@@ -1173,12 +1175,12 @@ const productSeeds: ProductSeed[] = [
     category: 'gallon',
     catalogGroup: 'over-330ml',
     size: '5L',
-    sizeAr: '5 Ù„ØªØ±',
+    sizeAr: '5 لتر',
     quantity: 1,
-    countLabelAr: 'Ø¹Ø¨ÙˆØ© ÙˆØ§Ø­Ø¯Ø©',
+    countLabelAr: 'عبوة واحدة',
     countLabelEn: '1 bottle',
     pricingMode: 'quote',
-    image: newProductImage('Ù…Ø§Ø±ÙŠÙ†Ø§ 5 Ù„ØªØ±_.png'),
+    image: newProductImage('مارينا 5 لتر_.png'),
     imageType: 'gallon',
     imageFit: 'portrait',
   },
@@ -1189,12 +1191,12 @@ const productSeeds: ProductSeed[] = [
     category: 'gallon',
     catalogGroup: 'over-330ml',
     size: '5L',
-    sizeAr: '5 Ù„ØªØ±',
+    sizeAr: '5 لتر',
     quantity: 1,
-    countLabelAr: 'Ø¹Ø¨ÙˆØ© ÙˆØ§Ø­Ø¯Ø©',
+    countLabelAr: 'عبوة واحدة',
     countLabelEn: '1 bottle',
     pricingMode: 'quote',
-    image: newProductImage('Ù†ÙˆÙØ§ 5 Ù„ØªØ±_.png'),
+    image: newProductImage('نوفا 5 لتر_.png'),
     imageType: 'gallon',
     imageFit: 'portrait',
   },
@@ -1205,12 +1207,12 @@ const productSeeds: ProductSeed[] = [
     category: 'gallon',
     catalogGroup: 'over-330ml',
     size: '12L',
-    sizeAr: '12 Ù„ØªØ±',
+    sizeAr: '12 لتر',
     quantity: 1,
-    countLabelAr: 'Ø¹Ø¨ÙˆØ© ÙˆØ§Ø­Ø¯Ø©',
+    countLabelAr: 'عبوة واحدة',
     countLabelEn: '1 bottle',
     pricingMode: 'quote',
-    image: newProductImage('Ù†ÙˆÙØ§ 12 Ù„ØªØ±.png'),
+    image: newProductImage('نوفا 12 لتر.png'),
     imageType: 'gallon',
     imageFit: 'tight',
   },
@@ -1218,17 +1220,17 @@ const productSeeds: ProductSeed[] = [
     id: 'nova-glass-250-24',
     order: 60,
     brandKey: 'nova',
-    displayNameAr: 'Ù†ÙˆÙØ§ Ø²Ø¬Ø§Ø¬',
+    displayNameAr: 'نوفا زجاج',
     displayNameEn: 'Nova Glass',
     category: 'glass',
     catalogGroup: '200ml',
     size: '250ml',
-    sizeAr: '250 Ù…Ù„',
+    sizeAr: '250 مل',
     quantity: 24,
-    countLabelAr: '24 Ø²Ø¬Ø§Ø¬Ø©',
+    countLabelAr: '24 زجاجة',
     countLabelEn: '24 glass bottles',
     pricingMode: 'quote',
-    image: newProductImage('Ù†ÙˆÙØ§ Ø²Ø¬Ø§Ø¬ 250 Ù…Ù„ÙŠ_.png'),
+    image: newProductImage('نوفا زجاج 250 ملي_.png'),
     imageType: 'bottle',
     imageFit: 'tight',
   },
@@ -1236,17 +1238,17 @@ const productSeeds: ProductSeed[] = [
     id: 'nova-glass-750-12',
     order: 61,
     brandKey: 'nova',
-    displayNameAr: 'Ù†ÙˆÙØ§ Ø²Ø¬Ø§Ø¬',
+    displayNameAr: 'نوفا زجاج',
     displayNameEn: 'Nova Glass',
     category: 'glass',
     catalogGroup: 'over-330ml',
     size: '750ml',
-    sizeAr: '750 Ù…Ù„',
+    sizeAr: '750 مل',
     quantity: 12,
-    countLabelAr: '12 Ø²Ø¬Ø§Ø¬Ø©',
+    countLabelAr: '12 زجاجة',
     countLabelEn: '12 glass bottles',
     pricingMode: 'quote',
-    image: newProductImage('Ù†ÙˆÙØ§ Ø²Ø¬Ø§Ø¬ 750 Ù…Ù„ÙŠ_.png'),
+    image: newProductImage('نوفا زجاج 750 ملي_.png'),
     imageType: 'bottle',
     imageFit: 'tight',
   },
@@ -1254,17 +1256,17 @@ const productSeeds: ProductSeed[] = [
     id: 'nova-sparkling-glass-250-24',
     order: 62,
     brandKey: 'nova',
-    displayNameAr: 'Ù†ÙˆÙØ§ Ø²Ø¬Ø§Ø¬ ÙÙˆØ§Ø±Ø©',
+    displayNameAr: 'نوفا زجاج فوارة',
     displayNameEn: 'Nova Sparkling Glass',
     category: 'glass',
     catalogGroup: '200ml',
     size: '250ml',
-    sizeAr: '250 Ù…Ù„',
+    sizeAr: '250 مل',
     quantity: 24,
-    countLabelAr: '24 Ø²Ø¬Ø§Ø¬Ø©',
+    countLabelAr: '24 زجاجة',
     countLabelEn: '24 glass bottles',
     pricingMode: 'quote',
-    image: newProductImage('Ù†ÙˆÙØ§ Ø²Ø¬Ø§Ø¬ ÙÙˆØ§Ø±Ø© 250 Ù…Ù„.png'),
+    image: newProductImage('نوفا زجاج فوارة 250 مل.png'),
     imageType: 'bottle',
     imageFit: 'tight',
   },
@@ -1272,29 +1274,29 @@ const productSeeds: ProductSeed[] = [
     id: 'nova-sparkling-glass-750-12',
     order: 63,
     brandKey: 'nova',
-    displayNameAr: 'Ù†ÙˆÙØ§ Ø²Ø¬Ø§Ø¬ ÙÙˆØ§Ø±Ø©',
+    displayNameAr: 'نوفا زجاج فوارة',
     displayNameEn: 'Nova Sparkling Glass',
     category: 'glass',
     catalogGroup: 'over-330ml',
     size: '750ml',
-    sizeAr: '750 Ù…Ù„',
+    sizeAr: '750 مل',
     quantity: 12,
-    countLabelAr: '12 Ø²Ø¬Ø§Ø¬Ø©',
+    countLabelAr: '12 زجاجة',
     countLabelEn: '12 glass bottles',
     pricingMode: 'quote',
-    image: newProductImage('Ù†ÙˆÙØ§ Ø²Ø¬Ø§Ø¬ ÙÙˆØ§Ø±Ø© 750 Ù…Ù„.png'),
+    image: newProductImage('نوفا زجاج فوارة 750 مل.png'),
     imageType: 'bottle',
     imageFit: 'tight',
   },
 ];
 
 const rawCategories = [
-  { id: 'all', nameAr: 'Ø¬Ù…ÙŠØ¹ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª', nameEn: 'All Products' },
-  { id: 'small', nameAr: '200 Ùˆ330 Ù…Ù„', nameEn: '200ml & 330ml' },
-  { id: 'medium', nameAr: '500 Ùˆ600 Ù…Ù„', nameEn: '500ml & 600ml' },
-  { id: 'large', nameAr: '1.5 Ù„ØªØ±', nameEn: '1.5L Packs' },
-  { id: 'gallon', nameAr: 'Ø¹Ø¨ÙˆØ§Øª ÙƒØ¨ÙŠØ±Ø©', nameEn: 'Large Bottles' },
-  { id: 'glass', nameAr: 'Ø²Ø¬Ø§Ø¬ ÙˆÙÙˆØ§Ø±Ø©', nameEn: 'Glass & Sparkling' },
+  { id: 'all', nameAr: 'جميع المنتجات', nameEn: 'All Products' },
+  { id: 'small', nameAr: '200 و330 مل', nameEn: '200ml & 330ml' },
+  { id: 'medium', nameAr: '500 و600 مل', nameEn: '500ml & 600ml' },
+  { id: 'large', nameAr: '1.5 لتر', nameEn: '1.5L Packs' },
+  { id: 'gallon', nameAr: 'عبوات كبيرة', nameEn: 'Large Bottles' },
+  { id: 'glass', nameAr: 'زجاج وفوارة', nameEn: 'Glass & Sparkling' },
 ] as const;
 
 export const categories = rawCategories.map((category) => ({
@@ -1304,7 +1306,7 @@ export const categories = rawCategories.map((category) => ({
 }));
 
 function buildPackagingAr(seed: ProductSeed) {
-  return `Ø¹Ø¨ÙˆØ© ØªØ­ØªÙˆÙŠ Ø¹Ù„Ù‰ ${seed.countLabelAr}`;
+  return `عبوة تحتوي على ${seed.countLabelAr}`;
 }
 
 function buildPackagingEn(seed: ProductSeed) {
@@ -1326,13 +1328,13 @@ function buildDescription(seed: ProductSeed, brand: BrandMeta): LocalizedText {
 
   if (seed.pricingMode === 'quote') {
     return {
-      ar: `${seed.displayNameAr ?? brand.ar} Ø¨Ø­Ø¬Ù… ${seed.sizeAr} Ø¨Ø¹Ø¯Ø¯ ${seed.countLabelAr} Ù…ØªØ§Ø­ Ø­Ø§Ù„ÙŠØ§Ù‹ Ø¨Ø·Ù„Ø¨ Ø³Ø¹Ø± Ù…Ø¨Ø§Ø´Ø± Ø¹Ø¨Ø± ÙˆØ§ØªØ³Ø§Ø¨.`,
+      ar: `${seed.displayNameAr ?? brand.ar} بحجم ${seed.sizeAr} بعدد ${seed.countLabelAr} متاح حالياً بطلب سعر مباشر عبر واتساب.`,
       en: `${seed.displayNameEn ?? brand.en} in ${seed.size} with ${seed.countLabelEn} is available on request. Ask us for the current price on WhatsApp.`,
     };
   }
 
   return {
-    ar: `${seed.displayNameAr ?? brand.ar} Ø¨Ø­Ø¬Ù… ${seed.sizeAr} Ø¨Ø¹Ø¯Ø¯ ${seed.countLabelAr} Ø¯Ø§Ø®Ù„ ${packagingAr}.`,
+    ar: `${seed.displayNameAr ?? brand.ar} بحجم ${seed.sizeAr} بعدد ${seed.countLabelAr} داخل ${packagingAr}.`,
     en: `${seed.displayNameEn ?? brand.en} in ${seed.size} with ${seed.countLabelEn} per ${packagingEn}.`,
   };
 }
@@ -1343,18 +1345,18 @@ function buildFeatures(seed: ProductSeed) {
     seed.countLabelAr,
     buildPackagingAr(seed),
     seed.catalogGroup === '200ml'
-      ? 'ÙØ¦Ø© 200 Ù…Ù„'
+      ? 'فئة 200 مل'
       : seed.catalogGroup === '330ml'
-        ? 'ÙØ¦Ø© 330 Ù…Ù„'
-        : 'ÙØ¦Ø© Ø£ÙƒØ¨Ø± Ù…Ù† 330 Ù…Ù„',
+        ? 'فئة 330 مل'
+        : 'فئة أكبر من 330 مل',
   ];
 }
 
 function buildBenefits(seed: ProductSeed) {
   return [
-    'Ù…ÙŠØ§Ù‡ Ù…Ø¹Ø¨Ø£Ø© Ù„Ù„Ø´Ø±Ø¨',
+    'مياه معبأة للشرب',
     seed.countLabelAr,
-    seed.pricingMode === 'quote' ? 'Ø§Ù„Ø³Ø¹Ø± Ø­Ø³Ø¨ Ø§Ù„Ø·Ù„Ø¨' : 'Ø³Ø¹Ø± Ø¸Ø§Ù‡Ø± Ø¯Ø§Ø®Ù„ Ø§Ù„ÙƒØªØ§Ù„ÙˆØ¬',
+    seed.pricingMode === 'quote' ? 'السعر حسب الطلب' : 'سعر ظاهر داخل الكتالوج',
     buildPackagingAr(seed),
   ];
 }
@@ -1362,25 +1364,25 @@ function buildBenefits(seed: ProductSeed) {
 function buildQuickFacts(seed: ProductSeed, brand: BrandMeta) {
   return [
     {
-      labelAr: 'Ø§Ù„Ø¹Ù„Ø§Ù…Ø©',
+      labelAr: 'العلامة',
       labelEn: 'Brand',
       valueAr: seed.displayNameAr ?? brand.ar,
       valueEn: seed.displayNameEn ?? brand.en,
     },
     {
-      labelAr: 'Ø§Ù„Ø­Ø¬Ù…',
+      labelAr: 'الحجم',
       labelEn: 'Size',
       valueAr: seed.sizeAr,
       valueEn: seed.size,
     },
     {
-      labelAr: 'Ø§Ù„Ø¹Ø¯Ø¯',
+      labelAr: 'العدد',
       labelEn: 'Units',
       valueAr: seed.countLabelAr,
       valueEn: seed.countLabelEn,
     },
     {
-      labelAr: 'Ø§Ù„ØªØºÙ„ÙŠÙ',
+      labelAr: 'التغليف',
       labelEn: 'Packaging',
       valueAr: buildPackagingAr(seed),
       valueEn: buildPackagingEn(seed),
@@ -1570,7 +1572,7 @@ const legacyOfferProducts: Product[] = [
     id: 'offer-nova-330-15-plus-5',
     brandId: BRAND_META.nova.id,
     name: {
-      ar: 'Ø¹Ø±Ø¶ Ù…ÙŠØ§Ù‡ Ù†ÙˆÙØ§ 330 Ù…Ù„ 15 + 5 ÙƒØ±Ø§ØªÙŠÙ†',
+      ar: 'عرض مياه نوفا 330 مل 15 + 5 كراتين',
       en: 'Nova 330ml 15 + 5 Cartons Offer',
     },
     brand: BRAND_META.nova.en,
@@ -1585,34 +1587,34 @@ const legacyOfferProducts: Product[] = [
     isPurchasable: true,
     image: offerImage('nova-campaign.png'),
     description: {
-      ar: 'Ø¹Ø±Ø¶ Ù…Ù…ÙŠØ² Ø¹Ù„Ù‰ Ù…ÙŠØ§Ù‡ Ù†ÙˆÙØ§ 330 Ù…Ù„: Ø§Ø´ØªØ± 15 ÙƒØ±ØªÙˆÙ† ÙˆØ§Ø­ØµÙ„ Ø¹Ù„Ù‰ 5 ÙƒØ±Ø§ØªÙŠÙ† Ù…Ø¬Ø§Ù†Ø§ØŒ Ø´Ø§Ù…Ù„ Ø§Ù„ØªÙˆØµÙŠÙ„ Ø§Ù„Ù…Ø¬Ø§Ù†ÙŠ Ø¯Ø§Ø®Ù„ Ø§Ù„Ø±ÙŠØ§Ø¶ Ø¨Ø³Ø¹Ø± 350 Ø±ÙŠØ§Ù„ ÙÙ‚Ø·.',
+      ar: 'عرض مميز على مياه نوفا 330 مل: اشتر 15 كرتون واحصل على 5 كراتين مجانا، شامل التوصيل المجاني داخل الرياض بسعر 350 ريال فقط.',
       en: 'Special Nova 330ml offer: buy 15 cartons and get 5 cartons free, with free delivery in Riyadh for SAR 350 only.',
     },
     features: [
-      'Ù…ÙŠØ§Ù‡ Ù†ÙˆÙØ§ ØªØ£ØªÙŠ Ù…Ù† Ø¢Ø¨Ø§Ø± ÙˆØ§Ø¯ÙŠ Ø³Ø¹Ø¯ØŒ Ø£Ø­Ø¯ Ø£Ø´Ù‡Ø± Ø§Ù„Ù…ØµØ§Ø¯Ø± Ø§Ù„Ø·Ø¨ÙŠØ¹ÙŠØ© Ù„Ù„Ù…ÙŠØ§Ù‡ Ø§Ù„Ù†Ù‚ÙŠØ© ÙÙŠ Ø§Ù„Ù…Ù…Ù„ÙƒØ©.',
-      'ØªØ±ÙƒÙŠØ¨Ø© Ù…ØªÙˆØ§Ø²Ù†Ø© ÙˆØ·Ø¹Ù… Ù†Ù‚ÙŠ ÙŠÙ†Ø¹Ø´ ÙŠÙˆÙ…Ùƒ Ù…Ø¹ ÙƒÙ„ Ø±Ø´ÙØ©.',
-      'Ø§Ù„Ù…Ù‚Ø§Ø³: 330 Ù…Ù„ØŒ ÙˆØ§Ù„ÙƒÙ…ÙŠØ© Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠØ©: 20 ÙƒØ±ØªÙˆÙ† Ø¶Ù…Ù† Ø¹Ø±Ø¶ 15 + 5 Ù…Ø¬Ø§Ù†Ø§.',
-      'Ø§Ù„Ø³Ø¹Ø± 350 Ø±ÙŠØ§Ù„ ÙÙ‚Ø· Ø´Ø§Ù…Ù„ Ø§Ù„ØªÙˆØµÙŠÙ„ Ø§Ù„Ù…Ø¬Ø§Ù†ÙŠ Ø¯Ø§Ø®Ù„ Ø§Ù„Ø±ÙŠØ§Ø¶.',
-      'Ø§Ø®ØªÙŠØ§Ø± Ù…Ø«Ø§Ù„ÙŠ Ù„Ù„Ù…Ù†Ø²Ù„ØŒ Ø§Ù„Ù…ÙƒØ§ØªØ¨ØŒ Ø§Ù„Ù…Ù†Ø§Ø³Ø¨Ø§ØªØŒ ÙˆØ§Ù„Ø¶ÙŠØ§ÙØ© Ø§Ù„Ø±Ø§Ù‚ÙŠØ©.',
+      'مياه نوفا تأتي من آبار وادي سعد، أحد أشهر المصادر الطبيعية للمياه النقية في المملكة.',
+      'تركيبة متوازنة وطعم نقي ينعش يومك مع كل رشفة.',
+      'المقاس: 330 مل، والكمية الإجمالية: 20 كرتون ضمن عرض 15 + 5 مجانا.',
+      'السعر 350 ريال فقط شامل التوصيل المجاني داخل الرياض.',
+      'اختيار مثالي للمنزل، المكاتب، المناسبات، والضيافة الراقية.',
     ],
     benefits: [
-      '15 ÙƒØ±ØªÙˆÙ† + 5 ÙƒØ±Ø§ØªÙŠÙ† Ù…Ø¬Ø§Ù†Ø§',
-      'ØªÙˆØµÙŠÙ„ Ù…Ø¬Ø§Ù†ÙŠ',
-      'Ù…ÙŠØ§Ù‡ Ù†ÙˆÙØ§ 330 Ù…Ù„',
-      'Ù…Ù†Ø§Ø³Ø¨ Ù„Ù„Ù…Ù†Ø²Ù„ ÙˆØ§Ù„Ù…ÙƒØ§ØªØ¨ ÙˆØ§Ù„Ø¶ÙŠØ§ÙØ©',
+      '15 كرتون + 5 كراتين مجانا',
+      'توصيل مجاني',
+      'مياه نوفا 330 مل',
+      'مناسب للمنزل والمكاتب والضيافة',
     ],
     specifications: {
-      packaging: '15 + 5 ÙƒØ±Ø§ØªÙŠÙ† Ù…Ø¬Ø§Ù†Ø§ØŒ 330ml',
+      packaging: '15 + 5 كراتين مجانا، 330ml',
     },
     story: {
-      ar: 'ØªØ£ØªÙŠ Ù…ÙŠØ§Ù‡ Ù†ÙˆÙØ§ Ù…Ù† Ø¢Ø¨Ø§Ø± ÙˆØ§Ø¯ÙŠ Ø³Ø¹Ø¯ØŒ ÙˆØªØªÙ…ÙŠØ² Ø¨ØªØ±ÙƒÙŠØ¨Ø© Ù…ØªÙˆØ§Ø²Ù†Ø© ÙˆØ·Ø¹Ù… Ù†Ù‚ÙŠ Ù…Ù†Ø§Ø³Ø¨ Ù„Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„ÙŠÙˆÙ…ÙŠ ÙˆØ§Ù„Ø¶ÙŠØ§ÙØ©.',
+      ar: 'تأتي مياه نوفا من آبار وادي سعد، وتتميز بتركيبة متوازنة وطعم نقي مناسب للاستخدام اليومي والضيافة.',
       en: 'Nova water comes from Wadi Saad wells and is known for a balanced composition and clean taste for daily use and hospitality.',
     },
     quickFacts: [
-      { labelAr: 'Ø§Ù„Ø¹Ù„Ø§Ù…Ø©', labelEn: 'Brand', valueAr: 'Ù†ÙˆÙØ§', valueEn: 'Nova' },
-      { labelAr: 'Ø§Ù„Ù…Ù‚Ø§Ø³', labelEn: 'Size', valueAr: '330 Ù…Ù„', valueEn: '330ml' },
-      { labelAr: 'Ø§Ù„Ø¹Ø±Ø¶', labelEn: 'Offer', valueAr: '15 + 5 ÙƒØ±Ø§ØªÙŠÙ† Ù…Ø¬Ø§Ù†Ø§', valueEn: '15 + 5 cartons free' },
-      { labelAr: 'Ø§Ù„ØªÙˆØµÙŠÙ„', labelEn: 'Delivery', valueAr: 'Ù…Ø¬Ø§Ù†ÙŠ Ø¯Ø§Ø®Ù„ Ø§Ù„Ø±ÙŠØ§Ø¶', valueEn: 'Free in Riyadh' },
+      { labelAr: 'العلامة', labelEn: 'Brand', valueAr: 'نوفا', valueEn: 'Nova' },
+      { labelAr: 'المقاس', labelEn: 'Size', valueAr: '330 مل', valueEn: '330ml' },
+      { labelAr: 'العرض', labelEn: 'Offer', valueAr: '15 + 5 كراتين مجانا', valueEn: '15 + 5 cartons free' },
+      { labelAr: 'التوصيل', labelEn: 'Delivery', valueAr: 'مجاني داخل الرياض', valueEn: 'Free in Riyadh' },
     ],
     inStock: true,
     isPublished: true,
@@ -1626,7 +1628,7 @@ const legacyOfferProducts: Product[] = [
     id: 'offer-fly-15-plus-5',
     brandId: BRAND_META.fly.id,
     name: {
-      ar: 'Ø¹Ø±Ø¶ Ù…ÙŠØ§Ù‡ ÙÙ„Ø§ÙŠ 15 + 5 ÙƒØ±Ø§ØªÙŠÙ†',
+      ar: 'عرض مياه فلاي 15 + 5 كراتين',
       en: 'Fly Water 15 + 5 Cartons Offer',
     },
     brand: BRAND_META.fly.en,
@@ -1639,36 +1641,36 @@ const legacyOfferProducts: Product[] = [
     originalPrice: 260,
     pricingMode: 'fixed',
     isPurchasable: true,
-    image: offerImage('fly-campaign.jpeg'),
+    image: FLY_CAMPAIGN_IMAGE,
     description: {
-      ar: 'Ø§Ø´ØªØ± 15 ÙƒØ±ØªÙˆÙ† Ù…ÙŠØ§Ù‡ ÙÙ„Ø§ÙŠ ÙˆØ§Ø­ØµÙ„ Ø¹Ù„Ù‰ 5 ÙƒØ±Ø§ØªÙŠÙ† Ù…Ø¬Ø§Ù†Ø§. Ù…ØªÙˆÙØ± 200 Ù…Ù„ 48 Ø¹Ø¨ÙˆØ© Ø£Ùˆ 330 Ù…Ù„ 40 Ø¹Ø¨ÙˆØ© Ø¨Ø³Ø¹Ø± 195 Ø±ÙŠØ§Ù„ Ø´Ø§Ù…Ù„ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© ÙˆØ§Ù„ØªÙˆØµÙŠÙ„ Ø¯Ø§Ø®Ù„ Ø§Ù„Ø±ÙŠØ§Ø¶.',
+      ar: 'اشتر 15 كرتون مياه فلاي واحصل على 5 كراتين مجانا. متوفر 200 مل 48 عبوة أو 330 مل 40 عبوة بسعر 195 ريال شامل الضريبة والتوصيل داخل الرياض.',
       en: 'Buy 15 Fly Water cartons and get 5 cartons free. Available in 200ml x48 bottles or 330ml x40 bottles for SAR 195 including VAT and delivery in Riyadh.',
     },
     features: [
-      'Ø§Ø´ØªØ± 15 ÙƒØ±ØªÙˆÙ† Ù…ÙŠØ§Ù‡ ÙÙ„Ø§ÙŠ ÙˆØ§Ø­ØµÙ„ Ø¹Ù„Ù‰ 5 ÙƒØ±Ø§ØªÙŠÙ† Ù…Ø¬Ø§Ù†Ø§.',
-      'Ù…ØªÙˆÙØ± Ø¨Ù…Ù‚Ø§Ø³ 200 Ù…Ù„ Ø¨Ø¹Ø¯Ø¯ 48 Ø¹Ø¨ÙˆØ© Ù„Ù„ÙƒØ±ØªÙˆÙ† Ø£Ùˆ 330 Ù…Ù„ Ø¨Ø¹Ø¯Ø¯ 40 Ø¹Ø¨ÙˆØ© Ù„Ù„ÙƒØ±ØªÙˆÙ†.',
-      'Ø§Ù„Ø³Ø¹Ø± 195 Ø±ÙŠØ§Ù„ ÙÙ‚Ø· Ø´Ø§Ù…Ù„ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© ÙˆØ§Ù„ØªÙˆØµÙŠÙ„ Ø¯Ø§Ø®Ù„ Ø§Ù„Ø±ÙŠØ§Ø¶.',
-      'Ù…ÙŠØ§Ù‡ Ø´Ø±Ø¨ Ù†Ù‚ÙŠØ© Ù…Ø¹ ØªÙˆØµÙŠÙ„ Ø³Ø±ÙŠØ¹ ÙˆØ¹Ø±ÙˆØ¶ Ù…Ø³ØªÙ…Ø±Ø©.',
-      'Ø§Ø·Ù„Ø¨ Ø§Ù„Ø¢Ù† ÙˆØ§Ø³ØªÙØ¯ Ù…Ù† Ø§Ù„Ø¹Ø±Ø¶ Ù‚Ø¨Ù„ Ø§Ù†ØªÙ‡Ø§Ø¦Ù‡.',
+      'اشتر 15 كرتون مياه فلاي واحصل على 5 كراتين مجانا.',
+      'متوفر بمقاس 200 مل بعدد 48 عبوة للكرتون أو 330 مل بعدد 40 عبوة للكرتون.',
+      'السعر 195 ريال فقط شامل الضريبة والتوصيل داخل الرياض.',
+      'مياه شرب نقية مع توصيل سريع وعروض مستمرة.',
+      'اطلب الآن واستفد من العرض قبل انتهائه.',
     ],
     benefits: [
-      '15 ÙƒØ±ØªÙˆÙ† + 5 ÙƒØ±Ø§ØªÙŠÙ† Ù…Ø¬Ø§Ù†Ø§',
-      '200 Ù…Ù„ Ø£Ùˆ 330 Ù…Ù„',
-      'Ø´Ø§Ù…Ù„ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© ÙˆØ§Ù„ØªÙˆØµÙŠÙ„',
-      'ØªÙˆØµÙŠÙ„ Ø³Ø±ÙŠØ¹ Ø¯Ø§Ø®Ù„ Ø§Ù„Ø±ÙŠØ§Ø¶',
+      '15 كرتون + 5 كراتين مجانا',
+      '200 مل أو 330 مل',
+      'شامل الضريبة والتوصيل',
+      'توصيل سريع داخل الرياض',
     ],
     specifications: {
-      packaging: '15 + 5 ÙƒØ±Ø§ØªÙŠÙ† Ù…Ø¬Ø§Ù†Ø§ØŒ 200ml x48 Ø£Ùˆ 330ml x40',
+      packaging: '15 + 5 كراتين مجانا، 200ml x48 أو 330ml x40',
     },
     story: {
-      ar: 'Ø¹Ø±Ø¶ ÙÙ„Ø§ÙŠ Ù…Ù†Ø§Ø³Ø¨ Ù„Ù„ØªØ®Ø²ÙŠÙ† Ø§Ù„ÙŠÙˆÙ…ÙŠ ÙˆØ§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø¹Ø§Ø¦Ù„ÙŠØ© ÙˆØ§Ù„Ù…ÙƒØªØ¨ÙŠØ© Ù…Ø¹ Ø³Ø¹Ø± Ø´Ø§Ù…Ù„ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© ÙˆØ§Ù„ØªÙˆØµÙŠÙ„ Ø¯Ø§Ø®Ù„ Ø§Ù„Ø±ÙŠØ§Ø¶.',
+      ar: 'عرض فلاي مناسب للتخزين اليومي والطلبات العائلية والمكتبية مع سعر شامل الضريبة والتوصيل داخل الرياض.',
       en: 'Fly offer is suited for daily stocking, family orders, and office supply with VAT and delivery included in Riyadh.',
     },
     quickFacts: [
-      { labelAr: 'Ø§Ù„Ø¹Ù„Ø§Ù…Ø©', labelEn: 'Brand', valueAr: 'ÙÙ„Ø§ÙŠ', valueEn: 'Fly Water' },
-      { labelAr: 'Ø§Ù„Ù…Ù‚Ø§Ø³Ø§Øª', labelEn: 'Sizes', valueAr: '200 Ù…Ù„ / 330 Ù…Ù„', valueEn: '200ml / 330ml' },
-      { labelAr: 'Ø§Ù„Ø¹Ø±Ø¶', labelEn: 'Offer', valueAr: '15 + 5 ÙƒØ±Ø§ØªÙŠÙ† Ù…Ø¬Ø§Ù†Ø§', valueEn: '15 + 5 cartons free' },
-      { labelAr: 'Ø§Ù„Ø³Ø¹Ø± Ø´Ø§Ù…Ù„', labelEn: 'Includes', valueAr: 'Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© ÙˆØ§Ù„ØªÙˆØµÙŠÙ„', valueEn: 'VAT and delivery' },
+      { labelAr: 'العلامة', labelEn: 'Brand', valueAr: 'فلاي', valueEn: 'Fly Water' },
+      { labelAr: 'المقاسات', labelEn: 'Sizes', valueAr: '200 مل / 330 مل', valueEn: '200ml / 330ml' },
+      { labelAr: 'العرض', labelEn: 'Offer', valueAr: '15 + 5 كراتين مجانا', valueEn: '15 + 5 cartons free' },
+      { labelAr: 'السعر شامل', labelEn: 'Includes', valueAr: 'الضريبة والتوصيل', valueEn: 'VAT and delivery' },
     ],
     inStock: true,
     isPublished: true,
@@ -1695,7 +1697,7 @@ const legacyOfferProducts: Product[] = [
     originalPrice: 260,
     pricingMode: 'fixed',
     isPurchasable: true,
-    image: offerImage('fly-campaign.jpeg'),
+    image: FLY_CAMPAIGN_IMAGE,
     description: {
       ar: '\u0627\u0634\u062a\u0631 15 \u0643\u0631\u062a\u0648\u0646 \u0645\u064a\u0627\u0647 \u0641\u0644\u0627\u064a 330 \u0645\u0644 \u0648\u0627\u062d\u0635\u0644 \u0639\u0644\u0649 5 \u0643\u0631\u0627\u062a\u064a\u0646 \u0645\u062c\u0627\u0646\u0627 \u0628\u0633\u0639\u0631 195 \u0631\u064a\u0627\u0644 \u0634\u0627\u0645\u0644 \u0627\u0644\u0636\u0631\u064a\u0628\u0629 \u0648\u0627\u0644\u062a\u0648\u0635\u064a\u0644 \u062f\u0627\u062e\u0644 \u0627\u0644\u0631\u064a\u0627\u0636.',
       en: 'Buy 15 Fly Water 330ml cartons and get 5 cartons free for SAR 195 including VAT and delivery in Riyadh.',
@@ -1874,7 +1876,12 @@ const rawProducts: Product[] = [
   ...productSeeds.map((seed) => makeProduct({ ...seed, order: seed.order + offerProducts.length })),
 ];
 
-export const products: Product[] = rawProducts.map(cleanProduct);
+const cleanedProducts = rawProducts.map(cleanProduct);
+
+// A catalog card must never show a different product or the store logo as if it
+// were the requested item. Products without an approved source image stay out
+// of the public fallback catalog until their real image is available.
+export const products: Product[] = cleanedProducts.filter((product) => Boolean(product.image));
 
 function firstDefined<T>(values: T[]) {
   return values.find((value) => value !== undefined);
@@ -1903,11 +1910,11 @@ const rawCatalogGroups: CatalogGroupDefinition[] = [
     id: '200ml',
     slug: '200-ml',
     path: '/products/200-ml',
-    nameAr: 'Ù…Ù†ØªØ¬Ø§Øª 200 Ù…Ù„',
+    nameAr: 'منتجات 200 مل',
     nameEn: '200ml Products',
-    shortAr: '200 Ù…Ù„',
+    shortAr: '200 مل',
     shortEn: '200ml',
-    descriptionAr: 'Ø¹Ø¨ÙˆØ§Øª 200 Ù…Ù„ Ù…Ù† Ù…Ù„Ù Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„Ø¬Ø¯ÙŠØ¯ØŒ Ù…Ø¹ Ø§Ù„Ø£Ø³Ù…Ø§Ø¡ ÙˆØ§Ù„ØµÙˆØ± Ø§Ù„Ù…Ø·Ø§Ø¨Ù‚Ø© Ø§Ù„Ù…ØªØ§Ø­Ø© ÙÙ‚Ø·.',
+    descriptionAr: 'عبوات 200 مل من ملف المنتجات الجديد، مع الأسماء والصور المطابقة المتاحة فقط.',
     descriptionEn: 'All 200ml packs from the refreshed product source with matched names and approved visuals only.',
     count: products.filter((product) => !isOfferProduct(product) && product.catalogGroup === '200ml').length,
   },
@@ -1915,11 +1922,11 @@ const rawCatalogGroups: CatalogGroupDefinition[] = [
     id: '330ml',
     slug: '330-ml',
     path: '/products/330-ml',
-    nameAr: 'Ù…Ù†ØªØ¬Ø§Øª 330 Ù…Ù„',
+    nameAr: 'منتجات 330 مل',
     nameEn: '330ml Products',
-    shortAr: '330 Ù…Ù„',
+    shortAr: '330 مل',
     shortEn: '330ml',
-    descriptionAr: 'Ø¹Ø¨ÙˆØ§Øª 330 Ù…Ù„ Ù…Ø±ØªØ¨Ø© Ø­Ø³Ø¨ Ù…Ù„Ù Ø§Ù„Ø¥ÙƒØ³Ù„ Ù†ÙØ³Ù‡ØŒ Ù…Ø¹ ÙØµÙ„ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„ØªÙŠ ØªØ­ØªØ§Ø¬ ØªØ³Ø¹ÙŠØ±Ø§Ù‹ Ù…Ø¨Ø§Ø´Ø±Ø§Ù‹.',
+    descriptionAr: 'عبوات 330 مل مرتبة حسب ملف الإكسل نفسه، مع فصل المنتجات التي تحتاج تسعيراً مباشراً.',
     descriptionEn: 'All 330ml packs in spreadsheet order, including quote-only products when pricing is not confirmed.',
     count: products.filter((product) => !isOfferProduct(product) && product.catalogGroup === '330ml').length,
   },
@@ -1927,11 +1934,11 @@ const rawCatalogGroups: CatalogGroupDefinition[] = [
     id: 'over-330ml',
     slug: 'over-330-ml',
     path: '/products/over-330-ml',
-    nameAr: 'Ù…Ù†ØªØ¬Ø§Øª Ø£ÙƒØ¨Ø± Ù…Ù† 330 Ù…Ù„',
+    nameAr: 'منتجات أكبر من 330 مل',
     nameEn: 'Products Above 330ml',
-    shortAr: 'Ø£ÙƒØ¨Ø± Ù…Ù† 330 Ù…Ù„',
+    shortAr: 'أكبر من 330 مل',
     shortEn: 'Above 330ml',
-    descriptionAr: 'Ø£Ø­Ø¬Ø§Ù… 500 Ùˆ600 Ù…Ù„ Ùˆ1.5 Ù„ØªØ± Ø¯Ø§Ø®Ù„ ØµÙØ­Ø© Ù…Ø³ØªÙ‚Ù„Ø© Ø£ÙˆØ¶Ø­ Ù„Ù„Ù…ÙˆØ¨Ø§ÙŠÙ„ ÙˆØ§Ù„ØªÙ†Ù‚Ù„ Ø§Ù„Ø³Ø±ÙŠØ¹.',
+    descriptionAr: 'أحجام 500 و600 مل و1.5 لتر داخل صفحة مستقلة أوضح للموبايل والتنقل السريع.',
     descriptionEn: '500ml, 600ml, and 1.5L products in a dedicated page built for mobile-first browsing.',
     count: products.filter((product) => !isOfferProduct(product) && product.catalogGroup === 'over-330ml').length,
   },
@@ -2005,30 +2012,30 @@ export const isDiscountedProduct = (product: Product): product is Product & { pr
 
 function getUnitLabel(product: Product, isRTL: boolean) {
   if (product.category === 'glass') {
-    return isRTL ? 'Ø²Ø¬Ø§Ø¬Ø©' : 'glass bottles';
+    return isRTL ? 'زجاجة' : 'glass bottles';
   }
 
   if (product.category === 'gallon') {
-    return isRTL ? 'Ø¬Ø§Ù„ÙˆÙ†' : 'gallons';
+    return isRTL ? 'جالون' : 'gallons';
   }
 
-  return isRTL ? 'Ø¹Ø¨ÙˆØ©' : 'bottles';
+  return isRTL ? 'عبوة' : 'bottles';
 }
 
 function getContainerLabel(product: Product, isRTL: boolean) {
   if (product.category === 'gallon') {
-    return isRTL ? 'Ø¹Ø¨ÙˆØ© Ø¬Ø§Ù„ÙˆÙ† ÙƒØ¨ÙŠØ±Ø©' : 'large gallon pack';
+    return isRTL ? 'عبوة جالون كبيرة' : 'large gallon pack';
   }
 
   if (product.category === 'glass') {
-    return isRTL ? 'ÙƒØ±ØªÙˆÙ† Ø²Ø¬Ø§Ø¬' : 'glass bottle carton';
+    return isRTL ? 'كرتون زجاج' : 'glass bottle carton';
   }
 
   if (product.imageType === 'bottle') {
-    return isRTL ? 'Ø¹Ø¨ÙˆØ© Ù…ÙŠØ§Ù‡ ÙØ±Ø¯ÙŠØ©' : 'single-bottle pack';
+    return isRTL ? 'عبوة مياه فردية' : 'single-bottle pack';
   }
 
-  return isRTL ? 'ÙƒØ±ØªÙˆÙ† Ù…ÙŠØ§Ù‡' : 'water carton';
+  return isRTL ? 'كرتون مياه' : 'water carton';
 }
 
 function getVolumeInMl(size: string) {
@@ -2043,7 +2050,7 @@ function getVolumeInMl(size: string) {
     return value * 1000;
   }
 
-  if (normalized.includes('Ù…Ù„')) {
+  if (normalized.includes('مل')) {
     return value;
   }
 
@@ -2061,42 +2068,42 @@ function formatTotalVolume(product: Product, isRTL: boolean) {
     ? totalLiters.toFixed(0)
     : totalLiters.toFixed(1).replace(/\.0$/, '');
 
-  return isRTL ? `${formatted} Ù„ØªØ± ØªÙ‚Ø±ÙŠØ¨Ø§` : `about ${formatted} liters`;
+  return isRTL ? `${formatted} لتر تقريبا` : `about ${formatted} liters`;
 }
 
 function getUsageDetail(product: Product, isRTL: boolean) {
   if (product.category === 'gallon' || product.size === '5L' || product.size === '12L') {
     return isRTL
-      ? 'Ù…Ù†Ø§Ø³Ø¨ Ù„Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ø¹Ø§Ø¦Ù„ÙŠØŒ Ø§Ù„Ù…ÙƒØ§ØªØ¨ØŒ ÙˆØ§Ù„Ø§Ø³ØªØ±Ø§Ø­Ø§Øª Ø§Ù„ØªÙŠ ØªØ­ØªØ§Ø¬ ÙƒÙ…ÙŠØ© Ø£ÙƒØ¨Ø± ÙÙŠ ÙƒÙ„ Ø·Ù„Ø¨.'
+      ? 'مناسب للاستخدام العائلي، المكاتب، والاستراحات التي تحتاج كمية أكبر في كل طلب.'
       : 'Suited for family use, offices, and locations that need more water per order.';
   }
 
   if (product.category === 'glass') {
     return isRTL
-      ? 'Ø§Ø®ØªÙŠØ§Ø± Ù…Ù†Ø§Ø³Ø¨ Ù„Ù„Ø¶ÙŠØ§ÙØ© Ø§Ù„Ø±Ø³Ù…ÙŠØ©ØŒ ØºØ±Ù Ø§Ù„Ø§Ø¬ØªÙ…Ø§Ø¹Ø§ØªØŒ ÙˆØ§Ù„Ù…Ù†Ø§Ø³Ø¨Ø§Øª Ø§Ù„ØªÙŠ ØªØ­ØªØ§Ø¬ ØªÙ‚Ø¯ÙŠÙ… Ø£Ù†ÙŠÙ‚.'
+      ? 'اختيار مناسب للضيافة الرسمية، غرف الاجتماعات، والمناسبات التي تحتاج تقديم أنيق.'
       : 'A polished option for hospitality, meeting rooms, and occasions that need a refined presentation.';
   }
 
   if (product.size === '1.5L') {
     return isRTL
-      ? 'Ø­Ø¬Ù… Ø¹Ù…Ù„ÙŠ Ù„Ù„Ù…Ù†Ø²Ù„ØŒ Ø§Ù„Ø±Ø­Ù„Ø§ØªØŒ ÙˆØ§Ù„ØªØ®Ø²ÙŠÙ† Ø§Ù„ÙŠÙˆÙ…ÙŠ Ù„Ø£Ù†Ù‡ ÙŠØ¹Ø·ÙŠ ÙƒÙ…ÙŠØ© Ø£ÙƒØ¨Ø± ÙÙŠ ÙƒÙ„ Ø²Ø¬Ø§Ø¬Ø©.'
+      ? 'حجم عملي للمنزل، الرحلات، والتخزين اليومي لأنه يعطي كمية أكبر في كل زجاجة.'
       : 'A practical size for home use, trips, and daily storage because each bottle carries more water.';
   }
 
   if (product.size === '500ml' || product.size === '600ml' || product.size === '750ml') {
     return isRTL
-      ? 'Ù…Ù†Ø§Ø³Ø¨ Ù„Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„ÙŠÙˆÙ…ÙŠ ÙˆØ§Ù„ØªÙ†Ù‚Ù„ ÙˆØ§Ù„Ø¹Ù…Ù„ØŒ Ø¨Ø­Ø¬Ù… ÙŠÙƒÙÙŠ Ù„ÙØªØ±Ø© Ø£Ø·ÙˆÙ„ Ù…Ù† Ø§Ù„Ø¹Ø¨ÙˆØ§Øª Ø§Ù„ØµØºÙŠØ±Ø©.'
+      ? 'مناسب للاستخدام اليومي والتنقل والعمل، بحجم يكفي لفترة أطول من العبوات الصغيرة.'
       : 'Good for daily use, commuting, and work, with more water than the smaller bottle sizes.';
   }
 
   if (product.size === '330ml') {
     return isRTL
-      ? 'Ø­Ø¬Ù… Ù…ØªÙˆØ§Ø²Ù† Ù„Ù„Ø¶ÙŠØ§ÙØ© ÙˆØ§Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„ÙŠÙˆÙ…ÙŠØŒ Ø£Ø³Ù‡Ù„ ÙÙŠ Ø§Ù„Ø­Ù…Ù„ ÙˆÙŠÙ‚Ù„Ù„ Ø§Ù„Ù‡Ø¯Ø± Ù…Ù‚Ø§Ø±Ù†Ø© Ø¨Ø§Ù„Ø£Ø­Ø¬Ø§Ù… Ø§Ù„ÙƒØ¨ÙŠØ±Ø©.'
+      ? 'حجم متوازن للضيافة والاستخدام اليومي، أسهل في الحمل ويقلل الهدر مقارنة بالأحجام الكبيرة.'
       : 'A balanced size for hospitality and daily use, easy to carry with less waste than larger bottles.';
   }
 
   return isRTL
-    ? 'Ø­Ø¬Ù… ØµØºÙŠØ± Ù…Ù†Ø§Ø³Ø¨ Ù„Ù„Ø¶ÙŠØ§ÙØ©ØŒ Ø§Ù„Ø§Ø¬ØªÙ…Ø§Ø¹Ø§ØªØŒ Ø§Ù„ØªÙˆØ²ÙŠØ¹ØŒ ÙˆØ§Ù„Ù…Ø¯Ø§Ø±Ø³ Ù…Ø¹ Ø¹Ø¯Ø¯ Ø­Ø¨Ø§Øª Ø¹Ù…Ù„ÙŠ Ø¯Ø§Ø®Ù„ Ø§Ù„ÙƒØ±ØªÙˆÙ†.'
+    ? 'حجم صغير مناسب للضيافة، الاجتماعات، التوزيع، والمدارس مع عدد حبات عملي داخل الكرتون.'
     : 'A small size for hospitality, meetings, distribution, and schools with a practical carton count.';
 }
 
@@ -2104,11 +2111,11 @@ export function getProductPackageDetails(product: Product, isRTL: boolean) {
   if (product.id === 'offer-nova-330-15-plus-5') {
     return isRTL
       ? [
-          'Ù…ÙŠØ§Ù‡ Ù†ÙˆÙØ§ ØªØ£ØªÙŠ Ù…Ù† Ø¢Ø¨Ø§Ø± ÙˆØ§Ø¯ÙŠ Ø³Ø¹Ø¯ØŒ Ø£Ø­Ø¯ Ø£Ø´Ù‡Ø± Ø§Ù„Ù…ØµØ§Ø¯Ø± Ø§Ù„Ø·Ø¨ÙŠØ¹ÙŠØ© Ù„Ù„Ù…ÙŠØ§Ù‡ Ø§Ù„Ù†Ù‚ÙŠØ© ÙÙŠ Ø§Ù„Ù…Ù…Ù„ÙƒØ©.',
-          'ØªØ±ÙƒÙŠØ¨Ø© Ù…ØªÙˆØ§Ø²Ù†Ø© ÙˆØ·Ø¹Ù… Ù†Ù‚ÙŠ ÙŠÙ†Ø¹Ø´ ÙŠÙˆÙ…Ùƒ Ù…Ø¹ ÙƒÙ„ Ø±Ø´ÙØ©.',
-          'Ø§Ù„Ù…Ù‚Ø§Ø³: 330 Ù…Ù„ØŒ ÙˆØ§Ù„ÙƒÙ…ÙŠØ© Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠØ©: 20 ÙƒØ±ØªÙˆÙ† Ø¶Ù…Ù† Ø¹Ø±Ø¶ 15 + 5 Ù…Ø¬Ø§Ù†Ø§.',
-          'Ø§Ù„Ø³Ø¹Ø± 350 Ø±ÙŠØ§Ù„ ÙÙ‚Ø· Ø´Ø§Ù…Ù„ Ø§Ù„ØªÙˆØµÙŠÙ„ Ø§Ù„Ù…Ø¬Ø§Ù†ÙŠ Ø¯Ø§Ø®Ù„ Ø§Ù„Ø±ÙŠØ§Ø¶.',
-          'Ø§Ø®ØªÙŠØ§Ø± Ù…Ø«Ø§Ù„ÙŠ Ù„Ù„Ù…Ù†Ø²Ù„ØŒ Ø§Ù„Ù…ÙƒØ§ØªØ¨ØŒ Ø§Ù„Ù…Ù†Ø§Ø³Ø¨Ø§ØªØŒ ÙˆØ§Ù„Ø¶ÙŠØ§ÙØ© Ø§Ù„Ø±Ø§Ù‚ÙŠØ©.',
+          'مياه نوفا تأتي من آبار وادي سعد، أحد أشهر المصادر الطبيعية للمياه النقية في المملكة.',
+          'تركيبة متوازنة وطعم نقي ينعش يومك مع كل رشفة.',
+          'المقاس: 330 مل، والكمية الإجمالية: 20 كرتون ضمن عرض 15 + 5 مجانا.',
+          'السعر 350 ريال فقط شامل التوصيل المجاني داخل الرياض.',
+          'اختيار مثالي للمنزل، المكاتب، المناسبات، والضيافة الراقية.',
         ]
       : [
           'Nova water comes from Wadi Saad wells, one of the well-known natural sources of pure water in Saudi Arabia.',
@@ -2122,11 +2129,11 @@ export function getProductPackageDetails(product: Product, isRTL: boolean) {
   if (product.id === 'offer-fly-15-plus-5') {
     return isRTL
       ? [
-          'Ø§Ø´ØªØ± 15 ÙƒØ±ØªÙˆÙ† Ù…ÙŠØ§Ù‡ ÙÙ„Ø§ÙŠ ÙˆØ§Ø­ØµÙ„ Ø¹Ù„Ù‰ 5 ÙƒØ±Ø§ØªÙŠÙ† Ù…Ø¬Ø§Ù†Ø§.',
-          'Ù…ØªÙˆÙØ± Ø¨Ù…Ù‚Ø§Ø³ 200 Ù…Ù„ Ø¨Ø¹Ø¯Ø¯ 48 Ø¹Ø¨ÙˆØ© Ù„Ù„ÙƒØ±ØªÙˆÙ† Ø£Ùˆ 330 Ù…Ù„ Ø¨Ø¹Ø¯Ø¯ 40 Ø¹Ø¨ÙˆØ© Ù„Ù„ÙƒØ±ØªÙˆÙ†.',
-          'Ø§Ù„Ø³Ø¹Ø± 195 Ø±ÙŠØ§Ù„ ÙÙ‚Ø· Ø´Ø§Ù…Ù„ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© ÙˆØ§Ù„ØªÙˆØµÙŠÙ„ Ø¯Ø§Ø®Ù„ Ø§Ù„Ø±ÙŠØ§Ø¶.',
-          'Ù…ÙŠØ§Ù‡ Ø´Ø±Ø¨ Ù†Ù‚ÙŠØ© Ù…Ø¹ ØªÙˆØµÙŠÙ„ Ø³Ø±ÙŠØ¹ ÙˆØ¹Ø±ÙˆØ¶ Ù…Ø³ØªÙ…Ø±Ø©.',
-          'Ø§Ø·Ù„Ø¨ Ø§Ù„Ø¢Ù† ÙˆØ§Ø³ØªÙØ¯ Ù…Ù† Ø§Ù„Ø¹Ø±Ø¶ Ù‚Ø¨Ù„ Ø§Ù†ØªÙ‡Ø§Ø¦Ù‡.',
+          'اشتر 15 كرتون مياه فلاي واحصل على 5 كراتين مجانا.',
+          'متوفر بمقاس 200 مل بعدد 48 عبوة للكرتون أو 330 مل بعدد 40 عبوة للكرتون.',
+          'السعر 195 ريال فقط شامل الضريبة والتوصيل داخل الرياض.',
+          'مياه شرب نقية مع توصيل سريع وعروض مستمرة.',
+          'اطلب الآن واستفد من العرض قبل انتهائه.',
         ]
       : [
           'Buy 15 Fly Water cartons and get 5 cartons free.',
@@ -2147,14 +2154,14 @@ export function getProductPackageDetails(product: Product, isRTL: boolean) {
   const packaging = product.specifications.packaging || `${product.size} x${product.quantity}`;
   const details = [
     isRTL
-      ? `ØªØ­ØªÙˆÙŠ Ø§Ù„Ø¹Ø¨ÙˆØ© Ø¹Ù„Ù‰ ${product.quantity} ${unitLabel} Ù…Ù† ${product.brandAr}ØŒ Ø­Ø¬Ù… ÙƒÙ„ ÙˆØ§Ø­Ø¯Ø© ${product.size}.`
+      ? `تحتوي العبوة على ${product.quantity} ${unitLabel} من ${product.brandAr}، حجم كل واحدة ${product.size}.`
       : `The pack contains ${product.quantity} ${unitLabel} from ${product.brand}, with ${product.size} in each unit.`,
     isRTL
-      ? `Ø§Ù„ØªØºÙ„ÙŠÙ Ø¹Ø¨Ø§Ø±Ø© Ø¹Ù† ${containerLabel} Ù…Ø±ØªØ¨ ÙˆØ³Ù‡Ù„ Ø§Ù„ØªØ®Ø²ÙŠÙ† ÙˆØ§Ù„Ù†Ù‚Ù„.`
+      ? `التغليف عبارة عن ${containerLabel} مرتب وسهل التخزين والنقل.`
       : `Packaging comes as a tidy ${containerLabel} that is easy to store and move.`,
     getUsageDetail(product, isRTL),
     isRTL
-      ? `Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø¹Ø¨ÙˆØ©: ${packaging}.`
+      ? `بيانات العبوة: ${packaging}.`
       : `Pack specification: ${packaging}.`,
   ];
 
@@ -2163,7 +2170,7 @@ export function getProductPackageDetails(product: Product, isRTL: boolean) {
       1,
       0,
       isRTL
-        ? `Ø¥Ø¬Ù…Ø§Ù„ÙŠ ÙƒÙ…ÙŠØ© Ø§Ù„Ù…ÙŠØ§Ù‡ Ø¯Ø§Ø®Ù„ Ø§Ù„Ø¹Ø¨ÙˆØ© ${totalVolume}.`
+        ? `إجمالي كمية المياه داخل العبوة ${totalVolume}.`
         : `Total water volume in the pack is ${totalVolume}.`,
     );
   }
@@ -2171,10 +2178,10 @@ export function getProductPackageDetails(product: Product, isRTL: boolean) {
   details.push(
     product.pricingMode === 'quote'
       ? isRTL
-        ? 'Ø§Ù„Ø³Ø¹Ø± ÙŠØªÙ… ØªØ£ÙƒÙŠØ¯Ù‡ Ø­Ø³Ø¨ Ø§Ù„ØªÙˆÙØ± ÙˆØ§Ù„ÙƒÙ…ÙŠØ© Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø© Ø¹Ø¨Ø± ÙˆØ§ØªØ³Ø§Ø¨ Ù‚Ø¨Ù„ Ø§Ù„Ø·Ù„Ø¨.'
+        ? 'السعر يتم تأكيده حسب التوفر والكمية المطلوبة عبر واتساب قبل الطلب.'
         : 'Price is confirmed by availability and requested quantity on WhatsApp before ordering.'
       : isRTL
-        ? 'Ø§Ù„Ù…Ù†ØªØ¬ Ù‚Ø§Ø¨Ù„ Ù„Ù„Ø¥Ø¶Ø§ÙØ© Ù„Ù„Ø³Ù„Ø© Ù…Ø¨Ø§Ø´Ø±Ø© Ø¨Ø§Ù„Ø³Ø¹Ø± Ø§Ù„Ù…ÙˆØ¶Ø­ ÙÙŠ ØµÙØ­Ø© Ø§Ù„Ù…Ù†ØªØ¬.'
+        ? 'المنتج قابل للإضافة للسلة مباشرة بالسعر الموضح في صفحة المنتج.'
         : 'This product can be added to the cart directly at the price shown on the product page.',
   );
 

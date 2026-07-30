@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react';
 import {
+  brands as fallbackBrands,
   catalogGroups as baseCatalogGroups,
   getBrandEntryPrice,
   hasFixedPrice,
@@ -65,7 +66,8 @@ function buildBrands(products: Product[]) {
         id,
         name: firstProduct.brand,
         nameAr: firstProduct.brandAr,
-        logo: firstDefined(brandProducts.map((product) => product.image)),
+        logo: firstDefined(brandProducts.map((product) => product.image))
+          ?? fallbackBrands.find((brand) => brand.id === id)?.logo,
       } satisfies BrandSummary;
     })
     .sort((left, right) => left.name.localeCompare(right.name));
@@ -91,7 +93,9 @@ function getCatalogGroupIdForSize(size: ProductSize): CatalogGroupId {
 }
 
 function normalizeProducts(products: Product[]) {
-  return products.slice().sort((left, right) => left.catalogOrder - right.catalogOrder);
+  return products
+    .filter((product) => Boolean(product.image))
+    .sort((left, right) => left.catalogOrder - right.catalogOrder);
 }
 
 export function ProductCatalogProvider({ children }: { children: ReactNode }) {
