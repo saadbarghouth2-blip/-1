@@ -43,18 +43,13 @@ export default function SplashScreen() {
             alt=""
             aria-hidden="true"
             initial={{ opacity: 0, scale: 1.04 }}
-            animate={{ opacity: 0.34, scale: 1.08 }}
+            animate={{ opacity: 0.58, scale: 1.08 }}
             transition={{ duration: 0.45, ease: 'easeOut' }}
-            className="absolute -inset-[10%] h-[120%] w-[120%] object-cover object-center blur-2xl md:hidden"
+            className="absolute -inset-[10%] h-[120%] w-[120%] object-cover object-center blur-3xl"
             loading="eager"
             fetchPriority="high"
           />
-          <div className="absolute inset-x-0 bottom-0 top-[29%] overflow-hidden bg-[linear-gradient(180deg,#eef9ff_0%,#d7f0fc_30%,#7dc9ed_68%,#075b96_100%)] md:hidden">
-            <div className="absolute -left-[30%] top-[-3.5rem] h-28 w-[160%] rounded-[50%] border-t-[3px] border-white/70 bg-white/35" />
-            <div className="absolute -left-[24%] top-[-2.2rem] h-32 w-[150%] rounded-[50%] border-t-2 border-sky-200/80 bg-sky-100/35" />
-            <div className="absolute -right-20 bottom-14 h-56 w-56 rounded-full bg-cyan-200/25 blur-3xl" />
-            <div className="absolute -left-24 bottom-2 h-44 w-64 rounded-full bg-blue-950/15 blur-3xl" />
-          </div>
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(244,251,255,0.18)_0%,rgba(231,247,255,0.32)_52%,rgba(3,47,86,0.34)_100%)]" />
           <motion.img
             src="/images/splash-riq-background.png"
             alt=""
@@ -62,11 +57,11 @@ export default function SplashScreen() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: 'easeOut' }}
-            className="absolute inset-0 h-full w-full object-contain object-top md:object-cover md:object-center"
+            className="absolute inset-x-0 top-0 h-auto w-full object-contain object-top md:inset-0 md:h-full"
             loading="eager"
             fetchPriority="high"
           />
-          <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#032f56]/42 via-[#075b96]/12 to-transparent sm:h-48" />
+          <div className="absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-[#032f56]/52 via-[#075b96]/16 to-transparent sm:h-48" />
 
           {/* Loading Progress Bar */}
           <motion.div
