@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Eye, Filter, ChevronDown } from 'lucide-react';
-import { categories, isDiscountedProduct, products, type Product } from '../data/products';
+import { categories, isDiscountedProduct, isOfferProduct, products, type Product } from '../data/products';
 import { formatSarPrice } from '../lib/utils';
 import {
   Dialog,
@@ -21,10 +21,11 @@ export default function Products() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
+  const catalogProducts = products.filter((product) => !isOfferProduct(product));
   const filteredProducts =
     selectedCategory === 'all'
-      ? products
-      : products.filter((p) => p.category === selectedCategory);
+      ? catalogProducts
+      : catalogProducts.filter((p) => p.category === selectedCategory);
 
   const currentCategory = categories.find((c) => c.id === selectedCategory);
 

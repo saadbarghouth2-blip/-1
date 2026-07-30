@@ -271,6 +271,18 @@ const PRODUCTS_PAGE_SIZE = 12;
 
 export { PRODUCTS_PAGE_SIZE };
 
+/**
+ * Offer records have not always been assigned the `offer` category in the
+ * remote catalog. Treat their stable id/image markers as authoritative too.
+ */
+export function isOfferProduct(product: Product) {
+  return (
+    product.category === 'offer' ||
+    product.imageType === 'offer' ||
+    product.id.toLowerCase().startsWith('offer-')
+  );
+}
+
 const rawProductSizeOptions: ProductSizeOption[] = [
   { id: '200ml', labelAr: '200 Ù…Ù„', labelEn: '200ml' },
   { id: '250ml', labelAr: '250 Ù…Ù„', labelEn: '250ml' },
@@ -1501,7 +1513,7 @@ function makeCampaignOfferProduct({
   };
 }
 
-const offerProducts: Product[] = [
+const legacyOfferProducts: Product[] = [
   makeCampaignOfferProduct({
     id: 'offer-adhari-330-15-plus-5',
     brandKey: 'adhari',
@@ -1724,6 +1736,139 @@ const offerProducts: Product[] = [
   },
 ];
 
+// Mirrors the four offers currently published in the store. Keeping this
+// local fallback aligned prevents the offers page from briefly showing the
+// seven retired campaign records while Supabase is loading or unavailable.
+function makeCurrentOfferProduct({
+  id,
+  brandId,
+  brand,
+  brandAr,
+  nameAr,
+  nameEn,
+  quantity,
+  price,
+  originalPrice,
+  image,
+  catalogOrder,
+}: {
+  id: string;
+  brandId: string;
+  brand: string;
+  brandAr: string;
+  nameAr: string;
+  nameEn: string;
+  quantity: number;
+  price: number;
+  originalPrice: number;
+  image: string;
+  catalogOrder: number;
+}): Product {
+  return {
+    id,
+    brandId,
+    name: { ar: nameAr, en: nameEn },
+    brand,
+    brandAr,
+    category: 'offer',
+    catalogGroup: '330ml',
+    size: '330ml',
+    quantity,
+    price,
+    originalPrice,
+    pricingMode: 'fixed',
+    isPurchasable: true,
+    image,
+    description: {
+      ar: `${quantity} كرتون بسعر ${price} ريال فقط، شامل التوصيل المجاني داخل الرياض. العرض لفترة محدودة حتى نفاد الكمية.`,
+      en: `${quantity} cartons for SAR ${price}, including free delivery in Riyadh. Limited-time offer while stocks last.`,
+    },
+    features: [
+      `${quantity} كرتون بسعر ${price} ريال فقط.`,
+      'متوفر بمقاسي 330 مل و200 مل.',
+      'مياه نقية وجودة مضمونة.',
+      'توصيل مجاني داخل الرياض.',
+    ],
+    benefits: [
+      `${quantity} كرتون`,
+      'توصيل مجاني داخل الرياض',
+      'مياه نقية 100%',
+      'عرض لفترة محدودة',
+    ],
+    specifications: { packaging: `${quantity} كرتون، 330ml أو 200ml` },
+    quickFacts: [
+      { labelAr: 'العلامة', labelEn: 'Brand', valueAr: brandAr, valueEn: brand },
+      { labelAr: 'الكمية', labelEn: 'Quantity', valueAr: `${quantity} كرتون`, valueEn: `${quantity} cartons` },
+      { labelAr: 'السعر', labelEn: 'Price', valueAr: `${price} ريال`, valueEn: `SAR ${price}` },
+      { labelAr: 'التوصيل', labelEn: 'Delivery', valueAr: 'مجاني داخل الرياض', valueEn: 'Free in Riyadh' },
+    ],
+    inStock: true,
+    isPublished: true,
+    rating: 0,
+    reviews: 0,
+    imageType: 'offer',
+    imageFit: 'balanced',
+    catalogOrder,
+  };
+}
+
+const offerProducts: Product[] = [
+  makeCurrentOfferProduct({
+    id: 'offer-fly-330-200-15-plus-5',
+    brandId: 'fly',
+    brand: 'Fly',
+    brandAr: 'فلاي',
+    nameAr: 'عرض مياه فلاي 330 - 200 مل 25 كرتون',
+    nameEn: 'Fly 330 - 200ml 25 Cartons Offer',
+    quantity: 25,
+    price: 250,
+    originalPrice: 325,
+    image: 'https://rxfbllanfnxymgpijden.supabase.co/storage/v1/object/public/product-images/offer-fly-330-200-15-plus-5/1785410168508.jpeg',
+    catalogOrder: 0,
+  }),
+  makeCurrentOfferProduct({
+    id: 'offer-fly-140-plus-5',
+    brandId: 'fly',
+    brand: 'Fly Water',
+    brandAr: 'فلاي',
+    nameAr: 'عرض مياه فلاي 200 - 330 مل 50 كرتون',
+    nameEn: 'Fly Water 50 Cartons Offer',
+    quantity: 50,
+    price: 475,
+    originalPrice: 550,
+    image: 'https://rxfbllanfnxymgpijden.supabase.co/storage/v1/object/public/product-images/offer-fly-140-plus-5/1785410720484.jpeg',
+    catalogOrder: 1,
+  }),
+  makeCurrentOfferProduct({
+    id: 'offer-aghadeer-330-15-plus-5',
+    brandId: 'tala',
+    brand: 'Tala',
+    brandAr: 'تالا',
+    nameAr: 'عرض مياه تالا 50 كرتون',
+    nameEn: 'Tala 50 Cartons Offer',
+    quantity: 50,
+    price: 475,
+    originalPrice: 550,
+    image: 'https://rxfbllanfnxymgpijden.supabase.co/storage/v1/object/public/product-images/offer-aghadeer-330-15-plus-5/1785411029766.jpeg',
+    catalogOrder: 2,
+  }),
+  makeCurrentOfferProduct({
+    id: 'offer-flt-200-330-15-plus-5',
+    brandId: 'tala',
+    brand: 'Tala',
+    brandAr: 'تالا',
+    nameAr: 'عرض مياه تالا 25 كرتون',
+    nameEn: 'Tala Water 200 - 330ml 25 Cartons Offer',
+    quantity: 25,
+    price: 250,
+    originalPrice: 325,
+    image: 'https://rxfbllanfnxymgpijden.supabase.co/storage/v1/object/public/product-images/offer-flt-200-330-15-plus-5/1785411338402.jpeg',
+    catalogOrder: 3,
+  }),
+];
+
+void legacyOfferProducts;
+
 const rawProducts: Product[] = [
   ...offerProducts,
   ...productSeeds.map((seed) => makeProduct({ ...seed, order: seed.order + offerProducts.length })),
@@ -1736,7 +1881,9 @@ function firstDefined<T>(values: T[]) {
 }
 
 export const brands: BrandSummary[] = Object.values(BRAND_META).reduce<BrandSummary[]>((collection, brand) => {
-  const brandProducts = products.filter((product) => product.brandId === brand.id);
+  const brandProducts = products.filter((product) => (
+    !isOfferProduct(product) && product.brandId === brand.id
+  ));
   if (brandProducts.length === 0) {
     return collection;
   }
@@ -1762,7 +1909,7 @@ const rawCatalogGroups: CatalogGroupDefinition[] = [
     shortEn: '200ml',
     descriptionAr: 'Ø¹Ø¨ÙˆØ§Øª 200 Ù…Ù„ Ù…Ù† Ù…Ù„Ù Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„Ø¬Ø¯ÙŠØ¯ØŒ Ù…Ø¹ Ø§Ù„Ø£Ø³Ù…Ø§Ø¡ ÙˆØ§Ù„ØµÙˆØ± Ø§Ù„Ù…Ø·Ø§Ø¨Ù‚Ø© Ø§Ù„Ù…ØªØ§Ø­Ø© ÙÙ‚Ø·.',
     descriptionEn: 'All 200ml packs from the refreshed product source with matched names and approved visuals only.',
-    count: products.filter((product) => product.catalogGroup === '200ml').length,
+    count: products.filter((product) => !isOfferProduct(product) && product.catalogGroup === '200ml').length,
   },
   {
     id: '330ml',
@@ -1774,7 +1921,7 @@ const rawCatalogGroups: CatalogGroupDefinition[] = [
     shortEn: '330ml',
     descriptionAr: 'Ø¹Ø¨ÙˆØ§Øª 330 Ù…Ù„ Ù…Ø±ØªØ¨Ø© Ø­Ø³Ø¨ Ù…Ù„Ù Ø§Ù„Ø¥ÙƒØ³Ù„ Ù†ÙØ³Ù‡ØŒ Ù…Ø¹ ÙØµÙ„ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„ØªÙŠ ØªØ­ØªØ§Ø¬ ØªØ³Ø¹ÙŠØ±Ø§Ù‹ Ù…Ø¨Ø§Ø´Ø±Ø§Ù‹.',
     descriptionEn: 'All 330ml packs in spreadsheet order, including quote-only products when pricing is not confirmed.',
-    count: products.filter((product) => product.catalogGroup === '330ml').length,
+    count: products.filter((product) => !isOfferProduct(product) && product.catalogGroup === '330ml').length,
   },
   {
     id: 'over-330ml',
@@ -1786,7 +1933,7 @@ const rawCatalogGroups: CatalogGroupDefinition[] = [
     shortEn: 'Above 330ml',
     descriptionAr: 'Ø£Ø­Ø¬Ø§Ù… 500 Ùˆ600 Ù…Ù„ Ùˆ1.5 Ù„ØªØ± Ø¯Ø§Ø®Ù„ ØµÙØ­Ø© Ù…Ø³ØªÙ‚Ù„Ø© Ø£ÙˆØ¶Ø­ Ù„Ù„Ù…ÙˆØ¨Ø§ÙŠÙ„ ÙˆØ§Ù„ØªÙ†Ù‚Ù„ Ø§Ù„Ø³Ø±ÙŠØ¹.',
     descriptionEn: '500ml, 600ml, and 1.5L products in a dedicated page built for mobile-first browsing.',
-    count: products.filter((product) => product.catalogGroup === 'over-330ml').length,
+    count: products.filter((product) => !isOfferProduct(product) && product.catalogGroup === 'over-330ml').length,
   },
 ];
 
@@ -1804,22 +1951,27 @@ export const getProductById = (id: string) => products.find((product) => product
 
 export const getProductsByCategory = (category: string) => {
   if (category === 'all') {
-    return products;
+    return products.filter((product) => !isOfferProduct(product));
   }
 
-  return products.filter((product) => product.category === category);
+  if (category === 'offer') {
+    return products.filter(isOfferProduct);
+  }
+
+  return products.filter((product) => !isOfferProduct(product) && product.category === category);
 };
 
 export const getProductsByBrand = (brand: string) => {
   const normalized = brand.trim().toLowerCase();
 
   return products.filter((product) => (
-    product.brand.toLowerCase() === normalized || product.brandId === normalized
+    !isOfferProduct(product) &&
+    (product.brand.toLowerCase() === normalized || product.brandId === normalized)
   ));
 };
 
 export const getCatalogProductsByGroup = (group: CatalogGroupId) =>
-  products.filter((product) => product.catalogGroup === group);
+  products.filter((product) => !isOfferProduct(product) && product.catalogGroup === group);
 
 export const getCatalogGroupIdForSize = (size: ProductSize): CatalogGroupId =>
   productSizeGroupMap[size];
@@ -1827,7 +1979,7 @@ export const getCatalogGroupIdForSize = (size: ProductSize): CatalogGroupId =>
 export const getProductSizeOptionsByGroup = (group: CatalogGroupId) =>
   productSizeOptions.reduce<Array<ProductSizeOption & { count: number }>>((collection, option) => {
     const count = products.filter((product) => (
-      product.catalogGroup === group && product.size === option.id
+      !isOfferProduct(product) && product.catalogGroup === group && product.size === option.id
     )).length;
 
     if (count > 0) {
@@ -2041,7 +2193,7 @@ export const getRelatedProducts = (productId: string, limit = 4) => {
   }
 
   return products
-    .filter((candidate) => candidate.id !== productId)
+    .filter((candidate) => !isOfferProduct(candidate) && candidate.id !== productId)
     .sort((left, right) => {
       const rightBrandMatch = Number(right.brandId === product.brandId);
       const leftBrandMatch = Number(left.brandId === product.brandId);
@@ -2063,14 +2215,15 @@ export const getRelatedProducts = (productId: string, limit = 4) => {
 export const searchProducts = (query: string) => {
   const needle = query.trim().toLowerCase();
   if (!needle) {
-    return products;
+    return products.filter((product) => !isOfferProduct(product));
   }
 
   return products.filter((product) => (
-    product.name.ar.toLowerCase().includes(needle) ||
-    product.name.en.toLowerCase().includes(needle) ||
-    product.brand.toLowerCase().includes(needle) ||
-    product.brandAr.toLowerCase().includes(needle)
+    !isOfferProduct(product) &&
+    (product.name.ar.toLowerCase().includes(needle) ||
+      product.name.en.toLowerCase().includes(needle) ||
+      product.brand.toLowerCase().includes(needle) ||
+      product.brandAr.toLowerCase().includes(needle))
   ));
 };
 

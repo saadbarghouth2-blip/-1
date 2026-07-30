@@ -10,6 +10,7 @@ import {
   getProductsByBrand,
   hasFixedPrice,
   isDiscountedProduct,
+  isOfferProduct,
   products,
 } from '../data/products';
 import { localizeText } from '../lib/utils';
@@ -444,7 +445,9 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
   if (catalogGroupMatch) {
     const group = getCatalogGroupBySlug(catalogGroupMatch[1]);
     if (group) {
-      const groupProducts = products.filter((product) => product.catalogGroup === group.id);
+      const groupProducts = products.filter((product) => (
+        !isOfferProduct(product) && product.catalogGroup === group.id
+      ));
 
       return buildStaticPagePayload({
         title: `${isRTL ? group.nameAr : group.nameEn} | ${SITE_NAME_LOCKUP}`,
@@ -617,7 +620,9 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
         ...homeBreadcrumbs,
         { name: isRTL ? 'العروض' : 'Offers', path: '/offers' },
       ],
-      items: products.filter(isDiscountedProduct).map((product) => ({
+      items: products.filter((product) => (
+        isOfferProduct(product) && isDiscountedProduct(product)
+      )).map((product) => ({
         name: isRTL ? product.name.ar : product.name.en,
         path: `/product/${product.id}`,
       })),

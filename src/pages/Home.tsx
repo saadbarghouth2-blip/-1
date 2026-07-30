@@ -18,11 +18,15 @@ import {
   MapPin,
   CalendarCheck,
   ChevronDown,
+  BadgePercent,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import HeroWordmark from '../components/HeroWordmark';
-import { isDiscountedProduct, products } from '../data/products';
+import ProductImage from '../components/ProductImage';
+import { isDiscountedProduct, isOfferProduct, products, type Product } from '../data/products';
+import { useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import { cancelIdleTask, scheduleIdleTask } from '../lib/idle';
+import { formatSarPrice } from '../lib/utils';
 
 const loadStatsTickerSection = () => import('../sections/StatsTicker');
 const loadParallaxShowcaseSection = () => import('../sections/ParallaxShowcase');
@@ -290,10 +294,22 @@ function ExactFastDeliveryHero({
     <motion.section
       ref={heroRef}
       style={{ opacity: heroOpacity }}
-      className="relative isolate min-h-[100svh] overflow-hidden bg-[#dff4ff]"
+      className="relative isolate overflow-hidden bg-[#f4f9fc] px-2.5 pb-2.5 pt-[5.15rem] sm:px-4 sm:pb-4 md:px-6 md:pb-6 md:pt-[7.35rem]"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
-      <motion.div style={{ scale: heroScale, y: heroY }} className="absolute inset-0">
+      <motion.img
+        src="/images/home-hero-riq-water.png"
+        alt={isRTL ? 'مياه ريق النقية وخدمات التوصيل في جميع مناطق المملكة' : 'Riq pure water and delivery services across Saudi Arabia'}
+        className="relative z-10 block h-auto w-full rounded-[0.85rem] border border-sky-100 object-contain shadow-[0_20px_55px_-36px_rgba(15,63,123,0.42)] sm:rounded-[1.2rem]"
+        initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: prefersReducedMotion ? 0.2 : 0.58, ease: [0.22, 1, 0.36, 1] }}
+        loading="eager"
+        fetchPriority="high"
+      />
+
+      <div className="hidden">
+      <motion.div style={{ scale: heroScale, y: heroY }} className="absolute inset-0 hidden md:block">
         <motion.img
           src="/images/fast-delivery-riyadh-truck-left.png"
           alt={copy.alt}
@@ -335,7 +351,44 @@ function ExactFastDeliveryHero({
         </motion.div>
       ) : null}
 
-      <motion.div style={{ scale: heroScale, y: heroY }} className="relative z-10 min-h-screen">
+      <div className="relative z-10 px-3 pb-3 pt-[5.15rem] md:hidden">
+        <motion.div
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 14, scale: 0.985 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: prefersReducedMotion ? 0.2 : 0.58, ease: [0.22, 1, 0.36, 1] }}
+          className="relative aspect-[1.92/1] overflow-hidden rounded-[1.15rem] border border-sky-100 bg-white shadow-[0_18px_45px_-28px_rgba(15,63,123,0.38)]"
+        >
+          <img
+            src="/images/fast-delivery-riyadh-truck-left.png"
+            alt={copy.alt}
+            className="absolute inset-0 h-full w-full object-cover object-[28%_center]"
+            loading="eager"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-y-0 right-0 w-[58%] bg-[linear-gradient(270deg,rgba(255,255,255,0.98)_8%,rgba(239,248,253,0.94)_68%,rgba(239,248,253,0.18))]" />
+          <div className="absolute inset-y-0 right-0 flex w-[55%] flex-col items-center justify-center px-2.5 text-center text-[#06478c]">
+            <h1 className={`${isRTL ? 'text-[1.35rem]' : 'text-lg'} font-black leading-tight`}>{copy.headline}</h1>
+            <p className="mt-1 text-[0.63rem] font-extrabold leading-4 text-[#245a80]">{copy.pill}</p>
+            <div className="mt-2.5 grid w-full grid-cols-3 gap-1">
+              {featureItems.map((item) => (
+                <div key={item.title} className="flex min-w-0 flex-col items-center text-center">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#0b64a0] bg-white/80">
+                    <item.icon className="h-3.5 w-3.5" strokeWidth={2.4} />
+                  </span>
+                  <span className="mt-1 line-clamp-2 text-[0.5rem] font-black leading-[0.7rem]">{item.title}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="absolute inset-x-0 bottom-0 flex h-7 items-center justify-around bg-[#075b96]/94 px-2 text-[0.48rem] font-bold text-white">
+            <span>{isRTL ? 'نقاء وجودة' : 'Pure quality'}</span>
+            <span>{isRTL ? 'توصيل سريع' : 'Fast delivery'}</span>
+            <span>{isRTL ? 'كل أحياء الرياض' : 'All Riyadh'}</span>
+          </div>
+        </motion.div>
+      </div>
+
+      <motion.div style={{ scale: heroScale, y: heroY }} className="relative z-10 hidden min-h-screen md:block">
         <motion.div
           initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -374,7 +427,7 @@ function ExactFastDeliveryHero({
           initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: prefersReducedMotion ? 0.2 : 0.58, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-x-4 top-[6.15rem] rounded-[1.35rem] border border-white/70 bg-white/72 p-3 text-center shadow-[0_18px_50px_-34px_rgba(15,23,42,0.42)] backdrop-blur-sm md:hidden"
+          className="hidden"
         >
           <h1 className={`${isRTL ? 'text-4xl' : 'text-3xl'} font-black leading-tight text-[#06478c]`}>{copy.headline}</h1>
           <div className={`${isRTL ? 'text-xl' : 'text-base'} mt-2 rounded-xl bg-[#064c99] px-3 py-2 font-black leading-tight text-white`}>{copy.pill}</div>
@@ -390,7 +443,113 @@ function ExactFastDeliveryHero({
           </div>
         </motion.div>
       </motion.div>
+      </div>
     </motion.section>
+  );
+}
+
+type HomeOfferProduct = Product & { price: number; originalPrice: number };
+
+function HomeOffersShowcase({
+  offers,
+  isRTL,
+  onAddToCart,
+}: {
+  offers: HomeOfferProduct[];
+  isRTL: boolean;
+  onAddToCart: (product: Product) => void;
+}) {
+  if (offers.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="relative overflow-hidden bg-[#f4f9fc] pb-10 pt-5 text-slate-900 md:bg-[#071d35] md:py-16 md:text-white">
+      <div className="pointer-events-none absolute inset-0 hidden bg-[radial-gradient(circle_at_8%_20%,rgba(56,189,248,0.2),transparent_34%),radial-gradient(circle_at_92%_82%,rgba(14,165,233,0.14),transparent_32%)] md:block" />
+      <div className="relative w-full px-3 sm:px-6 lg:px-12 xl:px-20">
+        <div className="mb-4 flex items-end justify-between gap-3 md:mb-7 md:flex-row md:gap-5">
+          <div>
+            <span className="hidden items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-xs font-black text-cyan-100 md:inline-flex">
+              <BadgePercent className="h-4 w-4" />
+              {isRTL ? '4 عروض مختارة الآن' : '4 hand-picked offers'}
+            </span>
+            <h2 className="text-2xl font-black md:mt-4 md:text-4xl">
+              {isRTL ? 'عروضنا' : 'Our offers'}
+            </h2>
+            <p className="mt-2 hidden max-w-2xl text-sm leading-7 text-slate-300 md:block md:text-base">
+              {isRTL
+                ? 'نظرة سريعة على عروض فلاي وتالا الحالية، والتفاصيل الكاملة موجودة في صفحة العروض.'
+                : 'A quick look at the current Fly and Tala deals, with full details on the offers page.'}
+            </p>
+          </div>
+          <Link
+            to="/offers"
+            className="inline-flex w-fit items-center gap-1.5 text-xs font-black text-[#075985] md:gap-2 md:rounded-full md:bg-cyan-400 md:px-5 md:py-3 md:text-sm md:text-[#071d35] md:hover:bg-cyan-300"
+          >
+            <span>{isRTL ? 'عرض الكل' : 'View all'}</span>
+            <ArrowRight className={`h-4 w-4 ${isRTL ? 'rotate-180' : ''}`} />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4 lg:gap-5">
+          {offers.map((product, index) => {
+            const savings = product.originalPrice - product.price;
+
+            return (
+              <motion.article
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-70px' }}
+                transition={{ delay: index * 0.06 }}
+                className="group overflow-hidden rounded-[0.9rem] border border-slate-200 bg-white p-1.5 text-slate-900 shadow-[0_14px_35px_-28px_rgba(15,23,42,0.38)] md:rounded-[1.5rem] md:border-white/10 md:p-3 md:shadow-[0_24px_60px_-35px_rgba(56,189,248,0.65)]"
+              >
+                <Link to={`/product/${product.id}`} className="block">
+                  <ProductImage
+                    product={product}
+                    isRTL={isRTL}
+                    size="card"
+                    className="h-36 rounded-[0.65rem] sm:h-44 md:rounded-[1.1rem]"
+                    imageClassName="group-hover:scale-[1.035]"
+                  />
+                </Link>
+                <div className="px-1.5 pb-1.5 pt-2.5 md:px-2 md:pt-3">
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <span className="rounded-full bg-[#e8f5ff] px-2 py-1 text-[9px] font-black text-[#075985] sm:text-xs md:px-2.5">
+                      {isRTL ? product.brandAr : product.brand}
+                    </span>
+                    <span className="rounded-full bg-red-600 px-2 py-1 text-[9px] font-black text-white sm:text-xs md:bg-red-50 md:px-2.5 md:text-red-600">
+                      {isRTL ? `وفر ${formatSarPrice(savings, true)}` : `Save ${formatSarPrice(savings, false)}`}
+                    </span>
+                  </div>
+                  <Link to={`/product/${product.id}`}>
+                    <h3 className="mt-2.5 line-clamp-3 min-h-[3.75rem] text-[0.82rem] font-bold leading-5 transition-colors group-hover:text-[#075985] sm:min-h-12 sm:text-base sm:font-black sm:leading-6 md:line-clamp-2">
+                      {isRTL ? product.name.ar : product.name.en}
+                    </h3>
+                  </Link>
+                  <div className="mt-2 flex flex-wrap items-end gap-x-2 gap-y-1 border-t border-slate-100 pt-2.5 md:mt-3 md:pt-3">
+                    <span className="text-base font-black text-red-600 sm:text-xl md:text-[#075985]">
+                      {formatSarPrice(product.price, isRTL)}
+                    </span>
+                    <span className="text-[11px] text-slate-400 line-through sm:text-xs">
+                      {formatSarPrice(product.originalPrice, isRTL)}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => onAddToCart(product)}
+                    className="mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-[#087da1] bg-white px-2 py-2 text-[0.7rem] font-black text-[#08708f] transition hover:bg-[#eaf8fb] md:mt-3 md:rounded-full md:border-cyan-100 md:bg-cyan-50 md:text-xs md:text-[#075985]"
+                  >
+                    <ShoppingCart className="h-3.5 w-3.5" />
+                    <span>{isRTL ? 'إضافة للسلة' : 'Add to cart'}</span>
+                  </button>
+                </div>
+              </motion.article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -400,9 +559,12 @@ export default function Home() {
   const { i18n } = useTranslation();
   const heroRef = useRef<HTMLDivElement>(null);
   const isRTL = i18n.language === 'ar';
-  const { totalItems } = useCart();
-  const discountedCount = products.filter(isDiscountedProduct).length;
-  const brandCount = new Set(products.map((product) => product.brand)).size;
+  const { totalItems, addToCart } = useCart();
+  const { offerProducts } = useProductCatalog();
+  const homeOffers = offerProducts.filter(isDiscountedProduct).slice(0, 4);
+  const catalogProducts = products.filter((product) => !isOfferProduct(product));
+  const discountedCount = catalogProducts.filter(isDiscountedProduct).length;
+  const brandCount = new Set(catalogProducts.map((product) => product.brand)).size;
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -490,6 +652,7 @@ export default function Home() {
         heroY={heroY}
         isRTL={isRTL}
       />
+      <HomeOffersShowcase offers={homeOffers} isRTL={isRTL} onAddToCart={addToCart} />
       {false ? (
       <motion.section
         ref={heroRef}
@@ -699,7 +862,7 @@ export default function Home() {
             className="mt-12 flex flex-wrap justify-center gap-4 px-4 sm:mt-16 sm:gap-8"
           >
             {[
-              { value: products.length, suffix: '', label: isRTL ? 'منتج' : 'Products' },
+              { value: catalogProducts.length, suffix: '', label: isRTL ? 'منتج' : 'Products' },
               { value: brandCount, suffix: '', label: isRTL ? 'علامة تجارية' : 'Brands' },
               { value: discountedCount, suffix: '', label: isRTL ? 'منتج مخفض' : 'Discounted' },
               { value: 3, suffix: '', label: isRTL ? 'فئات فعالة' : 'Active Sizes' },

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BRAND_LOGO_ALT, BRAND_LOGO_SRC, BRAND_NAME_AR, BRAND_NAME_EN } from '../lib/brand';
+import { BRAND_LOGO_ALT, BRAND_LOGO_SRC } from '../lib/brand';
 
 const SPLASH_DURATION_MS = 4000;
 
@@ -36,82 +36,83 @@ export default function SplashScreen() {
           key="splash"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: 0.2, ease: 'easeOut' } }}
-          className="fixed inset-0 z-[10000] flex items-center justify-center bg-[#0a1628] overflow-hidden"
+          className="fixed inset-0 z-[10000] overflow-hidden bg-[#eaf6ff]"
         >
-          {/* Animated Gradient Background */}
-          <motion.div
-            animate={{ 
-              background: [
-                'radial-gradient(circle at 50% 50%, rgba(21,59,102,0.2) 0%, transparent 60%)',
-                'radial-gradient(circle at 50% 50%, rgba(34,211,238,0.3) 10%, transparent 70%)',
-                'radial-gradient(circle at 50% 50%, rgba(21,59,102,0.2) 0%, transparent 60%)'
-              ]
-            }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-            className="absolute inset-0"
+          <motion.img
+            src="/images/splash-riq-background.png"
+            alt=""
+            aria-hidden="true"
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 0.34, scale: 1.08 }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+            className="absolute -inset-[10%] h-[120%] w-[120%] object-cover object-center blur-2xl md:hidden"
+            loading="eager"
+            fetchPriority="high"
           />
+          <div className="absolute inset-x-0 bottom-0 top-[29%] overflow-hidden bg-[linear-gradient(180deg,#eef9ff_0%,#d7f0fc_30%,#7dc9ed_68%,#075b96_100%)] md:hidden">
+            <div className="absolute -left-[30%] top-[-3.5rem] h-28 w-[160%] rounded-[50%] border-t-[3px] border-white/70 bg-white/35" />
+            <div className="absolute -left-[24%] top-[-2.2rem] h-32 w-[150%] rounded-[50%] border-t-2 border-sky-200/80 bg-sky-100/35" />
+            <div className="absolute -right-20 bottom-14 h-56 w-56 rounded-full bg-cyan-200/25 blur-3xl" />
+            <div className="absolute -left-24 bottom-2 h-44 w-64 rounded-full bg-blue-950/15 blur-3xl" />
+          </div>
+          <motion.img
+            src="/images/splash-riq-background.png"
+            alt=""
+            aria-hidden="true"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+            className="absolute inset-0 h-full w-full object-contain object-top md:object-cover md:object-center"
+            loading="eager"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#032f56]/42 via-[#075b96]/12 to-transparent sm:h-48" />
 
-          <div className="relative z-10 text-center flex flex-col items-center px-4">
-            {/* The Logo */}
-            <motion.div
-              initial={{ scale: 0, opacity: 0, y: 50 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, type: 'spring', bounce: 0.25 }}
-              className="relative mb-9 flex h-48 w-48 items-center justify-center sm:mb-10 sm:h-60 sm:w-60"
-            >
-              {/* Glow behind logo */}
+          {/* Loading Progress Bar */}
+          <motion.div
+            initial={{ opacity: 0, y: 18, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.18, duration: 0.45, ease: 'easeOut' }}
+            className="absolute inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-10 rounded-[1.15rem] border border-white/80 bg-white/90 p-2.5 shadow-[0_20px_55px_-26px_rgba(3,42,78,0.62)] backdrop-blur-xl sm:inset-x-auto sm:bottom-7 sm:left-1/2 sm:w-[27rem] sm:-translate-x-1/2 sm:rounded-[1.4rem] sm:p-4"
+          >
+            <div className="flex w-full items-center gap-2.5 sm:gap-3" dir="rtl">
               <motion.div
-                animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.6, 0.3] }}
-                transition={{ duration: 1.8, repeat: Infinity }}
-                className="absolute inset-0 rounded-full bg-cyan-400/20 blur-3xl"
-              />
-              <div className="relative z-10 h-full w-full overflow-hidden rounded-[2.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_32px_68px_-42px_rgba(0,0,0,0.85)] backdrop-blur-sm">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(255,255,255,0.18),rgba(255,255,255,0)_62%)]" />
+                animate={{ y: [0, -3, 0], scale: [1, 1.025, 1] }}
+                transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut' }}
+                className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[0.85rem] border border-[#2b648c]/20 bg-[linear-gradient(145deg,#153b66,#2b648c)] shadow-[0_12px_26px_-16px_rgba(21,59,102,0.72)] sm:h-16 sm:w-16 sm:rounded-[1rem]"
+              >
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_20%,rgba(255,255,255,0.24),transparent_55%)]" />
                 <img
                   src={BRAND_LOGO_SRC}
                   alt={BRAND_LOGO_ALT}
-                  className="relative z-10 h-full w-full scale-[1.22] object-cover object-center drop-shadow-[0_14px_36px_rgba(125,211,252,0.2)]"
+                  className="relative h-full w-full scale-[1.18] object-cover object-center"
                 />
+              </motion.div>
+
+              <div className="min-w-0 flex-1 text-right">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="truncate text-xs font-black text-[#0b3155] sm:text-base">جاري تجهيز متجر ريق</p>
+                  <span className="flex shrink-0 items-center gap-1 text-[9px] font-bold text-[#4b718d] sm:text-[10px]">
+                    <motion.span
+                      animate={{ opacity: [0.35, 1, 0.35] }}
+                      transition={{ duration: 1.1, repeat: Infinity }}
+                      className="h-1.5 w-1.5 rounded-full bg-cyan-500"
+                    />
+                    تحميل
+                  </span>
+                </div>
+                <p className="mt-0.5 truncate text-[9px] font-semibold text-[#58738b] sm:text-xs">مياه نقية وتوصيل أسرع إلى بابك</p>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#d7e8f4] sm:mt-2.5">
+                  <motion.div
+                    initial={{ width: '0%' }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: SPLASH_DURATION_MS / 1000, ease: 'linear' }}
+                    className="h-full rounded-full bg-gradient-to-l from-cyan-400 via-sky-500 to-blue-700 shadow-[0_0_12px_rgba(14,165,233,0.55)]"
+                  />
+                </div>
               </div>
-            </motion.div>
-
-            {/* Typography */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.12, duration: 0.35 }}
-              className="text-4xl sm:text-[4.5rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-white tracking-tighter leading-none"
-            >
-              {BRAND_NAME_EN}
-            </motion.h1>
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.18, duration: 0.35 }}
-              className="mt-2 mb-4 text-xl sm:text-[2.1rem] font-bold tracking-tight text-cyan-100 leading-none"
-            >
-              {BRAND_NAME_AR}
-            </motion.div>
-            
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.24, duration: 0.3 }}
-              className="text-cyan-200/60 font-medium tracking-[0.2em] text-sm sm:text-base uppercase"
-            >
-              Pure Water Delivery
-            </motion.p>
-          </div>
-
-          {/* Loading Progress Bar */}
-          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-48 h-1 bg-white/10 rounded-full overflow-hidden">
-            <motion.div
-              initial={{ width: '0%' }}
-              animate={{ width: '100%' }}
-              transition={{ duration: SPLASH_DURATION_MS / 1000, ease: 'linear' }}
-              className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"
-            />
-          </div>
+            </div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

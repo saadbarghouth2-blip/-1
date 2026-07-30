@@ -3,46 +3,35 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import { ArrowRight, BadgePercent, Package, ShoppingCart, Tags } from 'lucide-react';
-import { isDiscountedProduct, type Product } from '../data/products';
+import { isDiscountedProduct, isOfferProduct, type Product } from '../data/products';
 import { useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import ProductImage from '../components/ProductImage';
 import { useCart } from '../context/CartContext';
 import { formatSarPrice } from '../lib/utils';
 
-const availableOfferImages = new Set([
-  '/images/offers/adhari-campaign.png',
-  '/images/offers/aghadeer-campaign.jpeg',
-  '/images/offers/naqi-campaign.jpeg',
-  '/images/offers/nova-campaign.png',
-  '/images/offers/oubi-campaign.jpeg',
-]);
-
 type AvailableOfferProduct = Product & {
-  image: string;
   price: number;
   originalPrice: number;
 };
 
 function isAvailableOfferProduct(product: Product): product is AvailableOfferProduct {
   return (
-    product.category === 'offer' &&
-    isDiscountedProduct(product) &&
-    typeof product.image === 'string' &&
-    availableOfferImages.has(product.image)
+    isOfferProduct(product) &&
+    isDiscountedProduct(product)
   );
 }
 
 export default function Offers() {
   const { i18n } = useTranslation();
   const { addToCart } = useCart();
-  const { products } = useProductCatalog();
+  const { offerProducts } = useProductCatalog();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-120px' });
   const isRTL = i18n.language === 'ar';
 
   const discountedProducts = useMemo(
-    () => products.filter(isAvailableOfferProduct),
-    [products],
+    () => offerProducts.filter(isAvailableOfferProduct).slice(0, 4),
+    [offerProducts],
   );
 
   const totalSavings = discountedProducts.reduce((sum, product) => (

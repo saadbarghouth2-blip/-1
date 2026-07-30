@@ -11,6 +11,7 @@ import {
   catalogGroups as baseCatalogGroups,
   getBrandEntryPrice,
   hasFixedPrice,
+  isOfferProduct,
   productSizeOptions,
   products as fallbackProducts,
   type BrandSummary,
@@ -24,7 +25,9 @@ import { isSupabaseConfigured } from '../../lib/supabaseConfig';
 import { listPublishedProducts } from '../../services/productAdmin';
 
 type ProductCatalogContextValue = {
+  /** Regular catalog products. Offers are deliberately kept out of this list. */
   products: Product[];
+  offerProducts: Product[];
   brands: BrandSummary[];
   catalogGroups: CatalogGroupDefinition[];
   isLoading: boolean;
@@ -92,14 +95,14 @@ function normalizeProducts(products: Product[]) {
 }
 
 export function ProductCatalogProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>(fallbackProducts);
+  const [allProducts, setAllProducts] = useState<Product[]>(fallbackProducts);
   const [isLoading, setIsLoading] = useState(isSupabaseConfigured());
   const [isFallback, setIsFallback] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const refreshProducts = useCallback(async () => {
     if (!isSupabaseConfigured()) {
-      setProducts(fallbackProducts);
+      setAllProducts(fallbackProducts);
       setIsFallback(true);
       setError(null);
       setIsLoading(false);
@@ -110,17 +113,17 @@ export function ProductCatalogProvider({ children }: { children: ReactNode }) {
     try {
       const remoteProducts = await listPublishedProducts();
       if (remoteProducts.length === 0) {
-        setProducts(fallbackProducts);
+        setAllProducts(fallbackProducts);
         setIsFallback(true);
         setError(null);
         return;
       }
 
-      setProducts(normalizeProducts(remoteProducts));
+      setAllProducts(normalizeProducts(remoteProducts));
       setIsFallback(false);
       setError(null);
     } catch (nextError) {
-      setProducts(fallbackProducts);
+      setAllProducts(fallbackProducts);
       setIsFallback(true);
       setError(nextError instanceof Error ? nextError.message : 'Unable to load products.');
     } finally {
@@ -133,10 +136,14 @@ export function ProductCatalogProvider({ children }: { children: ReactNode }) {
   }, [refreshProducts]);
 
   const value = useMemo<ProductCatalogContextValue>(() => {
+    const products = allProducts.filter((product) => !isOfferProduct(product));
+    const offerProducts = allProducts.filter(isOfferProduct);
     const brands = buildBrands(products);
     const catalogGroups = buildCatalogGroups(products);
 
-    const getProductById = (id: string) => products.find((product) => product.id === id);
+    // Keep direct offer detail pages working, while excluding offers from every
+    // general catalog selector below.
+    const getProductById = (id: string) => allProducts.find((product) => product.id === id);
     const getProductsByBrand = (brand: string) => {
       const normalized = brand.trim().toLowerCase();
       return products.filter((product) => (
@@ -198,6 +205,7 @@ export function ProductCatalogProvider({ children }: { children: ReactNode }) {
 
     return {
       products,
+      offerProducts,
       brands,
       catalogGroups,
       isLoading,
@@ -213,7 +221,7 @@ export function ProductCatalogProvider({ children }: { children: ReactNode }) {
       getCatalogGroupBySlug: (slug) => catalogGroups.find((group) => group.slug === slug),
       getCatalogGroupById: (groupId) => catalogGroups.find((group) => group.id === groupId),
     };
-  }, [error, isFallback, isLoading, products, refreshProducts]);
+  }, [allProducts, error, isFallback, isLoading, refreshProducts]);
 
   return (
     <ProductCatalogContext.Provider value={value}>

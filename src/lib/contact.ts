@@ -1,8 +1,8 @@
 ﻿import { formatSarPrice } from './utils';
 import { BRAND_NAME_EN, BRAND_NAME_LOCKUP } from './brand';
 
-export const CONTACT_PHONE_RAW = '966570323534';
-export const CONTACT_PHONE_DISPLAY = '+966 57 032 3534';
+export const CONTACT_PHONE_RAW = '966505457251';
+export const CONTACT_PHONE_DISPLAY = '+966 50 545 7251';
 export const CONTACT_PHONE_HREF = `tel:+${CONTACT_PHONE_RAW}`;
 export const CONTACT_ADDITIONAL_PHONES = [
   {
@@ -22,8 +22,8 @@ export const CONTACT_PHONE_NUMBERS = [
 ];
 export const CONTACT_EMAIL = 'saadsaad50begiseralex6@gmail.com';
 export const CONTACT_EMAIL_HREF = `mailto:${CONTACT_EMAIL}`;
-export const WHATSAPP_PHONE_RAW = '966570323534';
-export const WHATSAPP_PHONE_DISPLAY = '+966 57 032 3534';
+export const WHATSAPP_PHONE_RAW = '966505457251';
+export const WHATSAPP_PHONE_DISPLAY = '+966 50 545 7251';
 export const WHATSAPP_LINK = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE_RAW}`;
 export const TIKTOK_LINK = 'https://www.tiktok.com/@moya.ksaa?_r=1&_t=ZS-96ucaLw51Tc';
 export const BUSINESS_LEGAL_NAME_AR = '\u0634\u0631\u0643\u0629 \u0625\u0634\u0631\u0627\u0642 \u0627\u0644\u0648\u0627\u062f\u064a \u0644\u0644\u062a\u062c\u0627\u0631\u0629 \u0634\u0631\u0643\u0629 \u0634\u062e\u0635 \u0648\u0627\u062d\u062f';
