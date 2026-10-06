@@ -281,6 +281,50 @@ function ExactFastDeliveryHero({
   isRTL: boolean;
 }) {
   const prefersReducedMotion = useReducedMotion();
+  const imageSrc = isRTL
+    ? '/images/Blue Arabic Water Delivery Advertisement.png'
+    : '/images/Reeq Pure Water Delivery Banner.png';
+  const alt = isRTL
+    ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في الرياض'
+    : 'Riq pure water delivery in Riyadh';
+
+  return (
+    <motion.section
+      ref={heroRef}
+      style={{ opacity: heroOpacity }}
+      className="relative isolate bg-[#eaf5fc] pt-[5.15rem] sm:pt-[6.5rem] md:pt-[7.35rem]"
+      dir={isRTL ? 'rtl' : 'ltr'}
+    >
+      <div className="relative w-full shadow-[0_18px_48px_-30px_rgba(15,63,123,0.42)]">
+        <img
+          src={imageSrc}
+          width={1600}
+          height={900}
+          alt={alt}
+          className="block w-full h-auto"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
+      </div>
+    </motion.section>
+  );
+}
+
+function LegacyExactFastDeliveryHero({
+  heroRef,
+  heroOpacity,
+  heroScale,
+  heroY,
+  isRTL,
+}: {
+  heroRef: React.RefObject<HTMLDivElement | null>;
+  heroOpacity: MotionValue<number>;
+  heroScale: MotionValue<number>;
+  heroY: MotionValue<number>;
+  isRTL: boolean;
+}) {
+  const prefersReducedMotion = useReducedMotion();
   const copy = isRTL ? fastDeliveryCopy.ar : fastDeliveryCopy.en;
   const featureItems = [
     { icon: CalendarCheck, title: copy.scheduleTitle, desc: copy.scheduleDesc },
@@ -484,6 +528,8 @@ function ExactFastDeliveryHero({
     </motion.section>
   );
 }
+
+void LegacyExactFastDeliveryHero;
 
 type HomeOfferProduct = Product & { price: number };
 
