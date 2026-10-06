@@ -11,6 +11,7 @@ import { useCart } from '../context/CartContext';
 import ProductImage from '../components/ProductImage';
 import { formatSarPrice } from '../lib/utils';
 import { FREE_DELIVERY_CARTONS, MIN_DELIVERY_CARTONS, getDeliveryPolicySummary, getDeliveryRuleState } from '../lib/deliveryRules';
+import { isOfferProduct } from '../data/products';
 
 export default function Cart() {
   const { i18n } = useTranslation();
@@ -24,7 +25,7 @@ export default function Cart() {
   const [promoApplied, setPromoApplied] = useState(false);
   const [showPromoInput, setShowPromoInput] = useState(false);
 
-  const hasOffer = items.some((item) => item.product.category === 'offer');
+  const hasOffer = items.some((item) => isOfferProduct(item.product));
   const deliveryRule = getDeliveryRuleState(totalCartons, hasOffer);
   const deliveryFee = deliveryRule.deliveryFee;
   const discount = promoApplied ? totalPrice * 0.1 : 0;

@@ -29,6 +29,7 @@ import {
   type DeliveryFloorLevel,
 } from '../lib/deliveryRules';
 import ProductImage from '../components/ProductImage';
+import { isOfferProduct } from '../data/products';
 
 const LEAFLET_SCRIPT_URL = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
 const LEAFLET_STYLES_URL = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
@@ -95,7 +96,7 @@ export default function Checkout() {
   const [accountNotice, setAccountNotice] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<ManualPaymentMethod>('cash_on_delivery');
 
-  const hasOffer = items.some((item) => item.product.category === 'offer');
+  const hasOffer = items.some((item) => isOfferProduct(item.product));
   const deliveryRule = getDeliveryRuleState(totalCartons, hasOffer);
   const deliveryFee = deliveryRule.deliveryFee;
   const floorDeliveryFee = getFloorDeliveryFee(formData.floorLevel);
@@ -341,7 +342,7 @@ export default function Checkout() {
           productId: item.product.id,
           name: `${isRTL ? item.product.name.ar : item.product.name.en}${item.selectedSize ? ` (${isRTL ? 'الحجم' : 'size'}: ${item.selectedSize})` : ''}`,
           quantity: item.quantity,
-          cartonQuantity: item.product.category === 'offer' ? item.product.quantity * item.quantity : item.quantity,
+          cartonQuantity: isOfferProduct(item.product) ? item.product.quantity * item.quantity : item.quantity,
           unitPrice: item.product.price ?? 0,
           lineTotal: (item.product.price ?? 0) * item.quantity,
           image: item.product.image ?? '',

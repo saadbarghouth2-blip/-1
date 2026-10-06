@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import type { Product } from '../data/products';
+import { isOfferProduct, type Product } from '../data/products';
 import type { OfferWaterSize } from '../lib/offerSizes';
 
 export interface CartItem {
@@ -20,7 +20,7 @@ interface CartContextType {
 }
 
 function getProductCartonCount(product: Product) {
-  return product.category === 'offer' ? Math.max(product.quantity, 1) : 1;
+  return isOfferProduct(product) ? Math.max(product.quantity, 1) : 1;
 }
 
 function isFixedPriceProduct(product: Product): product is Product & { price: number } {
@@ -66,7 +66,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             : item
         );
       }
-      return [...prev, { product, quantity, selectedSize: product.category === 'offer' ? selectedSize : undefined }];
+      return [...prev, { product, quantity, selectedSize: isOfferProduct(product) ? selectedSize : undefined }];
     });
   }, []);
 
