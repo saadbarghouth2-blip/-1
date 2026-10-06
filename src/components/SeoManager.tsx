@@ -21,6 +21,7 @@ import {
   SITE_DEFAULT_DESCRIPTION,
   SITE_DEFAULT_IMAGE,
   SITE_EMAIL,
+  SITE_LOGO,
   SITE_NAME_AR,
   SITE_NAME_LOCKUP,
   SITE_PHONE,
@@ -166,7 +167,8 @@ function buildItemListSchema(
 function buildCommonSchemas(siteOrigin: string, isRTL: boolean) {
   const description = isRTL ? SITE_DEFAULT_DESCRIPTION.ar : SITE_DEFAULT_DESCRIPTION.en;
   const address = isRTL ? SITE_ADDRESS_AR : SITE_ADDRESS_EN;
-  const logoUrl = toAbsoluteUrl(SITE_DEFAULT_IMAGE, siteOrigin);
+  const logoUrl = toAbsoluteUrl(SITE_LOGO, siteOrigin);
+  const imageUrl = toAbsoluteUrl(SITE_DEFAULT_IMAGE, siteOrigin);
 
   return [
     {
@@ -195,7 +197,7 @@ function buildCommonSchemas(siteOrigin: string, isRTL: boolean) {
       alternateName: SITE_ALTERNATE_NAMES,
       url: `${siteOrigin}/`,
       logo: logoUrl,
-      image: logoUrl,
+      image: imageUrl,
       email: SITE_EMAIL,
       telephone: SITE_PHONE_RAW,
       sameAs: SITE_SOCIAL_LINKS,
@@ -206,7 +208,7 @@ function buildCommonSchemas(siteOrigin: string, isRTL: boolean) {
       '@id': `${siteOrigin}/#store`,
       name: SITE_NAME_AR,
       alternateName: SITE_ALTERNATE_NAMES,
-      image: logoUrl,
+      image: imageUrl,
       logo: logoUrl,
       url: `${siteOrigin}/`,
       telephone: SITE_PHONE_RAW,

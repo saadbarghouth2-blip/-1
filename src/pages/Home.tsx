@@ -270,17 +270,12 @@ const fastDeliveryCopy = {
 function ExactFastDeliveryHero({
   heroRef,
   heroOpacity,
-  heroScale,
-  heroY,
   isRTL,
 }: {
   heroRef: React.RefObject<HTMLDivElement | null>;
   heroOpacity: MotionValue<number>;
-  heroScale: MotionValue<number>;
-  heroY: MotionValue<number>;
   isRTL: boolean;
 }) {
-  const prefersReducedMotion = useReducedMotion();
   const imageSrc = isRTL
     ? '/images/Blue Arabic Water Delivery Advertisement.png'
     : '/images/Reeq Pure Water Delivery Banner.png';
@@ -769,8 +764,6 @@ export default function Home() {
       <ExactFastDeliveryHero
         heroRef={heroRef}
         heroOpacity={heroOpacity}
-        heroScale={heroScale}
-        heroY={heroY}
         isRTL={isRTL}
       />
       <HomeOffersShowcase offers={homeOffers} isRTL={isRTL} onAddToCart={addToCart} />

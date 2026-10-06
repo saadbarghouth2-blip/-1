@@ -13,6 +13,7 @@ export const SITE_SHORT_NAME_AR = 'ريق';
 export const SITE_NAME_LOCKUP = 'متجر ريق - Riq Store';
 export const SITE_ALTERNATE_NAMES = ['ريق', 'ريق.كوم', 'ريق.com', 'متجر ريق', 'Riq Store', 'riq', 'xn--wgb8axa.com'];
 export const SITE_DEFAULT_IMAGE = '/images/96e4912f-19c6-4e22-aa20-512a75f63282.jpg';
+export const SITE_LOGO = '/icons/app-icon-512.png';
 export const SITE_ADDRESS_EN = BUSINESS_ADDRESS_EN;
 export const SITE_ADDRESS_AR = 'الرياض، حي هارون الرشيد، شارع 53، مبنى 6149، الرمز البريدي 14264، المملكة العربية السعودية';
 export const SITE_SOCIAL_LINKS = [WHATSAPP_LINK, TIKTOK_LINK];
