@@ -23,7 +23,7 @@ import {
 import { useCart } from '../context/CartContext';
 import HeroWordmark from '../components/HeroWordmark';
 import ProductImage from '../components/ProductImage';
-import { isDiscountedProduct, isOfferProduct, products, type Product } from '../data/products';
+import { hasFixedPrice, isDiscountedProduct, isOfferProduct, products, type Product } from '../data/products';
 import { useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import { cancelIdleTask, scheduleIdleTask } from '../lib/idle';
 import { formatSarPrice } from '../lib/utils';
@@ -483,7 +483,7 @@ function ExactFastDeliveryHero({
   );
 }
 
-type HomeOfferProduct = Product & { price: number; originalPrice: number };
+type HomeOfferProduct = Product & { price: number };
 
 function HomeOffersShowcase({
   offers,
@@ -536,7 +536,8 @@ function HomeOffersShowcase({
 
         <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4 lg:gap-5">
           {offers.map((product, index) => {
-            const savings = product.originalPrice - product.price;
+            const savings = Math.max(0, (product.originalPrice ?? product.price) - product.price);
+            const hasDiscount = savings > 0;
 
             return (
               <motion.article
@@ -571,9 +572,11 @@ function HomeOffersShowcase({
                     <span className="rounded-full bg-[#e8f5ff] px-2 py-1 text-[9px] font-black text-[#075985] sm:text-xs md:px-2.5">
                       {isRTL ? product.brandAr : product.brand}
                     </span>
-                    <span className="rounded-full bg-[#0b6fa4] px-2 py-1 text-[9px] font-black text-white shadow-[0_6px_16px_-10px_rgba(11,111,164,0.9)] sm:text-xs md:bg-[#e8f5ff] md:px-2.5 md:text-[#075985] md:shadow-none">
-                      {isRTL ? `وفر ${formatSarPrice(savings, true)}` : `Save ${formatSarPrice(savings, false)}`}
-                    </span>
+                    {hasDiscount && (
+                      <span className="rounded-full bg-[#0b6fa4] px-2 py-1 text-[9px] font-black text-white shadow-[0_6px_16px_-10px_rgba(11,111,164,0.9)] sm:text-xs md:bg-[#e8f5ff] md:px-2.5 md:text-[#075985] md:shadow-none">
+                        {isRTL ? `وفر ${formatSarPrice(savings, true)}` : `Save ${formatSarPrice(savings, false)}`}
+                      </span>
+                    )}
                   </div>
                   <Link to={`/product/${product.id}`}>
                     <h3 className="mt-2.5 line-clamp-3 min-h-[3.75rem] text-[0.82rem] font-bold leading-5 transition-colors group-hover:text-[#075985] sm:min-h-12 sm:text-base sm:font-black sm:leading-6 md:line-clamp-2">
@@ -584,9 +587,11 @@ function HomeOffersShowcase({
                     <span className="text-base font-black text-[#075985] sm:text-xl">
                       {formatSarPrice(product.price, isRTL)}
                     </span>
-                    <span className="text-[11px] text-slate-400 line-through sm:text-xs">
-                      {formatSarPrice(product.originalPrice, isRTL)}
-                    </span>
+                    {hasDiscount && (
+                      <span className="text-[11px] text-slate-400 line-through sm:text-xs">
+                        {formatSarPrice(product.originalPrice!, isRTL)}
+                      </span>
+                    )}
                   </div>
                   <button
                     type="button"
@@ -615,7 +620,11 @@ export default function Home() {
   const isRTL = i18n.language === 'ar';
   const { totalItems, addToCart } = useCart();
   const { offerProducts } = useProductCatalog();
-  const homeOffers = offerProducts.filter(isDiscountedProduct).slice(0, 4);
+  const homeOffers = offerProducts
+    .filter((product): product is HomeOfferProduct => (
+      isOfferProduct(product) && hasFixedPrice(product) && product.isPurchasable && product.inStock
+    ))
+    .slice(0, 4);
   const catalogProducts = products.filter((product) => !isOfferProduct(product));
   const discountedCount = catalogProducts.filter(isDiscountedProduct).length;
   const brandCount = new Set(catalogProducts.map((product) => product.brand)).size;

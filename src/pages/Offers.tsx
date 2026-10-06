@@ -2,8 +2,8 @@ import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
-import { ArrowRight, BadgePercent, Package, ShoppingCart, Tags } from 'lucide-react';
-import { isDiscountedProduct, isOfferProduct, type Product } from '../data/products';
+import { ArrowRight, BadgePercent, Package, ShoppingCart, Tags, Truck } from 'lucide-react';
+import { hasFixedPrice, isOfferProduct, type Product } from '../data/products';
 import { useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import ProductImage from '../components/ProductImage';
 import { useCart } from '../context/CartContext';
@@ -13,13 +13,14 @@ import { getDefaultOfferSize, type OfferWaterSize } from '../lib/offerSizes';
 
 type AvailableOfferProduct = Product & {
   price: number;
-  originalPrice: number;
 };
 
 function isAvailableOfferProduct(product: Product): product is AvailableOfferProduct {
   return (
     isOfferProduct(product) &&
-    isDiscountedProduct(product)
+    hasFixedPrice(product) &&
+    product.isPurchasable &&
+    product.inStock
   );
 }
 
@@ -32,16 +33,15 @@ export default function Offers() {
   const isRTL = i18n.language === 'ar';
   const [selectedSizes, setSelectedSizes] = useState<Record<string, OfferWaterSize>>({});
 
-  const discountedProducts = useMemo(
-    () => offerProducts.filter(isAvailableOfferProduct).slice(0, 4),
+  const availableOffers = useMemo(
+    () => offerProducts.filter(isAvailableOfferProduct),
     [offerProducts],
   );
 
-  const totalSavings = discountedProducts.reduce((sum, product) => (
-    sum + ((product.originalPrice ?? product.price) - product.price)
+  const totalSavings = availableOffers.reduce((sum, product) => (
+    sum + Math.max(0, (product.originalPrice ?? product.price) - product.price)
   ), 0);
-  const visibleOffers = discountedProducts.slice(0, 9);
-  const discountedBrands = new Set(discountedProducts.map((product) => product.brand)).size;
+  const discountedBrands = new Set(availableOffers.map((product) => product.brand)).size;
 
   return (
     <main ref={sectionRef} className="relative z-10 min-h-screen py-16 sm:py-20">
@@ -98,7 +98,7 @@ export default function Offers() {
                 {
                   icon: Tags,
                   label: isRTL ? 'عروض اليوم' : 'Today deals',
-                  value: `${visibleOffers.length}`,
+                  value: `${availableOffers.length}`,
                 },
                 {
                   icon: Package,
@@ -127,15 +127,15 @@ export default function Offers() {
           </div>
         </motion.section>
 
-        {discountedProducts.length === 0 ? (
+        {availableOffers.length === 0 ? (
           <section className="mt-10 rounded-[2rem] border border-slate-200 bg-white p-8 text-center shadow-[0_24px_70px_-44px_rgba(15,23,42,0.45)]">
             <h2 className="text-2xl font-bold text-slate-900">
-              {isRTL ? 'لا توجد منتجات مخفضة الآن' : 'No discounted products right now'}
+              {isRTL ? 'لا توجد عروض متاحة الآن' : 'No offers available right now'}
             </h2>
             <p className="mt-3 text-sm leading-7 text-slate-500 sm:text-base">
               {isRTL
-                ? 'هنعرض هنا العروض المخفضة فقط عند توفرها.'
-                : 'Only discounted offers will appear here when available.'}
+                ? 'هنعرض هنا كل العروض المتاحة للطلب فور إضافتها.'
+                : 'Every available offer will appear here as soon as it is published.'}
             </p>
             <Link
               to="/"
@@ -146,9 +146,10 @@ export default function Offers() {
             </Link>
           </section>
         ) : (
-          <section className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {visibleOffers.map((product, index) => {
-              const savings = (product.originalPrice ?? product.price) - product.price;
+          <section className="mt-8 grid gap-4 pb-24 sm:mt-10 sm:gap-5 md:grid-cols-2 md:pb-10 xl:grid-cols-3">
+            {availableOffers.map((product, index) => {
+              const savings = Math.max(0, (product.originalPrice ?? product.price) - product.price);
+              const hasDiscount = savings > 0;
               const selectedSize = selectedSizes[product.id] ?? getDefaultOfferSize(product.size);
 
               return (
@@ -157,19 +158,19 @@ export default function Offers() {
                   initial={{ opacity: 0, y: 18 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.05 * index }}
-                  className="group overflow-hidden rounded-[2rem] border border-sky-100 bg-white p-4 shadow-[0_20px_60px_-34px_rgba(7,89,133,0.28)] transition-all hover:-translate-y-1 hover:border-sky-200 hover:shadow-[0_28px_76px_-36px_rgba(14,116,144,0.30)] sm:p-5"
+                  className="group overflow-hidden rounded-[1.5rem] border border-sky-100 bg-white p-3.5 shadow-[0_20px_60px_-34px_rgba(7,89,133,0.28)] transition-all hover:-translate-y-1 hover:border-sky-200 hover:shadow-[0_28px_76px_-36px_rgba(14,116,144,0.30)] sm:rounded-[2rem] sm:p-5"
                 >
                   <Link to={`/product/${product.id}`} className="block">
                     <ProductImage
                       product={product}
                       isRTL={isRTL}
                       size="card"
-                      className="aspect-square"
+                      className="aspect-[4/3] sm:aspect-square"
                       imageClassName="group-hover:scale-[1.03]"
                     />
                   </Link>
 
-                  <div className="mt-5 flex flex-wrap items-center gap-2">
+                  <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-5">
                     <span className="rounded-full bg-sky-50 px-3 py-1.5 text-xs font-semibold text-[#075985]">
                       {isRTL ? product.brandAr : product.brand}
                     </span>
@@ -190,19 +191,27 @@ export default function Offers() {
                     {isRTL ? product.description.ar : product.description.en}
                   </p>
 
-                  <div className="mt-5 flex items-end gap-3">
+                  <div className="mt-4 flex flex-wrap items-end gap-2 sm:mt-5 sm:gap-3">
                     <span className="text-2xl font-black text-[#075985]">
                       {formatSarPrice(product.price, isRTL)}
                     </span>
-                    <span className="text-sm text-slate-400 line-through">
-                      {formatSarPrice(product.originalPrice ?? product.price, isRTL)}
+                    {hasDiscount && (
+                      <span className="text-sm text-slate-400 line-through">
+                        {formatSarPrice(product.originalPrice!, isRTL)}
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-semibold text-[#087da1]">
+                    {hasDiscount && (
+                      <span>{isRTL
+                        ? `توفر ${formatSarPrice(savings, isRTL)} على هذا المقاس`
+                        : `Save ${formatSarPrice(savings, isRTL)} on this pack`}</span>
+                    )}
+                    <span className="inline-flex items-center gap-1.5">
+                      <Truck className="h-4 w-4" />
+                      {isRTL ? 'توصيل مجاني' : 'Free delivery'}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm font-semibold text-[#087da1]">
-                    {isRTL
-                      ? `توفر ${formatSarPrice(savings, isRTL)} على هذا المقاس`
-                      : `Save ${formatSarPrice(savings, isRTL)} on this pack`}
-                  </p>
 
                   <div className="mt-4 rounded-2xl border border-sky-100 bg-sky-50/60 p-3">
                     <OfferSizeSelector
@@ -213,17 +222,17 @@ export default function Offers() {
                     />
                   </div>
 
-                  <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                  <div className="mt-4 grid grid-cols-2 gap-2.5 sm:mt-5 sm:gap-3">
                     <Link
                       to={`/product/${product.id}`}
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#075985] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#064b70]"
+                      className="inline-flex min-w-0 items-center justify-center gap-1.5 rounded-full bg-[#075985] px-2 py-3 text-xs font-semibold text-white transition-colors hover:bg-[#064b70] sm:gap-2 sm:px-5 sm:text-sm"
                     >
                       <span>{isRTL ? 'عرض التفاصيل' : 'View details'}</span>
                       <ArrowRight className={`h-4 w-4 ${isRTL ? 'rotate-180' : ''}`} />
                     </Link>
                     <button
                       onClick={() => addToCart(product, 1, selectedSize)}
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-sky-200 px-5 py-3 text-sm font-semibold text-[#075985] transition-colors hover:border-sky-400 hover:bg-sky-50"
+                      className="inline-flex min-w-0 items-center justify-center gap-1.5 rounded-full border border-sky-200 px-2 py-3 text-xs font-semibold text-[#075985] transition-colors hover:border-sky-400 hover:bg-sky-50 sm:gap-2 sm:px-5 sm:text-sm"
                     >
                       <ShoppingCart className="h-4 w-4" />
                       <span>{isRTL ? 'أضف للسلة' : 'Add to cart'}</span>
