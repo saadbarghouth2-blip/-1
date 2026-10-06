@@ -40,7 +40,12 @@ type CheckoutFormData = {
   floorLevel: DeliveryFloorLevel;
   lat: number;
   lng: number;
+  locationConfirmed: boolean;
 };
+
+const DEFAULT_MAP_LAT = 24.7136;
+const DEFAULT_MAP_LNG = 46.6753;
+const MAX_ACCEPTABLE_LOCATION_ACCURACY_METERS = 150;
 
 export default function Checkout() {
   const { i18n } = useTranslation();
@@ -53,6 +58,7 @@ export default function Checkout() {
   const mapRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const reverseGeocodeRequestRef = useRef(0);
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<CheckoutFormData>(() => {
@@ -62,13 +68,15 @@ export default function Checkout() {
     return savedData ? {
       ...savedData,
       floorLevel: savedData.floorLevel ?? 'ground',
+      locationConfirmed: savedData.locationConfirmed === true,
     } : {
       name: '',
       phone: '',
       address: '',
       floorLevel: 'ground',
-      lat: 24.7136,
-      lng: 46.6753,
+      lat: DEFAULT_MAP_LAT,
+      lng: DEFAULT_MAP_LNG,
+      locationConfirmed: false,
     };
   });
 
@@ -117,6 +125,9 @@ export default function Checkout() {
       address: current.address || profile.defaultAddress || '',
       lat: current.address ? current.lat : (profile.defaultLat ?? current.lat),
       lng: current.address ? current.lng : (profile.defaultLng ?? current.lng),
+      locationConfirmed: current.locationConfirmed || Boolean(
+        !current.address && Number.isFinite(profile.defaultLat) && Number.isFinite(profile.defaultLng)
+      ),
     }));
   }, [profile]);
 
@@ -160,13 +171,9 @@ export default function Checkout() {
 
       mapRef.current = L.map(mapContainerRef.current).setView([formData.lat, formData.lng], 12);
 
-      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EBP, and the GIS User Community'
-      }).addTo(mapRef.current);
-
-      L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-labels/{z}/{x}/{y}{r}.png', {
-        opacity: 0.5,
-        attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL.'
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
       }).addTo(mapRef.current);
 
       const icon = L.icon({
@@ -224,14 +231,17 @@ export default function Checkout() {
   }, [showMap]);
 
   const updateLocationData = async (lat: number, lng: number) => {
-    setFormData((prev: any) => ({ ...prev, lat, lng }));
+    const requestId = reverseGeocodeRequestRef.current + 1;
+    reverseGeocodeRequestRef.current = requestId;
+    setFormData((prev) => ({ ...prev, lat, lng, locationConfirmed: true }));
     
     // Reverse Geocoding (Free Nominatim API)
     try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=${isRTL ? 'ar' : 'en'}`);
+      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=${isRTL ? 'ar' : 'en'}`);
+      if (!response.ok) return;
       const data = await response.json();
-      if (data.display_name) {
-        setFormData((prev: any) => ({ ...prev, address: data.display_name }));
+      if (requestId === reverseGeocodeRequestRef.current && data.display_name) {
+        setFormData((prev) => ({ ...prev, address: data.display_name }));
       }
     } catch (error) {
       console.error("Reverse geocoding error:", error);
@@ -240,11 +250,24 @@ export default function Checkout() {
 
   const getUserLocation = () => {
     setIsLocating(true);
+    if (!navigator.geolocation) {
+      setIsLocating(false);
+      setShowMap(true);
+      alert(isRTL ? 'هذا الجهاز لا يدعم تحديد الموقع. اختر موقعك من الخريطة.' : 'Location is not supported on this device. Choose your location on the map.');
+      return;
+    }
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const { latitude, longitude } = position.coords;
-          setFormData((prev: any) => ({ ...prev, lat: latitude, lng: longitude }));
+          const { latitude, longitude, accuracy } = position.coords;
+          if (accuracy > MAX_ACCEPTABLE_LOCATION_ACCURACY_METERS) {
+            setIsLocating(false);
+            setShowMap(true);
+            alert(isRTL
+              ? `دقة الموقع الحالية ضعيفة (حوالي ${Math.round(accuracy)} متر). حرّك العلامة على الخريطة للمكان الصحيح.`
+              : `Current location accuracy is low (about ${Math.round(accuracy)}m). Move the marker to the exact place.`);
+            return;
+          }
           
           if (mapRef.current && markerRef.current) {
             mapRef.current.setView([latitude, longitude], 16);
@@ -257,8 +280,10 @@ export default function Checkout() {
         },
         () => {
           setIsLocating(false);
+          setShowMap(true);
           alert(isRTL ? "عفواً، لا يمكن الوصول لموقعك الحالي. يرجى تفعيله من الإعدادات." : "Unable to retrieve your location. Please enable GPS.");
-        }
+        },
+        { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
       );
     }
   };
@@ -280,8 +305,8 @@ export default function Checkout() {
             fullName: formData.name,
             phone: formData.phone,
             defaultAddress: formData.address,
-            defaultLat: formData.lat,
-            defaultLng: formData.lng,
+            defaultLat: formData.locationConfirmed ? formData.lat : null,
+            defaultLng: formData.locationConfirmed ? formData.lng : null,
             locale: isRTL ? 'ar' : 'en',
           });
           setAccountNotice(
@@ -305,8 +330,8 @@ export default function Checkout() {
         customerName: formData.name,
         customerPhone: formData.phone,
         customerAddress: formData.address,
-        customerLat: formData.lat,
-        customerLng: formData.lng,
+        customerLat: formData.locationConfirmed ? formData.lat : undefined,
+        customerLng: formData.locationConfirmed ? formData.lng : undefined,
         subtotal: totalPrice,
         deliveryFee: totalDeliveryFee,
         discount: 0,
@@ -331,8 +356,8 @@ export default function Checkout() {
       customerName: formData.name.trim(),
       phone: formData.phone.trim(),
       address: formData.address.trim(),
-      lat: formData.lat,
-      lng: formData.lng,
+      lat: formData.locationConfirmed ? formData.lat : undefined,
+      lng: formData.locationConfirmed ? formData.lng : undefined,
       email: session?.email ?? undefined,
       items: items.map((item) => ({
         name: `${isRTL ? item.product.name.ar : item.product.name.en}${item.selectedSize ? ` (${isRTL ? 'الحجم' : 'size'}: ${item.selectedSize})` : ''}`,
@@ -567,6 +592,16 @@ export default function Checkout() {
                           </div>
                         </motion.div>
                       )}
+
+                      <div className={`rounded-2xl border px-4 py-3 text-sm font-bold ${
+                        formData.locationConfirmed
+                          ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                          : 'border-amber-200 bg-amber-50 text-amber-700'
+                      }`}>
+                        {formData.locationConfirmed
+                          ? (isRTL ? 'تم تثبيت نقطة التوصيل بدقة وسيتم إرسالها للمندوب.' : 'The delivery pin is confirmed and will be sent to the driver.')
+                          : (isRTL ? 'لم يتم تثبيت نقطة على الخريطة؛ لن نرسل موقعًا افتراضيًا للمندوب. اكتب العنوان أو حدّد النقطة.' : 'No map pin is confirmed. We will not send a default location to the driver; enter the address or set the pin.')}
+                      </div>
 
                       <textarea value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} placeholder={isRTL ? 'يرجى كتابة العنوان بالتفصيل (الحي، الشارع، رقم الشقة)' : 'Detailed address (District, Street, Villa/Apt num)'} className="w-full h-32 p-6 rounded-2xl bg-gray-50 border border-gray-100 text-lg font-medium focus:border-[#153b66] outline-none transition-all resize-none shadow-sm" />
                     </div>

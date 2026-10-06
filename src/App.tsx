@@ -13,7 +13,6 @@ import { InstallButton } from './components/InstallButton';
 import SplashScreen from './components/SplashScreen';
 import AnimatedBackground from './components/AnimatedBackground';
 import MobileBottomNav from './components/MobileBottomNav';
-import { cancelIdleTask, scheduleIdleTask } from './lib/idle';
 import { getRouterBasename } from './lib/site';
 
 const loadHomePage = () => import('./pages/Home');
@@ -193,37 +192,6 @@ function AppContent() {
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
     document.documentElement.lang = i18n.language;
   }, [i18n.language, isRTL]);
-
-  useEffect(() => {
-    if (isMobileCheckoutBridge) {
-      return undefined;
-    }
-
-    const idleHandle = scheduleIdleTask(() => {
-      const preloaders = [
-        loadProductsPage,
-        loadProductCatalogGroupPage,
-        loadProductDetailPage,
-        loadBrandsPage,
-        loadBrandDetailPage,
-        loadOffersPage,
-        loadContactPage,
-        loadAboutPage,
-        loadCartPage,
-        loadCheckoutPage,
-        loadAppInstallPage,
-        loadAdminDashboardPage,
-        loadAdminProductsPage,
-        loadNotFoundPage,
-      ];
-
-      void Promise.all(preloaders.map((preload) => preload().catch(() => null)));
-    }, 1500);
-
-    return () => {
-      cancelIdleTask(idleHandle);
-    };
-  }, [isMobileCheckoutBridge]);
 
   return (
     <div

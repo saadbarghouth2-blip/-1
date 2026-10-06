@@ -313,6 +313,8 @@ function ExactFastDeliveryHero({
       ) : null}
       <motion.img
         src="/images/29448fae-193d-4937-9cc8-2eda5e4f2de7.jpg"
+        width={1600}
+        height={938}
         alt={isRTL ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في الرياض' : 'Riq fast pure water delivery to your door in Riyadh'}
         className="relative z-10 block h-auto w-full rounded-[0.7rem] border border-sky-100/80 object-contain object-center shadow-[0_22px_60px_-34px_rgba(15,63,123,0.46)] sm:rounded-[1.1rem] lg:rounded-[1.5rem]"
         initial={prefersReducedMotion ? false : { opacity: 0, y: 18, scale: 0.985, filter: 'blur(5px)' }}

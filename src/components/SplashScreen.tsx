@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BRAND_LOGO_ALT, BRAND_LOGO_SRC, BRAND_NAME_AR, BRAND_NAME_EN } from '../lib/brand';
 
-const SPLASH_DURATION_MS = 4000;
+const SPLASH_DURATION_MS = 700;
 
 export default function SplashScreen() {
   const [show, setShow] = useState(() => {

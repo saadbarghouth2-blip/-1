@@ -21,8 +21,8 @@ export type SaveProfileInput = {
   fullName: string;
   phone: string;
   defaultAddress: string;
-  defaultLat: number;
-  defaultLng: number;
+  defaultLat: number | null;
+  defaultLng: number | null;
   locale: 'ar' | 'en';
 };
 
@@ -53,8 +53,8 @@ export type CheckoutDraftRecord = {
   customerName: string;
   customerPhone: string;
   customerAddress: string;
-  customerLat: number;
-  customerLng: number;
+  customerLat?: number;
+  customerLng?: number;
   subtotal: number;
   deliveryFee: number;
   discount: number;
