@@ -18,16 +18,24 @@ import {
   SITE_ADDRESS_AR,
   SITE_ADDRESS_EN,
   SITE_ALTERNATE_NAMES,
+  SITE_BUSINESS_IDENTIFIERS,
+  SITE_BUSINESS_IMAGES,
   SITE_DEFAULT_DESCRIPTION,
   SITE_DEFAULT_IMAGE,
   SITE_EMAIL,
   SITE_LOGO,
+  SITE_LEGAL_NAME_AR,
+  SITE_LEGAL_NAME_EN,
   SITE_NAME_AR,
   SITE_NAME_LOCKUP,
   SITE_PHONE,
   SITE_PHONE_RAW,
-  SITE_SHORT_NAME_AR,
+  SITE_POSTAL_CODE,
+  SITE_NAVIGATION,
   SITE_SOCIAL_LINKS,
+  SITE_STREET_ADDRESS_AR,
+  SITE_STREET_ADDRESS_EN,
+  SITE_WHATSAPP,
   getSiteOrigin,
   normalizeCanonicalPath,
   toAbsoluteUrl,
@@ -166,9 +174,20 @@ function buildItemListSchema(
 
 function buildCommonSchemas(siteOrigin: string, isRTL: boolean) {
   const description = isRTL ? SITE_DEFAULT_DESCRIPTION.ar : SITE_DEFAULT_DESCRIPTION.en;
-  const address = isRTL ? SITE_ADDRESS_AR : SITE_ADDRESS_EN;
+  const streetAddress = isRTL ? SITE_STREET_ADDRESS_AR : SITE_STREET_ADDRESS_EN;
   const logoUrl = toAbsoluteUrl(SITE_LOGO, siteOrigin);
-  const imageUrl = toAbsoluteUrl(SITE_DEFAULT_IMAGE, siteOrigin);
+  const imageUrls = SITE_BUSINESS_IMAGES.map((image) => toAbsoluteUrl(image, siteOrigin));
+  const navigationItems = SITE_NAVIGATION.map((item, index) => ({
+    '@type': 'SiteNavigationElement',
+    position: index + 1,
+    name: isRTL ? item.nameAr : item.nameEn,
+    url: toAbsoluteUrl(withBasePath(item.path), siteOrigin),
+  }));
+  const identifiers = SITE_BUSINESS_IDENTIFIERS.map((identifier) => ({
+    '@type': 'PropertyValue',
+    propertyID: identifier.name,
+    value: identifier.value,
+  }));
 
   return [
     {
@@ -176,7 +195,7 @@ function buildCommonSchemas(siteOrigin: string, isRTL: boolean) {
       '@type': 'WebSite',
       '@id': `${siteOrigin}/#website`,
       url: `${siteOrigin}/`,
-      name: SITE_SHORT_NAME_AR,
+      name: SITE_NAME_AR,
       alternateName: SITE_ALTERNATE_NAMES,
       description,
       inLanguage: ['ar-SA', 'en-SA'],
@@ -193,14 +212,34 @@ function buildCommonSchemas(siteOrigin: string, isRTL: boolean) {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       '@id': `${siteOrigin}/#organization`,
-      name: SITE_NAME_LOCKUP,
-      alternateName: SITE_ALTERNATE_NAMES,
+      name: SITE_NAME_AR,
+      legalName: SITE_LEGAL_NAME_AR,
+      alternateName: [...SITE_ALTERNATE_NAMES, SITE_LEGAL_NAME_EN],
       url: `${siteOrigin}/`,
       logo: logoUrl,
-      image: imageUrl,
+      image: imageUrls,
       email: SITE_EMAIL,
       telephone: SITE_PHONE_RAW,
+      taxID: SITE_BUSINESS_IDENTIFIERS[0].value,
+      identifier: identifiers,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress,
+        addressLocality: isRTL ? 'الرياض' : 'Riyadh',
+        addressRegion: isRTL ? 'منطقة الرياض' : 'Riyadh Province',
+        postalCode: SITE_POSTAL_CODE,
+        addressCountry: 'SA',
+      },
       sameAs: SITE_SOCIAL_LINKS,
+      contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: SITE_PHONE_RAW,
+        email: SITE_EMAIL,
+        url: SITE_WHATSAPP,
+        contactType: 'customer service',
+        areaServed: 'SA',
+        availableLanguage: ['Arabic', 'English'],
+      },
     },
     {
       '@context': 'https://schema.org',
@@ -208,17 +247,52 @@ function buildCommonSchemas(siteOrigin: string, isRTL: boolean) {
       '@id': `${siteOrigin}/#store`,
       name: SITE_NAME_AR,
       alternateName: SITE_ALTERNATE_NAMES,
-      image: imageUrl,
+      image: imageUrls,
       logo: logoUrl,
       url: `${siteOrigin}/`,
       telephone: SITE_PHONE_RAW,
       email: SITE_EMAIL,
       description,
+      parentOrganization: {
+        '@id': `${siteOrigin}/#organization`,
+      },
       address: {
         '@type': 'PostalAddress',
         addressLocality: isRTL ? 'الرياض' : 'Riyadh',
+        addressRegion: isRTL ? 'منطقة الرياض' : 'Riyadh Province',
+        postalCode: SITE_POSTAL_CODE,
         addressCountry: 'SA',
-        streetAddress: address,
+        streetAddress,
+      },
+      areaServed: {
+        '@type': 'City',
+        name: isRTL ? 'الرياض' : 'Riyadh',
+      },
+      priceRange: 'SAR',
+      currenciesAccepted: 'SAR',
+      paymentAccepted: ['Cash', 'Bank transfer', 'Credit card'],
+      availableLanguage: ['Arabic', 'English'],
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: isRTL ? 'كتالوج مياه الشرب والعروض' : 'Bottled water and offers catalog',
+        url: toAbsoluteUrl(withBasePath('/products'), siteOrigin),
+        itemListElement: [
+          {
+            '@type': 'OfferCatalog',
+            name: isRTL ? 'المنتجات' : 'Products',
+            url: toAbsoluteUrl(withBasePath('/products'), siteOrigin),
+          },
+          {
+            '@type': 'OfferCatalog',
+            name: isRTL ? 'العروض' : 'Offers',
+            url: toAbsoluteUrl(withBasePath('/offers'), siteOrigin),
+          },
+          {
+            '@type': 'OfferCatalog',
+            name: isRTL ? 'العلامات التجارية' : 'Brands',
+            url: toAbsoluteUrl(withBasePath('/brands'), siteOrigin),
+          },
+        ],
       },
       sameAs: SITE_SOCIAL_LINKS,
       contactPoint: [
@@ -226,10 +300,19 @@ function buildCommonSchemas(siteOrigin: string, isRTL: boolean) {
           '@type': 'ContactPoint',
           telephone: SITE_PHONE_RAW,
           email: SITE_EMAIL,
+          url: SITE_WHATSAPP,
           contactType: 'customer service',
+          areaServed: 'SA',
           availableLanguage: ['Arabic', 'English'],
         },
       ],
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      '@id': `${siteOrigin}/#site-navigation`,
+      name: isRTL ? 'أقسام متجر ريق' : 'Riq Store sections',
+      itemListElement: navigationItems,
     },
   ];
 }

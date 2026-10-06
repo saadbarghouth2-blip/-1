@@ -1,5 +1,12 @@
 import {
+  BUSINESS_ADDRESS_AR,
   BUSINESS_ADDRESS_EN,
+  BUSINESS_COMMERCIAL_REGISTRATION,
+  BUSINESS_ECOMMERCE_LICENSE,
+  BUSINESS_LEGAL_NAME_AR,
+  BUSINESS_LEGAL_NAME_EN,
+  BUSINESS_LICENSE_NUMBER,
+  BUSINESS_TAX_NUMBER,
   CONTACT_EMAIL,
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_RAW,
@@ -15,8 +22,34 @@ export const SITE_ALTERNATE_NAMES = ['ريق', 'ريق.كوم', 'ريق.com', '�
 export const SITE_DEFAULT_IMAGE = '/images/96e4912f-19c6-4e22-aa20-512a75f63282.jpg';
 export const SITE_LOGO = '/icons/app-icon-512.png';
 export const SITE_ADDRESS_EN = BUSINESS_ADDRESS_EN;
-export const SITE_ADDRESS_AR = 'الرياض، حي هارون الرشيد، شارع 53، مبنى 6149، الرمز البريدي 14264، المملكة العربية السعودية';
-export const SITE_SOCIAL_LINKS = [WHATSAPP_LINK, TIKTOK_LINK];
+export const SITE_ADDRESS_AR = BUSINESS_ADDRESS_AR;
+export const SITE_LEGAL_NAME_AR = BUSINESS_LEGAL_NAME_AR;
+export const SITE_LEGAL_NAME_EN = BUSINESS_LEGAL_NAME_EN;
+export const SITE_POSTAL_CODE = '14264';
+export const SITE_STREET_ADDRESS_AR = 'حي هارون الرشيد، شارع 53، مبنى 6149، الرقم الفرعي 2909';
+export const SITE_STREET_ADDRESS_EN = 'Building 6149, 53 Street, Harun Al Rashid District';
+export const SITE_BUSINESS_IMAGES = [
+  SITE_DEFAULT_IMAGE,
+  '/images/blue-arabic-water-delivery.webp',
+  '/images/reeq-pure-water-delivery.webp',
+  '/images/fast-delivery-riyadh-truck-left.jpg',
+];
+export const SITE_BUSINESS_IDENTIFIERS = [
+  { name: 'VAT number', value: BUSINESS_TAX_NUMBER },
+  { name: 'Commercial registration', value: BUSINESS_COMMERCIAL_REGISTRATION },
+  { name: 'Business license', value: BUSINESS_LICENSE_NUMBER },
+  { name: 'E-commerce license', value: BUSINESS_ECOMMERCE_LICENSE },
+];
+export const SITE_NAVIGATION = [
+  { path: '/products', nameAr: 'المنتجات', nameEn: 'Products' },
+  { path: '/offers', nameAr: 'العروض', nameEn: 'Offers' },
+  { path: '/brands', nameAr: 'العلامات التجارية', nameEn: 'Brands' },
+  { path: '/about', nameAr: 'من نحن', nameEn: 'About us' },
+  { path: '/contact', nameAr: 'اتصل بنا', nameEn: 'Contact us' },
+  { path: '/app', nameAr: 'تطبيق ريق', nameEn: 'Riq app' },
+];
+export const SITE_SOCIAL_LINKS = [TIKTOK_LINK];
+export const SITE_WHATSAPP = WHATSAPP_LINK;
 export const SITE_PHONE = CONTACT_PHONE_DISPLAY;
 export const SITE_PHONE_RAW = `+${CONTACT_PHONE_RAW}`;
 export const SITE_EMAIL = CONTACT_EMAIL;

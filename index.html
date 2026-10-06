@@ -9,6 +9,8 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1" />
     <meta name="author" content="متجر ريق - Riq Store" />
+    <meta name="geo.region" content="SA-01" />
+    <meta name="geo.placename" content="Riyadh" />
     <meta name="theme-color" content="#153b66" />
     <meta name="application-name" content="متجر ريق" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -57,14 +59,44 @@
           {
             "@type": "Organization",
             "@id": "https://xn--wgb8axa.com/#organization",
-            "name": "متجر ريق - Riq Store",
+            "name": "متجر ريق",
+            "legalName": "شركة إشراق الوادي للتجارة شركة شخص واحد",
             "alternateName": ["ريق", "متجر ريق", "Riq Store"],
             "url": "https://xn--wgb8axa.com/",
             "logo": "https://xn--wgb8axa.com/icons/app-icon-512.png",
-            "image": "https://xn--wgb8axa.com/images/96e4912f-19c6-4e22-aa20-512a75f63282.jpg",
+            "image": [
+              "https://xn--wgb8axa.com/images/96e4912f-19c6-4e22-aa20-512a75f63282.jpg",
+              "https://xn--wgb8axa.com/images/blue-arabic-water-delivery.webp",
+              "https://xn--wgb8axa.com/images/reeq-pure-water-delivery.webp",
+              "https://xn--wgb8axa.com/images/fast-delivery-riyadh-truck-left.jpg"
+            ],
             "telephone": "+966505457251",
             "email": "saadsaad50begiseralex6@gmail.com",
-            "sameAs": ["https://wa.me/966505457251"]
+            "taxID": "312711661800003",
+            "identifier": [
+              { "@type": "PropertyValue", "propertyID": "VAT number", "value": "312711661800003" },
+              { "@type": "PropertyValue", "propertyID": "Commercial registration", "value": "7030837798" },
+              { "@type": "PropertyValue", "propertyID": "Business license", "value": "1010826701" },
+              { "@type": "PropertyValue", "propertyID": "E-commerce license", "value": "0000203590" }
+            ],
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "حي هارون الرشيد، شارع 53، مبنى 6149، الرقم الفرعي 2909",
+              "addressLocality": "الرياض",
+              "addressRegion": "منطقة الرياض",
+              "postalCode": "14264",
+              "addressCountry": "SA"
+            },
+            "sameAs": ["https://www.tiktok.com/@moya.ksaa"],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+966505457251",
+              "email": "saadsaad50begiseralex6@gmail.com",
+              "url": "https://api.whatsapp.com/send?phone=966505457251",
+              "contactType": "customer service",
+              "areaServed": "SA",
+              "availableLanguage": ["Arabic", "English"]
+            }
           },
           {
             "@type": ["Store", "LocalBusiness"],
@@ -72,24 +104,61 @@
             "name": "متجر ريق",
             "url": "https://xn--wgb8axa.com/",
             "logo": "https://xn--wgb8axa.com/icons/app-icon-512.png",
-            "image": "https://xn--wgb8axa.com/images/96e4912f-19c6-4e22-aa20-512a75f63282.jpg",
+            "image": [
+              "https://xn--wgb8axa.com/images/96e4912f-19c6-4e22-aa20-512a75f63282.jpg",
+              "https://xn--wgb8axa.com/images/blue-arabic-water-delivery.webp",
+              "https://xn--wgb8axa.com/images/reeq-pure-water-delivery.webp",
+              "https://xn--wgb8axa.com/images/fast-delivery-riyadh-truck-left.jpg"
+            ],
             "telephone": "+966505457251",
             "email": "saadsaad50begiseralex6@gmail.com",
             "parentOrganization": { "@id": "https://xn--wgb8axa.com/#organization" },
             "address": {
               "@type": "PostalAddress",
+              "streetAddress": "حي هارون الرشيد، شارع 53، مبنى 6149، الرقم الفرعي 2909",
               "addressLocality": "الرياض",
+              "addressRegion": "منطقة الرياض",
+              "postalCode": "14264",
               "addressCountry": "SA"
             },
             "areaServed": { "@type": "City", "name": "الرياض" },
-            "availableLanguage": ["ar", "en"],
+            "priceRange": "SAR",
+            "currenciesAccepted": "SAR",
+            "paymentAccepted": ["Cash", "Bank transfer", "Credit card"],
+            "availableLanguage": ["Arabic", "English"],
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "كتالوج مياه الشرب والعروض",
+              "url": "https://xn--wgb8axa.com/products",
+              "itemListElement": [
+                { "@type": "OfferCatalog", "name": "المنتجات", "url": "https://xn--wgb8axa.com/products" },
+                { "@type": "OfferCatalog", "name": "العروض", "url": "https://xn--wgb8axa.com/offers" },
+                { "@type": "OfferCatalog", "name": "العلامات التجارية", "url": "https://xn--wgb8axa.com/brands" }
+              ]
+            },
+            "sameAs": ["https://www.tiktok.com/@moya.ksaa"],
             "contactPoint": {
               "@type": "ContactPoint",
               "telephone": "+966505457251",
               "email": "saadsaad50begiseralex6@gmail.com",
+              "url": "https://api.whatsapp.com/send?phone=966505457251",
               "contactType": "customer service",
+              "areaServed": "SA",
               "availableLanguage": ["Arabic", "English"]
             }
+          },
+          {
+            "@type": "ItemList",
+            "@id": "https://xn--wgb8axa.com/#site-navigation",
+            "name": "أقسام متجر ريق",
+            "itemListElement": [
+              { "@type": "SiteNavigationElement", "position": 1, "name": "المنتجات", "url": "https://xn--wgb8axa.com/products" },
+              { "@type": "SiteNavigationElement", "position": 2, "name": "العروض", "url": "https://xn--wgb8axa.com/offers" },
+              { "@type": "SiteNavigationElement", "position": 3, "name": "العلامات التجارية", "url": "https://xn--wgb8axa.com/brands" },
+              { "@type": "SiteNavigationElement", "position": 4, "name": "من نحن", "url": "https://xn--wgb8axa.com/about" },
+              { "@type": "SiteNavigationElement", "position": 5, "name": "اتصل بنا", "url": "https://xn--wgb8axa.com/contact" },
+              { "@type": "SiteNavigationElement", "position": 6, "name": "تطبيق ريق", "url": "https://xn--wgb8axa.com/app" }
+            ]
           }
         ]
       }
