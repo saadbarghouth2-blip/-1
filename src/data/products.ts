@@ -1526,7 +1526,7 @@ const legacyOfferProducts: Product[] = [
     bottleCountEn: 'x40 bottles',
     price: 199,
     originalPrice: 265,
-    imageFile: 'adhari-campaign.png',
+    imageFile: 'adhari-campaign.webp',
     catalogOrder: 0,
   }),
   makeCampaignOfferProduct({
@@ -1585,7 +1585,7 @@ const legacyOfferProducts: Product[] = [
     originalPrice: 467,
     pricingMode: 'fixed',
     isPurchasable: true,
-    image: offerImage('nova-campaign.png'),
+    image: offerImage('nova-campaign.webp'),
     description: {
       ar: 'عرض مميز على مياه نوفا 330 مل: اشتر 15 كرتون واحصل على 5 كراتين مجانا، شامل التوصيل المجاني داخل الرياض بسعر 350 ريال فقط.',
       en: 'Special Nova 330ml offer: buy 15 cartons and get 5 cartons free, with free delivery in Riyadh for SAR 350 only.',

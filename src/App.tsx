@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
@@ -6,14 +6,11 @@ import './i18n';
 import './App.css';
 
 import Navigation from './components/Navigation';
-import WebAccountDialog from './components/WebAccountDialog';
-import Footer from './sections/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
-import { InstallButton } from './components/InstallButton';
-import SplashScreen from './components/SplashScreen';
 import AnimatedBackground from './components/AnimatedBackground';
 import MobileBottomNav from './components/MobileBottomNav';
 import { getRouterBasename } from './lib/site';
+import { useWebAuth } from './features/auth/WebAuthProvider';
 
 const loadHomePage = () => import('./pages/Home');
 const loadProductsPage = () => import('./pages/Products');
@@ -32,6 +29,10 @@ const loadAdminDashboardPage = () => import('./pages/AdminDashboard');
 const loadAdminProductsPage = () => import('./pages/AdminProducts');
 const loadNotFoundPage = () => import('./pages/NotFound');
 const loadSeoManager = () => import('./components/SeoManager');
+const loadFooter = () => import('./sections/Footer');
+const loadWebAccountDialog = () => import('./components/WebAccountDialog');
+const loadInstallButton = () =>
+  import('./components/InstallButton').then(({ InstallButton }) => ({ default: InstallButton }));
 const loadProductCatalogProvider = () =>
   import('./features/catalog/ProductCatalogProvider').then(({ ProductCatalogProvider }) => ({
     default: ProductCatalogProvider,
@@ -54,6 +55,9 @@ const AdminDashboard = lazy(loadAdminDashboardPage);
 const AdminProducts = lazy(loadAdminProductsPage);
 const NotFound = lazy(loadNotFoundPage);
 const SeoManager = lazy(loadSeoManager);
+const Footer = lazy(loadFooter);
+const WebAccountDialog = lazy(loadWebAccountDialog);
+const InstallButton = lazy(loadInstallButton);
 const ProductCatalogProvider = lazy(loadProductCatalogProvider);
 
 const PAGE_TRANSITION_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -101,7 +105,6 @@ function PageTransition({
   const prefersReducedMotion = useReducedMotion();
   const normalizedDirection = direction === 0 ? 1 : direction;
   const lateralOffset = prefersReducedMotion ? 0 : (isRTL ? -1 : 1) * normalizedDirection * 18;
-  const sweepDistance = prefersReducedMotion ? 0 : (isRTL ? -1 : 1) * normalizedDirection * 420;
 
   return (
     <motion.div
@@ -111,59 +114,24 @@ function PageTransition({
         y: 18,
         x: lateralOffset,
         scale: 0.994,
-        filter: 'blur(8px)',
       }}
       animate={prefersReducedMotion ? { opacity: 1 } : {
         opacity: 1,
         y: 0,
         x: 0,
         scale: 1,
-        filter: 'blur(0px)',
       }}
       exit={prefersReducedMotion ? { opacity: 0.01 } : {
         opacity: 0,
         y: -12,
         x: -lateralOffset * 0.45,
         scale: 1.003,
-        filter: 'blur(10px)',
       }}
-      transition={{ duration: prefersReducedMotion ? 0.16 : 0.44, ease: PAGE_TRANSITION_EASE }}
+      transition={{ duration: prefersReducedMotion ? 0.12 : 0.26, ease: PAGE_TRANSITION_EASE }}
     >
-      {!prefersReducedMotion ? (
-        <div className="pointer-events-none fixed inset-0 z-[120] overflow-hidden">
-          <motion.div
-            className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.5),rgba(255,255,255,0)_68%)]"
-            initial={{ opacity: 0.22, y: -10 }}
-            animate={{ opacity: 0, y: 0 }}
-            exit={{ opacity: 0.08 }}
-            transition={{ duration: 0.42, ease: PAGE_TRANSITION_EASE }}
-          />
-          <motion.div
-            className="absolute left-1/2 top-16 h-[26rem] w-[26rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(125,211,252,0.16),rgba(255,255,255,0)_68%)] blur-3xl"
-            initial={{ scale: 0.84, opacity: 0.22 }}
-            animate={{ scale: 1.04, opacity: 0 }}
-            exit={{ scale: 0.92, opacity: 0.06 }}
-            transition={{ duration: 0.54, ease: PAGE_TRANSITION_EASE }}
-          />
-          <motion.div
-            className="absolute inset-y-0 left-1/2 w-[24rem] -translate-x-1/2 bg-[linear-gradient(90deg,rgba(255,255,255,0),rgba(186,230,253,0.16),rgba(255,255,255,0))] blur-2xl"
-            initial={{ x: -sweepDistance, opacity: 0 }}
-            animate={{ x: [sweepDistance * -0.18, sweepDistance], opacity: [0, 0.45, 0] }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.62, ease: PAGE_TRANSITION_EASE }}
-          />
-        </div>
-      ) : null}
-
-      <motion.div
-        className="relative z-10"
-        initial={prefersReducedMotion ? undefined : { clipPath: 'inset(0 0 4% 0 round 1.2rem)' }}
-        animate={prefersReducedMotion ? undefined : { clipPath: 'inset(0 0 0% 0 round 1.2rem)' }}
-        exit={prefersReducedMotion ? undefined : { clipPath: 'inset(2% 0 0% 0 round 1.2rem)' }}
-        transition={{ duration: prefersReducedMotion ? 0.16 : 0.4, ease: PAGE_TRANSITION_EASE }}
-      >
+      <div className="relative z-10">
         {children}
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
@@ -179,10 +147,39 @@ function RouteLoader({ isRTL }: { isRTL: boolean }) {
   );
 }
 
+function DeferredFooter() {
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const [shouldRender, setShouldRender] = useState(false);
+
+  useEffect(() => {
+    const node = anchorRef.current;
+    if (!node || !('IntersectionObserver' in window)) {
+      const timer = window.setTimeout(() => setShouldRender(true), 0);
+      return () => window.clearTimeout(timer);
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setShouldRender(true);
+      observer.disconnect();
+    }, { rootMargin: '900px 0px' });
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={anchorRef} className="min-h-px">
+      {shouldRender ? <Suspense fallback={null}><Footer /></Suspense> : null}
+    </div>
+  );
+}
+
 function AppContent() {
   const { i18n } = useTranslation();
   const location = useLocation();
   const navigationType = useNavigationType();
+  const { isDialogOpen } = useWebAuth();
   const isRTL = i18n.language === 'ar';
   const isMobileCheckoutBridge = location.pathname === '/checkout/mobile';
   const hasFloatingNavOffset = !isMobileCheckoutBridge && location.pathname !== '/';
@@ -204,7 +201,6 @@ function AppContent() {
         <SeoManager />
       </Suspense>
       {!isMobileCheckoutBridge && <AnimatedBackground />}
-      {!isMobileCheckoutBridge && <SplashScreen />}
       {!isMobileCheckoutBridge && <Navigation />}
       {!isMobileCheckoutBridge && <MobileBottomNav />}
       <ScrollToTop />
@@ -236,10 +232,10 @@ function AppContent() {
         </AnimatePresence>
       </div>
 
-      {!isMobileCheckoutBridge && <Footer />}
+      {!isMobileCheckoutBridge && <DeferredFooter />}
       {!isMobileCheckoutBridge && <WhatsAppButton />}
-      {!isMobileCheckoutBridge && <InstallButton />}
-      {!isMobileCheckoutBridge && <WebAccountDialog />}
+      {!isMobileCheckoutBridge && <Suspense fallback={null}><InstallButton /></Suspense>}
+      {!isMobileCheckoutBridge && isDialogOpen && <Suspense fallback={null}><WebAccountDialog /></Suspense>}
     </div>
   );
 }

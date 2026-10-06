@@ -25,7 +25,6 @@ import HeroWordmark from '../components/HeroWordmark';
 import ProductImage from '../components/ProductImage';
 import { hasFixedPrice, isDiscountedProduct, isOfferProduct, products, type Product } from '../data/products';
 import { useProductCatalog } from '../features/catalog/ProductCatalogProvider';
-import { cancelIdleTask, scheduleIdleTask } from '../lib/idle';
 import { formatSarPrice } from '../lib/utils';
 
 const loadStatsTickerSection = () => import('../sections/StatsTicker');
@@ -59,6 +58,34 @@ function HomeSectionFallback() {
         <div className="h-32 animate-pulse rounded-[2rem] bg-slate-200/80" />
       </div>
     </section>
+  );
+}
+
+function DeferredHomeSection({ children }: { children: React.ReactNode }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [shouldRender, setShouldRender] = useState(false);
+
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node || !('IntersectionObserver' in window)) {
+      const timer = window.setTimeout(() => setShouldRender(true), 0);
+      return () => window.clearTimeout(timer);
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setShouldRender(true);
+      observer.disconnect();
+    }, { rootMargin: '700px 0px' });
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={containerRef} className="home-deferred-section">
+      {shouldRender ? children : <HomeSectionFallback />}
+    </div>
   );
 }
 
@@ -279,6 +306,9 @@ function ExactFastDeliveryHero({
   const imageSrc = isRTL
     ? '/images/Blue Arabic Water Delivery Advertisement.png'
     : '/images/Reeq Pure Water Delivery Banner.png';
+  const imageWebpSrc = isRTL
+    ? '/images/blue-arabic-water-delivery.webp'
+    : '/images/reeq-pure-water-delivery.webp';
   const alt = isRTL
     ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في الرياض'
     : 'Riq pure water delivery in Riyadh';
@@ -291,16 +321,19 @@ function ExactFastDeliveryHero({
       dir={isRTL ? 'rtl' : 'ltr'}
     >
       <div className="relative w-full shadow-[0_18px_48px_-30px_rgba(15,63,123,0.42)]">
-        <img
-          src={imageSrc}
-          width={1600}
-          height={900}
-          alt={alt}
-          className="block w-full h-auto"
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-        />
+        <picture>
+          <source srcSet={imageWebpSrc} type="image/webp" />
+          <img
+            src={imageSrc}
+            width={1637}
+            height={isRTL ? 960 : 961}
+            alt={alt}
+            className="block h-auto w-full"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+          />
+        </picture>
       </div>
     </motion.section>
   );
@@ -692,22 +725,6 @@ export default function Home() {
   const secondaryHeroLabel = totalItems > 0
     ? (isRTL ? `راجع السلة (${totalItems})` : `Review Cart (${totalItems})`)
     : (isRTL ? 'المنتجات المخفضة' : 'Discounted Products');
-
-  useEffect(() => {
-    const idleHandle = scheduleIdleTask(() => {
-      const preloaders = [
-        loadStatsTickerSection,
-        loadParallaxShowcaseSection,
-        loadTestimonialsCarouselSection,
-      ];
-
-      void Promise.all(preloaders.map((preload) => preload().catch(() => null)));
-    }, 1000);
-
-    return () => {
-      cancelIdleTask(idleHandle);
-    };
-  }, []);
 
   const quickDestinations = [
     {
@@ -1166,7 +1183,9 @@ export default function Home() {
             ease: [0.22, 1, 0.36, 1],
           }}
         >
-          <Suspense fallback={<HomeSectionFallback />}>{section}</Suspense>
+          <DeferredHomeSection>
+            <Suspense fallback={<HomeSectionFallback />}>{section}</Suspense>
+          </DeferredHomeSection>
         </motion.div>
       ))}
     </main>

@@ -1,20 +1,43 @@
-import { memo, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { memo, useSyncExternalStore } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+
+const PARTICLE_CONFIGS = Array.from({ length: 6 }, (_, index) => ({
+  id: index,
+  left: `${(index * 37 + 11) % 100}%`,
+  top: `${(index * 53 + 17) % 100}%`,
+  travelY: -35 - ((index * 13) % 60),
+  scale: 0.8 + ((index * 17) % 12) / 10,
+  duration: 6 + ((index * 7) % 4),
+  delay: (index * 0.65) % 4,
+}));
+
+function subscribeToMobileViewport(callback: () => void) {
+  const mediaQuery = window.matchMedia('(max-width: 768px)');
+  mediaQuery.addEventListener?.('change', callback);
+  return () => mediaQuery.removeEventListener?.('change', callback);
+}
+
+function getMobileViewportSnapshot() {
+  return window.matchMedia('(max-width: 768px)').matches;
+}
 
 function AnimatedBackground() {
-  const particleConfigs = useMemo(
-    () =>
-      Array.from({ length: 6 }, (_, index) => ({
-        id: index,
-        left: `${Math.random() * 100}%`,
-        top: `${Math.random() * 100}%`,
-        travelY: Math.random() * -60 - 35,
-        scale: Math.random() * 1.2 + 0.8,
-        duration: Math.random() * 4 + 6,
-        delay: Math.random() * 4,
-      })),
-    []
+  const prefersReducedMotion = useReducedMotion();
+  const useStaticBackground = useSyncExternalStore(
+    subscribeToMobileViewport,
+    getMobileViewportSnapshot,
+    () => false,
   );
+
+  if (useStaticBackground || prefersReducedMotion) {
+    return (
+      <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50">
+        <div className="absolute -top-[20%] -left-[10%] h-[50%] w-[50%] rounded-full bg-gradient-to-br from-cyan-200/40 to-blue-300/40 blur-[120px]" />
+        <div className="absolute top-[40%] -right-[10%] h-[60%] w-[60%] rounded-full bg-gradient-to-tl from-sky-200/30 to-indigo-200/30 blur-[100px]" />
+        <div className="absolute inset-0 opacity-[0.25] performance-grid" />
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50">
@@ -42,18 +65,11 @@ function AnimatedBackground() {
 
       {/* Subtle Grid Pattern */}
       <div 
-        className="absolute inset-0 opacity-[0.25]"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, rgba(14, 165, 233, 0.05) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(14, 165, 233, 0.05) 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px',
-        }}
+        className="absolute inset-0 opacity-[0.25] performance-grid"
       />
 
       {/* Floating Sparkles/Particles */}
-      {particleConfigs.map((particle) => (
+      {PARTICLE_CONFIGS.map((particle) => (
         <motion.div
           key={particle.id}
           className="absolute w-1 h-1 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.8)]"

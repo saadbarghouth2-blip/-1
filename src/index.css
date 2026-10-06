@@ -418,6 +418,18 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  .performance-grid {
+    background-image:
+      linear-gradient(to right, rgba(14, 165, 233, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(14, 165, 233, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .home-deferred-section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 28rem;
+  }
   
   /* Delay Utilities */
   .delay-100 { animation-delay: 100ms; }
