@@ -87,7 +87,8 @@ export default function Checkout() {
   const [accountNotice, setAccountNotice] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<ManualPaymentMethod>('cash_on_delivery');
 
-  const deliveryRule = getDeliveryRuleState(totalCartons);
+  const hasOffer = items.some((item) => item.product.category === 'offer');
+  const deliveryRule = getDeliveryRuleState(totalCartons, hasOffer);
   const deliveryFee = deliveryRule.deliveryFee;
   const floorDeliveryFee = getFloorDeliveryFee(formData.floorLevel);
   const needsFloorAgreement = requiresFloorFeeAgreement(formData.floorLevel);
@@ -313,7 +314,7 @@ export default function Checkout() {
         locale: isRTL ? 'ar' : 'en',
         items: items.map((item) => ({
           productId: item.product.id,
-          name: isRTL ? item.product.name.ar : item.product.name.en,
+          name: `${isRTL ? item.product.name.ar : item.product.name.en}${item.selectedSize ? ` (${isRTL ? 'الحجم' : 'size'}: ${item.selectedSize})` : ''}`,
           quantity: item.quantity,
           cartonQuantity: item.product.category === 'offer' ? item.product.quantity * item.quantity : item.quantity,
           unitPrice: item.product.price ?? 0,
@@ -334,7 +335,7 @@ export default function Checkout() {
       lng: formData.lng,
       email: session?.email ?? undefined,
       items: items.map((item) => ({
-        name: isRTL ? item.product.name.ar : item.product.name.en,
+        name: `${isRTL ? item.product.name.ar : item.product.name.en}${item.selectedSize ? ` (${isRTL ? 'الحجم' : 'size'}: ${item.selectedSize})` : ''}`,
         quantity: item.quantity,
         unitPrice: item.product.price ?? 0,
         lineTotal: (item.product.price ?? 0) * item.quantity,
@@ -813,7 +814,7 @@ export default function Checkout() {
                       <div className="w-14 h-14 rounded-2xl bg-white/5 p-1 border border-white/10 flex-shrink-0">
                         <ProductImage product={item.product} isRTL={isRTL} size="thumb" />
                       </div>
-                      <div className="flex-1"><h4 className="text-sm font-bold line-clamp-1">{isRTL ? item.product.name.ar : item.product.name.en}</h4><p className="text-xs text-white/40 mt-1">{item.quantity} x {formatSarPrice(item.product.price, isRTL)}</p></div>
+                      <div className="flex-1"><h4 className="text-sm font-bold line-clamp-1">{isRTL ? item.product.name.ar : item.product.name.en}</h4>{item.selectedSize ? <p className="mt-1 text-xs font-bold text-sky-300">{isRTL ? 'الحجم المختار' : 'Selected size'}: {item.selectedSize}</p> : null}<p className="text-xs text-white/40 mt-1">{item.quantity} x {formatSarPrice(item.product.price, isRTL)}</p></div>
                       <div className="font-bold text-[#2b648c]">{formatSarPrice((item.product.price ?? 0) * item.quantity, isRTL)}</div>
                     </div>
                   ))}

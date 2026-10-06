@@ -1,14 +1,16 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import type { Product } from '../data/products';
+import type { OfferWaterSize } from '../lib/offerSizes';
 
-interface CartItem {
+export interface CartItem {
   product: Product;
   quantity: number;
+  selectedSize?: OfferWaterSize;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: Product, quantity?: number) => void;
+  addToCart: (product: Product, quantity?: number, selectedSize?: OfferWaterSize) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -26,11 +28,31 @@ function isFixedPriceProduct(product: Product): product is Product & { price: nu
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
+const CART_SESSION_KEY = 'riq_offer_cart_session';
+
+function readSessionCart(): CartItem[] {
+  try {
+    const saved = sessionStorage.getItem(CART_SESSION_KEY);
+    if (!saved) return [];
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(readSessionCart);
 
-  const addToCart = useCallback((product: Product, quantity: number = 1) => {
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(CART_SESSION_KEY, JSON.stringify(items));
+    } catch {
+      // The in-memory cart remains fully functional when storage is unavailable.
+    }
+  }, [items]);
+
+  const addToCart = useCallback((product: Product, quantity: number = 1, selectedSize?: OfferWaterSize) => {
     if (!product.isPurchasable || !isFixedPriceProduct(product)) {
       return;
     }
@@ -40,11 +62,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (existing) {
         return prev.map(item =>
           item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
+            ? { ...item, quantity: item.quantity + quantity, selectedSize: selectedSize ?? item.selectedSize }
             : item
         );
       }
-      return [...prev, { product, quantity }];
+      return [...prev, { product, quantity, selectedSize: product.category === 'offer' ? selectedSize : undefined }];
     });
   }, []);
 

@@ -228,7 +228,7 @@ function AppContent() {
   return (
     <div
       className={`relative min-h-screen overflow-x-hidden bg-transparent ${
-        isMobileCheckoutBridge ? '' : 'pb-[calc(env(safe-area-inset-bottom)+6.75rem)] sm:pb-[calc(env(safe-area-inset-bottom)+6.25rem)] lg:pb-0'
+        isMobileCheckoutBridge ? '' : 'pb-[calc(env(safe-area-inset-bottom)+6.75rem)] sm:pb-[calc(env(safe-area-inset-bottom)+6.25rem)] md:pb-0'
       }`}
       dir={isRTL ? 'rtl' : 'ltr'}
     >

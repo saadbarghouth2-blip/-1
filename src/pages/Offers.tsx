@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
@@ -8,6 +8,8 @@ import { useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import ProductImage from '../components/ProductImage';
 import { useCart } from '../context/CartContext';
 import { formatSarPrice } from '../lib/utils';
+import OfferSizeSelector from '../components/OfferSizeSelector';
+import { getDefaultOfferSize, type OfferWaterSize } from '../lib/offerSizes';
 
 type AvailableOfferProduct = Product & {
   price: number;
@@ -28,6 +30,7 @@ export default function Offers() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-120px' });
   const isRTL = i18n.language === 'ar';
+  const [selectedSizes, setSelectedSizes] = useState<Record<string, OfferWaterSize>>({});
 
   const discountedProducts = useMemo(
     () => offerProducts.filter(isAvailableOfferProduct).slice(0, 4),
@@ -146,6 +149,7 @@ export default function Offers() {
           <section className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {visibleOffers.map((product, index) => {
               const savings = (product.originalPrice ?? product.price) - product.price;
+              const selectedSize = selectedSizes[product.id] ?? getDefaultOfferSize(product.size);
 
               return (
                 <motion.article
@@ -200,6 +204,15 @@ export default function Offers() {
                       : `Save ${formatSarPrice(savings, isRTL)} on this pack`}
                   </p>
 
+                  <div className="mt-4 rounded-2xl border border-sky-100 bg-sky-50/60 p-3">
+                    <OfferSizeSelector
+                      compact
+                      value={selectedSize}
+                      isRTL={isRTL}
+                      onChange={(size) => setSelectedSizes((current) => ({ ...current, [product.id]: size }))}
+                    />
+                  </div>
+
                   <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                     <Link
                       to={`/product/${product.id}`}
@@ -209,7 +222,7 @@ export default function Offers() {
                       <ArrowRight className={`h-4 w-4 ${isRTL ? 'rotate-180' : ''}`} />
                     </Link>
                     <button
-                      onClick={() => addToCart(product)}
+                      onClick={() => addToCart(product, 1, selectedSize)}
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-sky-200 px-5 py-3 text-sm font-semibold text-[#075985] transition-colors hover:border-sky-400 hover:bg-sky-50"
                     >
                       <ShoppingCart className="h-4 w-4" />

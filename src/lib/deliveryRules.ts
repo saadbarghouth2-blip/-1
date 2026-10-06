@@ -20,8 +20,8 @@ export const DELIVERY_FLOOR_OPTIONS: Array<{
   { id: 'higher', labelAr: 'دور أعلى', labelEn: 'Higher floor', fee: null },
 ];
 
-export function getDeliveryFee(totalCartons: number) {
-  if (totalCartons >= FREE_DELIVERY_CARTONS) {
+export function getDeliveryFee(totalCartons: number, hasOffer = false) {
+  if (hasOffer || totalCartons >= FREE_DELIVERY_CARTONS) {
     return 0;
   }
 
@@ -59,15 +59,15 @@ export function getDeliveryPolicySummary(isRTL: boolean) {
       ];
 }
 
-export function getDeliveryRuleState(totalCartons: number) {
+export function getDeliveryRuleState(totalCartons: number, hasOffer = false) {
   const cartonsToMinimum = Math.max(MIN_DELIVERY_CARTONS - totalCartons, 0);
   const cartonsToFreeDelivery = Math.max(FREE_DELIVERY_CARTONS - totalCartons, 0);
 
   return {
     canDeliver: totalCartons >= MIN_DELIVERY_CARTONS,
-    hasFreeDelivery: totalCartons >= FREE_DELIVERY_CARTONS,
+    hasFreeDelivery: hasOffer || totalCartons >= FREE_DELIVERY_CARTONS,
     cartonsToMinimum,
     cartonsToFreeDelivery,
-    deliveryFee: getDeliveryFee(totalCartons),
+    deliveryFee: getDeliveryFee(totalCartons, hasOffer),
   };
 }

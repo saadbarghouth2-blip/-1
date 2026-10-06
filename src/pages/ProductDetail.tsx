@@ -17,12 +17,15 @@ import {
   getProductPackageDetails,
   hasFixedPrice,
   isDiscountedProduct,
+  isOfferProduct,
 } from '../data/products';
 import { useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import { useCart } from '../context/CartContext';
 import ProductImage from '../components/ProductImage';
 import { buildWhatsAppMessageLink } from '../lib/contact';
 import { formatSarPrice } from '../lib/utils';
+import OfferSizeSelector from '../components/OfferSizeSelector';
+import { getDefaultOfferSize, type OfferWaterSize } from '../lib/offerSizes';
 
 const CATEGORY_LABELS = {
   small: { ar: 'عبوة صغيرة', en: 'Small pack' },
@@ -41,8 +44,12 @@ export default function ProductDetail() {
   const { brands, getCatalogGroupById, getProductById, getRelatedProducts } = useProductCatalog();
   const isRTL = i18n.language === 'ar';
   const [quantity, setQuantity] = useState(1);
+  const [selectedOfferSizes, setSelectedOfferSizes] = useState<Record<string, OfferWaterSize>>({});
 
   const product = id ? getProductById(id) : undefined;
+  const selectedOfferSize = product
+    ? selectedOfferSizes[product.id] ?? getDefaultOfferSize(product.size)
+    : '200ml';
   const relatedProducts = id ? getRelatedProducts(id, 4) : [];
   const brandRecord = useMemo(
     () => brands.find((brand) => brand.id === product?.brandId),
@@ -79,7 +86,7 @@ export default function ProductDetail() {
       return;
     }
 
-    addToCart(product, quantity);
+    addToCart(product, quantity, isOfferProduct(product) ? selectedOfferSize : undefined);
   };
 
   const handleBuyNow = () => {
@@ -87,7 +94,7 @@ export default function ProductDetail() {
       return;
     }
 
-    addToCart(product, quantity);
+    addToCart(product, quantity, isOfferProduct(product) ? selectedOfferSize : undefined);
     navigate('/checkout');
   };
 
@@ -201,6 +208,18 @@ export default function ProductDetail() {
                       : `Save ${formatSarPrice(discountValue, isRTL)} on this product`}
                   </span>
                 </div>
+              ) : null}
+
+              {hasPrice ? (
+                isOfferProduct(product) ? (
+                  <div className="mt-6 rounded-2xl border border-sky-100 bg-sky-50/60 p-4">
+                    <OfferSizeSelector
+                      value={selectedOfferSize}
+                      onChange={(size) => setSelectedOfferSizes((current) => ({ ...current, [product.id]: size }))}
+                      isRTL={isRTL}
+                    />
+                  </div>
+                ) : null
               ) : null}
 
               {hasPrice ? (

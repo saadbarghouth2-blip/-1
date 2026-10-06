@@ -29,7 +29,7 @@ export default function MobileBottomNav() {
   };
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+0.65rem)] z-50 flex justify-center px-3 sm:px-4 lg:hidden">
+    <div className="pointer-events-none fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+0.65rem)] z-50 flex justify-center px-3 sm:px-4 md:hidden">
       <motion.nav
         initial={prefersReducedMotion ? { opacity: 1 } : { y: 28, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

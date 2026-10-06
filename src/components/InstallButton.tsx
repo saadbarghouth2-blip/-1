@@ -24,8 +24,8 @@ export function InstallButton() {
     setIsStandalone(isStandaloneDisplayMode());
     const unsubscribe = subscribeToDeferredInstallPrompt((prompt) => {
       setDeferredPrompt(prompt);
-      if (prompt && !isStandalone) {
-        setShowAndroidPrompt(true);
+      if (prompt && !isStandalone && sessionStorage.getItem('riq_install_prompt_dismissed') !== '1') {
+        window.setTimeout(() => setShowAndroidPrompt(true), 8000);
       }
     });
 
@@ -46,6 +46,7 @@ export function InstallButton() {
   };
 
   const handleCloseAndroidPrompt = () => {
+    sessionStorage.setItem('riq_install_prompt_dismissed', '1');
     setShowAndroidPrompt(false);
   };
 

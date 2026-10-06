@@ -24,11 +24,12 @@ export default function Cart() {
   const [promoApplied, setPromoApplied] = useState(false);
   const [showPromoInput, setShowPromoInput] = useState(false);
 
-  const deliveryRule = getDeliveryRuleState(totalCartons);
+  const hasOffer = items.some((item) => item.product.category === 'offer');
+  const deliveryRule = getDeliveryRuleState(totalCartons, hasOffer);
   const deliveryFee = deliveryRule.deliveryFee;
   const discount = promoApplied ? totalPrice * 0.1 : 0;
   const finalTotal = totalPrice + deliveryFee - discount;
-  const freeDeliveryProgress = Math.min((totalCartons / FREE_DELIVERY_CARTONS) * 100, 100);
+  const freeDeliveryProgress = hasOffer ? 100 : Math.min((totalCartons / FREE_DELIVERY_CARTONS) * 100, 100);
   const distinctBrands = new Set(items.map((item) => item.product.brand)).size;
   const deliveryPolicy = getDeliveryPolicySummary(isRTL);
   const cartInsights = [
@@ -279,6 +280,11 @@ export default function Cart() {
                     <p className="text-xs sm:text-sm text-gray-500 mb-1 sm:mb-2">
                       {item.product.size} x {item.product.quantity}
                     </p>
+                    {item.selectedSize ? (
+                      <p className="mb-1 text-xs font-bold text-[#075985]">
+                        {isRTL ? 'الحجم المختار' : 'Selected size'}: {item.selectedSize}
+                      </p>
+                    ) : null}
                     <div className="flex items-center gap-2">
                       <span className="text-[#153b66] font-bold text-sm sm:text-base">
                         {formatSarPrice(item.product.price, isRTL)}

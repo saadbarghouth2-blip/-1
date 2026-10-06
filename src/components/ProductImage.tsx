@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { cn } from '../lib/utils';
 import type { Product } from '../data/products';
+import { Droplets, ImageOff } from 'lucide-react';
 
 type ProductImageSize = 'card' | 'list' | 'detail' | 'thumb' | 'compact';
 
@@ -104,9 +105,13 @@ export default function ProductImage({
 
       <div className={cn('relative flex h-full w-full items-center justify-center', paddingClasses[imageType][size])}>
         {showFallback ? (
-          <div className="flex h-full w-full flex-col items-center justify-center rounded-[1.35rem] border border-dashed border-[#153b66]/18 bg-white/65 px-4 py-5 text-center">
+          <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-[1.35rem] border border-dashed border-[#153b66]/22 bg-white/70 px-4 py-5 text-center">
+            <Droplets className="absolute -bottom-5 -right-4 h-24 w-24 rotate-[-12deg] text-sky-200/55" aria-hidden="true" />
+            <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#153b66] text-white shadow-lg shadow-[#153b66]/20">
+              <ImageOff className="h-5 w-5" aria-hidden="true" />
+            </span>
             <span className="text-xs font-bold uppercase tracking-[0.22em] text-[#153b66]/55">
-              {isRTL ? 'صورة قيد التحديث' : 'Image Updating'}
+              {isRTL ? 'الصورة غير متاحة' : 'Image unavailable'}
             </span>
             <span className="mt-3 line-clamp-2 text-lg font-black leading-tight text-slate-900">
               {isRTL ? product.name.ar : product.name.en}
