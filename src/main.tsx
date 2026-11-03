@@ -5,14 +5,21 @@ import App from './App.tsx';
 import { CartProvider } from './context/CartContext';
 import { WebAuthProvider } from './features/auth/WebAuthProvider';
 import { ensurePwaInstallTracking, registerPwaServiceWorker } from './lib/pwa';
+import Maintenance from './pages/Maintenance';
+
+const isMaintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <WebAuthProvider>
-      <CartProvider>
-        <App />
-      </CartProvider>
-    </WebAuthProvider>
+    {isMaintenanceMode ? (
+      <Maintenance />
+    ) : (
+      <WebAuthProvider>
+        <CartProvider>
+          <App />
+        </CartProvider>
+      </WebAuthProvider>
+    )}
   </StrictMode>,
 );
 
