@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const STATIC_CACHE_NAME = `riq-static-${CACHE_VERSION}`;
 const PAGE_CACHE_NAME = `riq-pages-${CACHE_VERSION}`;
 const CACHEABLE_DESTINATIONS = new Set(['script', 'style', 'image', 'font', 'manifest']);

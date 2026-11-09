@@ -37,28 +37,53 @@ const loadProductCatalogProvider = () =>
   import('./features/catalog/ProductCatalogProvider').then(({ ProductCatalogProvider }) => ({
     default: ProductCatalogProvider,
   }));
+async function loadWithRecovery<T>(key: string, loader: () => Promise<T>): Promise<T> {
+  const recoveryKey = `riq-route-recovery:${key}`;
 
-const Home = lazy(loadHomePage);
-const Products = lazy(loadProductsPage);
-const ProductCatalogGroup = lazy(loadProductCatalogGroupPage);
-const ProductDetail = lazy(loadProductDetailPage);
-const Brands = lazy(loadBrandsPage);
-const BrandDetail = lazy(loadBrandDetailPage);
-const Offers = lazy(loadOffersPage);
-const Contact = lazy(loadContactPage);
-const About = lazy(loadAboutPage);
-const Cart = lazy(loadCartPage);
-const Checkout = lazy(loadCheckoutPage);
-const MobileCheckoutBridge = lazy(loadMobileCheckoutBridgePage);
-const AppInstall = lazy(loadAppInstallPage);
-const AdminDashboard = lazy(loadAdminDashboardPage);
-const AdminProducts = lazy(loadAdminProductsPage);
-const NotFound = lazy(loadNotFoundPage);
-const SeoManager = lazy(loadSeoManager);
-const Footer = lazy(loadFooter);
-const WebAccountDialog = lazy(loadWebAccountDialog);
-const InstallButton = lazy(loadInstallButton);
-const ProductCatalogProvider = lazy(loadProductCatalogProvider);
+  try {
+    const module = await loader();
+    try {
+      sessionStorage.removeItem(recoveryKey);
+    } catch {
+      // Storage can be unavailable inside some in-app browsers.
+    }
+    return module;
+  } catch (error) {
+    try {
+      if (sessionStorage.getItem(recoveryKey) !== 'attempted') {
+        sessionStorage.setItem(recoveryKey, 'attempted');
+        window.location.reload();
+        return await new Promise<T>(() => undefined);
+      }
+      sessionStorage.removeItem(recoveryKey);
+    } catch {
+      // Re-throw the original chunk error when storage or reload is blocked.
+    }
+    throw error;
+  }
+}
+
+const Home = lazy(() => loadWithRecovery('home', loadHomePage));
+const Products = lazy(() => loadWithRecovery('products', loadProductsPage));
+const ProductCatalogGroup = lazy(() => loadWithRecovery('product-group', loadProductCatalogGroupPage));
+const ProductDetail = lazy(() => loadWithRecovery('product-detail', loadProductDetailPage));
+const Brands = lazy(() => loadWithRecovery('brands', loadBrandsPage));
+const BrandDetail = lazy(() => loadWithRecovery('brand-detail', loadBrandDetailPage));
+const Offers = lazy(() => loadWithRecovery('offers', loadOffersPage));
+const Contact = lazy(() => loadWithRecovery('contact', loadContactPage));
+const About = lazy(() => loadWithRecovery('about', loadAboutPage));
+const Cart = lazy(() => loadWithRecovery('cart', loadCartPage));
+const Checkout = lazy(() => loadWithRecovery('checkout', loadCheckoutPage));
+const MobileCheckoutBridge = lazy(() => loadWithRecovery('mobile-checkout', loadMobileCheckoutBridgePage));
+const AppInstall = lazy(() => loadWithRecovery('app-install', loadAppInstallPage));
+const AdminDashboard = lazy(() => loadWithRecovery('admin-dashboard', loadAdminDashboardPage));
+const AdminProducts = lazy(() => loadWithRecovery('admin-products', loadAdminProductsPage));
+const NotFound = lazy(() => loadWithRecovery('not-found', loadNotFoundPage));
+const SeoManager = lazy(() => loadWithRecovery('seo', loadSeoManager));
+const Footer = lazy(() => loadWithRecovery('footer', loadFooter));
+const WebAccountDialog = lazy(() => loadWithRecovery('account-dialog', loadWebAccountDialog));
+const InstallButton = lazy(() => loadWithRecovery('install-button', loadInstallButton));
+const ProductCatalogProvider = lazy(() => loadWithRecovery('product-catalog', loadProductCatalogProvider));
 
 const PAGE_TRANSITION_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 

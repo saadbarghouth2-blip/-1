@@ -108,6 +108,12 @@ type AdminOrderItemRow = {
   created_at: string;
 };
 
+type PaymentEventRow = {
+  order_id: string;
+  status: 'initiated' | 'pending' | 'paid' | 'failed' | 'cancelled' | 'refunded';
+  created_at: string;
+};
+
 async function loadAllOrderRows(client: ReturnType<typeof getClient>) {
   const rows: AdminOrderRow[] = [];
   for (let start = 0; ; start += SALES_PAGE_SIZE) {
@@ -140,6 +146,32 @@ async function loadAllOrderItemRows(client: ReturnType<typeof getClient>) {
   }
 }
 
+async function loadLatestPaymentEvents(client: ReturnType<typeof getClient>) {
+  const { data, error } = await client
+    .from('payment_events')
+    .select('order_id, status, created_at')
+    .order('created_at', { ascending: false });
+
+  // The site remains compatible before the optional payment-events SQL is installed.
+  if (error) return new Map<string, PaymentEventRow['status']>();
+
+  const latest = new Map<string, PaymentEventRow['status']>();
+  ((data ?? []) as PaymentEventRow[]).forEach((event) => {
+    if (!latest.has(event.order_id)) latest.set(event.order_id, event.status);
+  });
+  return latest;
+}
+
+function getDisplayedPaymentStatus(
+  eventStatus: PaymentEventRow['status'] | undefined,
+  fallback: AdminOrder['paymentStatus'],
+): AdminOrder['paymentStatus'] {
+  if (!eventStatus) return fallback;
+  if (eventStatus === 'paid') return 'paid';
+  if (eventStatus === 'initiated' || eventStatus === 'pending') return 'pending_verification';
+  return 'unpaid';
+}
+
 export async function loadAdminSalesDashboard(email: string | null | undefined): Promise<AdminSalesDashboard> {
   const allowed = await isCurrentUserProductAdmin(email);
   if (!allowed) {
@@ -147,9 +179,10 @@ export async function loadAdminSalesDashboard(email: string | null | undefined):
   }
 
   const client = getClient();
-  const [orderRows, itemRows] = await Promise.all([
+  const [orderRows, itemRows, latestPaymentEvents] = await Promise.all([
     loadAllOrderRows(client),
     loadAllOrderItemRows(client),
+    loadLatestPaymentEvents(client),
   ]);
 
   const orders = orderRows.map((order) => {
@@ -164,7 +197,7 @@ export async function loadAdminSalesDashboard(email: string | null | undefined):
       source: orderMetadata.source,
       channel: orderMetadata.channel,
       paymentMethod: orderMetadata.paymentMethod,
-      paymentStatus: orderMetadata.paymentStatus,
+      paymentStatus: getDisplayedPaymentStatus(latestPaymentEvents.get(order.id), orderMetadata.paymentStatus),
       totalItems: Number(order.total_items ?? 0),
       finalTotal: Number(order.final_total ?? 0),
       createdAt: order.created_at,

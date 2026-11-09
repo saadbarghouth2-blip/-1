@@ -212,11 +212,22 @@ export function getBlankProductInput(): ProductInput {
 
 export async function listPublishedProducts() {
   const client = getClient();
-  const { data, error } = await client
-    .from('products')
-    .select('*')
-    .eq('is_published', true)
-    .order('catalog_order', { ascending: true });
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 6000);
+  let result;
+
+  try {
+    result = await client
+      .from('products')
+      .select('*')
+      .eq('is_published', true)
+      .order('catalog_order', { ascending: true })
+      .abortSignal(controller.signal);
+  } finally {
+    window.clearTimeout(timeout);
+  }
+
+  const { data, error } = result;
 
   if (error) {
     throw error;
