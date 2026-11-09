@@ -13,11 +13,15 @@ import {
   buildMobileCheckoutReturnUrl,
   readMobileCheckoutPayload,
 } from '../lib/mobileCheckout';
+import { createWebCheckoutReference } from '../lib/webCheckoutDraft';
 
 export default function MobileCheckoutBridge() {
   const payload = useMemo(() => readMobileCheckoutPayload(), []);
   const isRTL = payload?.locale === 'ar';
   const [paymentMethod, setPaymentMethod] = useState<ManualPaymentMethod>('cash_on_delivery');
+  const [orderReference] = useState(() => createWebCheckoutReference());
+  const [isRecordingOrder, setIsRecordingOrder] = useState(false);
+  const [orderRecordNotice, setOrderRecordNotice] = useState('');
   const selectedPaymentMethodLabel = getManualPaymentMethodLabel(paymentMethod, isRTL);
   const paymentMethodIcons = {
     cash_on_delivery: Banknote,
@@ -43,6 +47,57 @@ export default function MobileCheckoutBridge() {
         message: 'manual_bank_transfer',
       })
     );
+  };
+
+  const handleWhatsAppOrder = () => {
+    if (!payload) {
+      return;
+    }
+
+    setIsRecordingOrder(true);
+    setOrderRecordNotice('');
+    void import('../services/webAccount')
+      .then(({ persistSubmittedWebOrder }) => persistSubmittedWebOrder(
+        payload.email ?? null,
+        {
+          reference: orderReference,
+          customerName: payload.customerName,
+          customerPhone: payload.phone,
+          customerAddress: payload.address ?? '',
+          customerLat: payload.lat,
+          customerLng: payload.lng,
+          subtotal: payload.subtotal,
+          deliveryFee: payload.deliveryFee,
+          discount: payload.discount,
+          finalTotal: payload.finalTotal,
+          locale: payload.locale,
+          items: payload.items.map((item) => ({
+            productId: item.productId,
+            name: item.name,
+            quantity: item.quantity,
+            cartonQuantity: item.quantity,
+            unitPrice: item.unitPrice,
+            lineTotal: item.lineTotal,
+            image: item.image ?? '',
+          })),
+        },
+        {
+          paymentMethod,
+          paymentStatus: paymentMethod === 'bank_transfer' ? 'pending_verification' : 'unpaid',
+        },
+      ))
+      .then(() => setOrderRecordNotice(isRTL ? 'تم تسجيل الطلب في لوحة المبيعات.' : 'The order was saved to the sales dashboard.'))
+      .catch((error) => {
+        console.error('Unable to record the submitted mobile bridge order.', error);
+        setOrderRecordNotice(
+          isRTL
+            ? 'تم فتح واتساب، لكن تعذر تسجيل الطلب. يمكنك المحاولة مرة أخرى دون تكراره.'
+            : 'WhatsApp opened, but the order could not be saved. You can retry without duplicating it.',
+        );
+      })
+      .finally(() => setIsRecordingOrder(false));
+
+    openWhatsAppLink(whatsappLink);
   };
 
   if (!payload) {
@@ -74,8 +129,8 @@ export default function MobileCheckoutBridge() {
           </h1>
           <p className="mt-4 text-sm leading-7 text-white/80">
             {isRTL
-              ? '\u0623\u0648\u0642\u0641\u0646\u0627 \u0628\u0648\u0627\u0628\u0629 \u0627\u0644\u062f\u0641\u0639 \u0645\u0624\u0642\u062a\u064b\u0627. \u064a\u0645\u0643\u0646\u0643 \u0627\u0644\u062f\u0641\u0639 \u0639\u0646\u062f \u0627\u0644\u0627\u0633\u062a\u0644\u0627\u0645\u060c \u0623\u0648 \u0628\u062a\u062d\u0648\u064a\u0644 \u0628\u0646\u0643\u064a\u060c \u0623\u0648 \u0628\u0634\u0628\u0643\u0629 \u0645\u0639 \u0627\u0644\u0645\u0646\u062f\u0648\u0628.'
-              : 'The payment gateway is paused temporarily. You can pay on delivery, transfer to the bank account, or use a card machine with the delivery representative.'}
+              ? 'الدفع الإلكتروني سيُفعّل بعد استلام مفاتيح الإنتاج من شركة المدفوعات. حاليًا يمكنك الدفع عند الاستلام أو بالتحويل البنكي أو بالشبكة مع المندوب.'
+              : 'Online payment will be enabled after receiving the provider production keys. For now, pay on delivery, by bank transfer, or by card machine with the driver.'}
           </p>
 
           <div className="mt-8 rounded-[1.75rem] border border-white/15 bg-white/10 p-5">
@@ -190,11 +245,23 @@ export default function MobileCheckoutBridge() {
 
           <button
             type="button"
-            onClick={() => openWhatsAppLink(whatsappLink)}
-            className="mt-5 w-full rounded-[1.5rem] bg-green-600 px-5 py-4 text-base font-black text-white transition hover:bg-green-700"
+            onClick={handleWhatsAppOrder}
+            disabled={isRecordingOrder}
+            className="mt-5 w-full rounded-[1.5rem] bg-green-600 px-5 py-4 text-base font-black text-white transition hover:bg-green-700 disabled:cursor-wait disabled:opacity-60"
           >
             {isRTL ? '\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0637\u0644\u0628 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628' : 'Send order on WhatsApp'}
           </button>
+          {(isRecordingOrder || orderRecordNotice) ? (
+            <div className={`mt-3 rounded-2xl border px-4 py-3 text-sm font-bold leading-7 ${
+              orderRecordNotice.includes('تعذر') || orderRecordNotice.includes('could not')
+                ? 'border-amber-200 bg-amber-50 text-amber-800'
+                : 'border-emerald-200 bg-emerald-50 text-emerald-800'
+            }`}>
+              {isRecordingOrder
+                ? (isRTL ? 'جاري تسجيل الطلب في لوحة المبيعات…' : 'Saving the order to the sales dashboard…')
+                : orderRecordNotice}
+            </div>
+          ) : null}
         </section>
       </div>
     </main>

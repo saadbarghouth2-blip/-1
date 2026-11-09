@@ -124,7 +124,7 @@ describe('account service', () => {
       error: null,
     });
     const insertOrderSelect = jest.fn(() => ({
-      single: insertOrderSingle,
+      maybeSingle: insertOrderSingle,
     }));
     const insertOrderUpsert = jest.fn(() => ({
       select: insertOrderSelect,
@@ -200,7 +200,7 @@ describe('account service', () => {
         payment_reference: 'pay_123',
         source: 'mobile_app',
       }),
-      { onConflict: 'payment_reference' }
+      { onConflict: 'payment_reference', ignoreDuplicates: true }
     );
     expect(upsertItems).toHaveBeenCalledWith(
       [
@@ -209,7 +209,7 @@ describe('account service', () => {
           product_id: 'nova-330-40',
         }),
       ],
-      { onConflict: 'order_id,product_id' }
+      { onConflict: 'order_id,product_id', ignoreDuplicates: true }
     );
     expect(result.paymentReference).toBe('pay_123');
     expect(result.items).toHaveLength(1);

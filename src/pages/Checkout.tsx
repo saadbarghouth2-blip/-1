@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useWebAuth } from '../features/auth/WebAuthProvider';
-import { saveWebCheckoutDraft } from '../lib/webCheckoutDraft';
+import { createWebCheckoutReference, saveWebCheckoutDraft } from '../lib/webCheckoutDraft';
 import { loadExternalScript, loadExternalStylesheet } from '../lib/externalAssets';
 import {
   BANK_TRANSFER_DETAILS,
@@ -19,13 +19,15 @@ import {
 } from '../lib/contact';
 import { formatSarPrice } from '../lib/utils';
 import {
+  DELIVERY_CITY_OPTIONS,
+  DELIVERY_DURATION_AR,
+  DELIVERY_DURATION_EN,
   DELIVERY_FLOOR_OPTIONS,
-  FREE_DELIVERY_CARTONS,
-  MIN_DELIVERY_CARTONS,
+  getCartDeliveryRuleState,
   getDeliveryPolicySummary,
-  getDeliveryRuleState,
   getFloorDeliveryFee,
   requiresFloorFeeAgreement,
+  type DeliveryCity,
   type DeliveryFloorLevel,
 } from '../lib/deliveryRules';
 import ProductImage from '../components/ProductImage';
@@ -38,6 +40,7 @@ type CheckoutFormData = {
   name: string;
   phone: string;
   address: string;
+  city: DeliveryCity;
   floorLevel: DeliveryFloorLevel;
   lat: number;
   lng: number;
@@ -68,12 +71,14 @@ export default function Checkout() {
 
     return savedData ? {
       ...savedData,
+      city: savedData.city ?? 'riyadh',
       floorLevel: savedData.floorLevel ?? 'ground',
       locationConfirmed: savedData.locationConfirmed === true,
     } : {
       name: '',
       phone: '',
       address: '',
+      city: 'riyadh',
       floorLevel: 'ground',
       lat: DEFAULT_MAP_LAT,
       lng: DEFAULT_MAP_LNG,
@@ -94,10 +99,12 @@ export default function Checkout() {
   const queryParams = new URLSearchParams(location.search);
   const isWhatsAppCheckout = queryParams.get('channel') === 'whatsapp';
   const [accountNotice, setAccountNotice] = useState('');
+  const [orderRecordNotice, setOrderRecordNotice] = useState('');
+  const [isRecordingOrder, setIsRecordingOrder] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<ManualPaymentMethod>('cash_on_delivery');
+  const [orderReference] = useState(() => createWebCheckoutReference());
 
-  const hasOffer = items.some((item) => isOfferProduct(item.product));
-  const deliveryRule = getDeliveryRuleState(totalCartons, hasOffer);
+  const deliveryRule = getCartDeliveryRuleState(items);
   const deliveryFee = deliveryRule.deliveryFee;
   const floorDeliveryFee = getFloorDeliveryFee(formData.floorLevel);
   const needsFloorAgreement = requiresFloorFeeAgreement(formData.floorLevel);
@@ -105,9 +112,11 @@ export default function Checkout() {
   const finalTotal = totalPrice + totalDeliveryFee;
   const deliveryPolicy = getDeliveryPolicySummary(isRTL);
   const canSubmitCustomerDetails = Boolean(
-    formData.name.trim() && formData.phone.trim() && formData.address.trim()
+    formData.name.trim() && formData.phone.trim() && formData.address.trim() && formData.city === 'riyadh'
   );
   const selectedPaymentMethodLabel = getManualPaymentMethodLabel(paymentMethod, isRTL);
+  const selectedCity = DELIVERY_CITY_OPTIONS.find((city) => city.id === formData.city);
+  const deliveryAddress = `${isRTL ? selectedCity?.labelAr : selectedCity?.labelEn} - ${formData.address.trim()}`;
   const paymentMethodIcons = {
     cash_on_delivery: Banknote,
     bank_transfer: Landmark,
@@ -289,6 +298,29 @@ export default function Checkout() {
     }
   };
 
+  const saveCurrentOrderDraft = () => saveWebCheckoutDraft({
+    reference: orderReference,
+    customerName: formData.name,
+    customerPhone: formData.phone,
+    customerAddress: deliveryAddress,
+    customerLat: formData.locationConfirmed ? formData.lat : undefined,
+    customerLng: formData.locationConfirmed ? formData.lng : undefined,
+    subtotal: totalPrice,
+    deliveryFee: totalDeliveryFee,
+    discount: 0,
+    finalTotal,
+    locale: isRTL ? 'ar' : 'en',
+    items: items.map((item) => ({
+      productId: item.product.id,
+      name: `${isRTL ? item.product.name.ar : item.product.name.en}${item.selectedSize ? ` (${isRTL ? 'الحجم' : 'size'}: ${item.selectedSize})` : ''}`,
+      quantity: item.quantity,
+      cartonQuantity: isOfferProduct(item.product) ? item.product.quantity * item.quantity : item.quantity,
+      unitPrice: item.product.price ?? 0,
+      lineTotal: (item.product.price ?? 0) * item.quantity,
+      image: item.product.image ?? '',
+    })),
+  });
+
   const handleNextStep = async () => {
     if (!deliveryRule.canDeliver) {
       navigate('/cart');
@@ -327,27 +359,7 @@ export default function Checkout() {
         setAccountNotice('');
       }
 
-      saveWebCheckoutDraft({
-        customerName: formData.name,
-        customerPhone: formData.phone,
-        customerAddress: formData.address,
-        customerLat: formData.locationConfirmed ? formData.lat : undefined,
-        customerLng: formData.locationConfirmed ? formData.lng : undefined,
-        subtotal: totalPrice,
-        deliveryFee: totalDeliveryFee,
-        discount: 0,
-        finalTotal,
-        locale: isRTL ? 'ar' : 'en',
-        items: items.map((item) => ({
-          productId: item.product.id,
-          name: `${isRTL ? item.product.name.ar : item.product.name.en}${item.selectedSize ? ` (${isRTL ? 'الحجم' : 'size'}: ${item.selectedSize})` : ''}`,
-          quantity: item.quantity,
-          cartonQuantity: isOfferProduct(item.product) ? item.product.quantity * item.quantity : item.quantity,
-          unitPrice: item.product.price ?? 0,
-          lineTotal: (item.product.price ?? 0) * item.quantity,
-          image: item.product.image ?? '',
-        })),
-      });
+      saveCurrentOrderDraft();
     }
     setStep(step + 1);
   };
@@ -356,7 +368,7 @@ export default function Checkout() {
     buildOrderWhatsAppLink({
       customerName: formData.name.trim(),
       phone: formData.phone.trim(),
-      address: formData.address.trim(),
+      address: deliveryAddress,
       lat: formData.locationConfirmed ? formData.lat : undefined,
       lng: formData.locationConfirmed ? formData.lng : undefined,
       email: session?.email ?? undefined,
@@ -372,6 +384,7 @@ export default function Checkout() {
       discount: 0,
       finalTotal,
       paymentMethod,
+      paymentStatus: paymentMethod === 'bank_transfer' ? 'pending_verification' : 'unpaid',
       isRTL,
     });
 
@@ -386,7 +399,43 @@ export default function Checkout() {
       return;
     }
 
-    openWhatsAppLink(buildCurrentOrderWhatsAppLink());
+    const whatsappLink = buildCurrentOrderWhatsAppLink();
+    const draft = saveCurrentOrderDraft();
+
+    setIsRecordingOrder(true);
+    setOrderRecordNotice('');
+    if (isConfigured) {
+      void import('../services/webAccount')
+        .then(({ persistSubmittedWebOrder }) => persistSubmittedWebOrder(
+          session?.email ?? null,
+          draft,
+          {
+            paymentMethod,
+            paymentStatus: paymentMethod === 'bank_transfer' ? 'pending_verification' : 'unpaid',
+          },
+        ))
+        .then(() => {
+          setOrderRecordNotice(isRTL ? 'تم تسجيل الطلب في لوحة المبيعات.' : 'The order was saved to the sales dashboard.');
+        })
+        .catch((error) => {
+          console.error('Unable to record the submitted website order.', error);
+          setOrderRecordNotice(
+            isRTL
+              ? 'تم فتح واتساب، لكن تعذر تسجيل الطلب في لوحة المبيعات. يمكنك المحاولة مرة أخرى دون تكرار الطلب.'
+              : 'WhatsApp opened, but the order could not be saved. You can retry without duplicating it.',
+          );
+        })
+        .finally(() => setIsRecordingOrder(false));
+    } else {
+      setIsRecordingOrder(false);
+      setOrderRecordNotice(
+        isRTL
+          ? 'تم فتح واتساب، لكن تسجيل المبيعات يحتاج تفعيل اتصال Supabase.'
+          : 'WhatsApp opened, but sales recording requires the Supabase connection.',
+      );
+    }
+
+    openWhatsAppLink(whatsappLink);
   };
 
   if (items.length === 0 || !deliveryRule.canDeliver) {
@@ -403,8 +452,8 @@ export default function Checkout() {
             {items.length === 0
               ? (isRTL ? 'السلة فارغة الآن. اختر المنتجات أولًا قبل إتمام الطلب.' : 'Your cart is empty. Choose products before checkout.')
               : (isRTL
-                  ? `الحد الأدنى للتوصيل هو ${MIN_DELIVERY_CARTONS} كراتين. لديك الآن ${totalCartons} كرتونة، أضف ${deliveryRule.cartonsToMinimum} كرتونة لإتمام الطلب.`
-                  : `Minimum delivery order is ${MIN_DELIVERY_CARTONS} cartons. You currently have ${totalCartons}; add ${deliveryRule.cartonsToMinimum} more to check out.`)}
+                  ? `الطلب لم يصل للحد الأدنى. أضف ${deliveryRule.getMinimumShortfall(true)} لإتمام الطلب.`
+                  : `The order is below the minimum. Add ${deliveryRule.getMinimumShortfall(false)} to check out.`)}
           </p>
           <button
             type="button"
@@ -495,22 +544,53 @@ export default function Checkout() {
                     </div>
                   </div>
                   
-                  {/* Riyadh Only Banner */}
-                  <div className="bg-[#153b66]/5 border border-[#153b66]/10 p-4 rounded-3xl flex items-center gap-4">
-                    <div className="w-9 h-9 bg-white rounded-2xl shadow-sm flex items-center justify-center flex-shrink-0 sm:w-10 sm:h-10">
-                      <MapPin className="w-4 h-4 text-[#153b66] sm:w-5 sm:h-5" />
+                  <div className="rounded-3xl border border-[#153b66]/10 bg-[#153b66]/5 p-4">
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white shadow-sm">
+                        <MapPin className="h-5 w-5 text-[#153b66]" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-gray-900">{isRTL ? 'مدينة التوصيل' : 'Delivery city'}</p>
+                        <p className="text-xs text-gray-500">
+                          {isRTL ? `التوصيل داخل الرياض خلال ${DELIVERY_DURATION_AR}.` : `Riyadh delivery takes ${DELIVERY_DURATION_EN}.`}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-black text-gray-900">{isRTL ? 'تغطية الرياض فقط' : 'Riyadh Coverage Only'}</p>
-                    <p className="text-xs text-gray-400">{isRTL ? 'نحن متخصصون في توصيل الرياض بأسرع وقت' : 'Specialized Riyadh fast delivery service'}</p>
-                    <p className="mt-1 text-xs font-bold text-[#153b66]">
-                      {isRTL
-                        ? `الحد الأدنى ${MIN_DELIVERY_CARTONS} كراتين، والتوصيل مجاني من ${FREE_DELIVERY_CARTONS} كرتونة.`
-                        : `Minimum ${MIN_DELIVERY_CARTONS} cartons. Free delivery from ${FREE_DELIVERY_CARTONS} cartons.`}
+                    <div className="grid grid-cols-2 gap-3">
+                      {DELIVERY_CITY_OPTIONS.map((city) => {
+                        const selected = formData.city === city.id;
+                        return (
+                          <button
+                            key={city.id}
+                            type="button"
+                            disabled={!city.enabled}
+                            onClick={() => setFormData((current) => ({ ...current, city: city.id }))}
+                            className={`rounded-2xl border px-4 py-3 text-sm font-black transition ${
+                              selected
+                                ? 'border-[#153b66] bg-[#153b66] text-white'
+                                : city.enabled
+                                  ? 'border-white bg-white text-[#153b66] hover:border-[#153b66]/30'
+                                  : 'cursor-not-allowed border-amber-200 bg-amber-50 text-amber-700 opacity-80'
+                            }`}
+                          >
+                            {isRTL ? city.labelAr : city.labelEn}
+                            {!city.enabled ? (
+                              <span className="mt-1 block text-[10px] font-bold">
+                                {isRTL ? 'بانتظار اعتماد المنتجات' : 'Products pending approval'}
+                              </span>
+                            ) : null}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <p className="mt-3 text-xs font-bold leading-6 text-[#153b66]">
+                      {deliveryRule.hasFreeDelivery
+                        ? (isRTL ? 'هذا الطلب مؤهل للتوصيل المجاني.' : 'This order qualifies for free delivery.')
+                        : (isRTL
+                            ? `رسوم التوصيل 25 ريال. المتبقي للمجاني: ${deliveryRule.getFreeDeliveryShortfall(true)}.`
+                            : `Delivery costs 25 SAR. Remaining for free delivery: ${deliveryRule.getFreeDeliveryShortfall(false)}.`)}
                     </p>
                   </div>
-                </div>
-
                   <div className="rounded-[2rem] border-2 border-emerald-200 bg-emerald-50/90 p-5 shadow-lg shadow-emerald-100/40">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                       <div>
@@ -738,7 +818,7 @@ export default function Checkout() {
 
                     <button
                       onClick={isWhatsAppCheckout ? handleWhatsAppOrder : handleNextStep}
-                      disabled={!canSubmitCustomerDetails}
+                      disabled={!canSubmitCustomerDetails || isRecordingOrder}
                       className="w-full h-20 bg-gradient-to-r from-[#153b66] to-[#2b648c] text-white rounded-[1.7rem] font-black text-xl hover:shadow-2xl transition-all disabled:opacity-30"
                     >
                       {isWhatsAppCheckout
@@ -749,7 +829,7 @@ export default function Checkout() {
                       <button
                         type="button"
                         onClick={handleWhatsAppOrder}
-                        disabled={!canSubmitCustomerDetails}
+                        disabled={!canSubmitCustomerDetails || isRecordingOrder}
                         className="w-full h-16 rounded-[1.4rem] border-2 border-green-200 bg-green-50 font-black text-green-700 transition-all hover:bg-green-100 disabled:opacity-30"
                       >
                         {isRTL ? 'إرسال الطلب عبر واتساب' : 'Send order via WhatsApp'}
@@ -813,13 +893,14 @@ export default function Checkout() {
                   <div className="bg-white rounded-[2.5rem] p-6 sm:p-10 shadow-xl shadow-gray-200/30 border border-gray-100 overflow-hidden">
                     <div className="rounded-[1.7rem] border border-amber-100 bg-amber-50 px-5 py-4 text-sm font-semibold leading-7 text-amber-800">
                       {isRTL
-                        ? '\u0628\u0648\u0627\u0628\u0629 \u0627\u0644\u062f\u0641\u0639 \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a \u0645\u062a\u0648\u0642\u0641\u0629 \u0645\u0624\u0642\u062a\u064b\u0627. \u0633\u0646\u0624\u0643\u062f \u0627\u0644\u0637\u0644\u0628 \u064a\u062f\u0648\u064a\u064b\u0627 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628 \u062d\u0633\u0628 \u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u062f\u0641\u0639 \u0627\u0644\u062a\u064a \u0627\u062e\u062a\u0631\u062a\u0647\u0627.'
-                        : 'Online gateway payments are paused temporarily. We will manually confirm the order on WhatsApp using your selected payment method.'}
+                        ? 'الدفع الإلكتروني جاهز للربط فور استلام مفتاح الإنتاج ورابط التحقق من شركة المدفوعات. حاليًا ستظهر حالة الدفع داخل فاتورة واتساب: غير مدفوع أو بانتظار التحقق من التحويل.'
+                        : 'Online payment is ready for integration once the provider supplies the production key and verification callback. For now, the WhatsApp invoice shows Unpaid or Pending transfer verification.'}
                     </div>
                     <button
                       type="button"
                       onClick={handleWhatsAppOrder}
-                      className="mt-5 w-full rounded-[1.7rem] bg-green-600 px-5 py-5 text-lg font-black text-white transition hover:bg-green-700 hover:shadow-2xl"
+                      disabled={isRecordingOrder}
+                      className="mt-5 w-full rounded-[1.7rem] bg-green-600 px-5 py-5 text-lg font-black text-white transition hover:bg-green-700 hover:shadow-2xl disabled:cursor-wait disabled:opacity-60"
                     >
                       {isRTL ? '\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0637\u0644\u0628 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628' : 'Send order on WhatsApp'}
                     </button>
@@ -834,6 +915,17 @@ export default function Checkout() {
                 </motion.div>
               )}
             </AnimatePresence>
+            {(isRecordingOrder || orderRecordNotice) ? (
+              <div className={`mt-4 rounded-2xl border px-4 py-3 text-sm font-bold leading-7 ${
+                orderRecordNotice.includes('تعذر') || orderRecordNotice.includes('could not') || orderRecordNotice.includes('يحتاج') || orderRecordNotice.includes('requires')
+                  ? 'border-amber-200 bg-amber-50 text-amber-800'
+                  : 'border-emerald-200 bg-emerald-50 text-emerald-800'
+              }`}>
+                {isRecordingOrder
+                  ? (isRTL ? 'جاري تسجيل الطلب في لوحة المبيعات…' : 'Saving the order to the sales dashboard…')
+                  : orderRecordNotice}
+              </div>
+            ) : null}
           </div>
 
           {/* Sidebar Summary */}
@@ -871,8 +963,8 @@ export default function Checkout() {
                   {!deliveryRule.hasFreeDelivery && (
                     <div className="rounded-2xl bg-white/5 px-3 py-2 text-xs leading-6 text-white/55">
                       {isRTL
-                        ? `أضف ${deliveryRule.cartonsToFreeDelivery} كرتونة للتوصيل المجاني.`
-                        : `Add ${deliveryRule.cartonsToFreeDelivery} cartons for free delivery.`}
+                        ? `المتبقي للتوصيل المجاني: ${deliveryRule.getFreeDeliveryShortfall(true)}.`
+                        : `Remaining for free delivery: ${deliveryRule.getFreeDeliveryShortfall(false)}.`}
                     </div>
                   )}
                   <div className="flex justify-between items-center pt-4 border-t border-white/10"><span className="text-2xl font-black">{isRTL ? 'الإجمالي' : 'Total'}</span><span className="text-3xl font-black text-[#2b648c]">{formatSarPrice(finalTotal, isRTL)}</span></div>

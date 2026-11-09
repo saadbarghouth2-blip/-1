@@ -22,15 +22,9 @@ type CheckoutPayload = {
   locale: 'ar' | 'en';
 };
 
-type CheckoutProduct = {
-  id: string;
-  name: {
-    ar: string;
-    en: string;
-  };
-  price: number;
-  image?: string;
-};
+import { getCartDeliveryRuleState, type Product } from '@riq/shared';
+
+type CheckoutProduct = Product;
 
 type CheckoutDraftInput = {
   locale: 'ar' | 'en';
@@ -50,7 +44,7 @@ export function buildCheckoutPayload(input: CheckoutDraftInput): CheckoutPayload
     (sum, item) => sum + item.product.price * item.quantity,
     0
   );
-  const deliveryFee = subtotal >= 100 ? 0 : 15;
+  const deliveryFee = getCartDeliveryRuleState(input.items).deliveryFee;
   const discount = input.discount ?? 0;
 
   return {

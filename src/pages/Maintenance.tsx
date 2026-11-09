@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { BRAND_LOGO_ALT, BRAND_LOGO_SRC } from '../lib/brand';
 
 export default function Maintenance() {
   useEffect(() => {
@@ -19,8 +20,8 @@ export default function Maintenance() {
 
       <section className="relative w-full max-w-xl rounded-[2rem] border border-white/90 bg-white/90 px-6 py-10 text-center shadow-[0_28px_90px_-38px_rgba(12,35,64,0.42)] backdrop-blur sm:px-10 sm:py-12">
         <img
-          src="/icons/app-icon-192.png"
-          alt="شعار متجر ريق"
+          src={BRAND_LOGO_SRC}
+          alt={BRAND_LOGO_ALT}
           className="mx-auto h-24 w-24 rounded-[1.75rem] object-cover shadow-[0_16px_36px_-18px_rgba(21,59,102,0.7)] sm:h-28 sm:w-28"
           width="112"
           height="112"

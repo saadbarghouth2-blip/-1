@@ -2,7 +2,7 @@ import type { CheckoutDraftRecord } from '../features/account/types';
 
 const CHECKOUT_DRAFT_STORAGE_KEY = 'reeq_web_checkout_draft';
 
-function createReference() {
+export function createWebCheckoutReference() {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
   }
@@ -15,7 +15,7 @@ export function saveWebCheckoutDraft(
 ) {
   const record: CheckoutDraftRecord = {
     ...input,
-    reference: input.reference || createReference(),
+    reference: input.reference || createWebCheckoutReference(),
   };
 
   localStorage.setItem(CHECKOUT_DRAFT_STORAGE_KEY, JSON.stringify(record));

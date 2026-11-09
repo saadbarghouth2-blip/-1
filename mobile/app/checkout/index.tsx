@@ -3,7 +3,7 @@ import { Alert, ScrollView, StyleSheet, Text, TextInput, View } from 'react-nati
 import MapView, { Marker } from 'react-native-maps';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { BANK_TRANSFER_DETAILS, formatSarPrice } from '@riq/shared';
+import { BANK_TRANSFER_DETAILS, formatSarPrice, getCartDeliveryRuleState } from '@riq/shared';
 import { ActionButton } from '../../src/components/ActionButton';
 import { LanguageToggle } from '../../src/components/LanguageToggle';
 import { PageHeader } from '../../src/components/PageHeader';
@@ -47,7 +47,8 @@ export default function CheckoutScreen() {
     lng: DEFAULT_LNG,
   });
 
-  const deliveryFee = subtotal >= 100 ? 0 : 15;
+  const deliveryRule = getCartDeliveryRuleState(items);
+  const deliveryFee = deliveryRule.deliveryFee;
   const finalTotal = subtotal + deliveryFee;
 
   useEffect(() => {
@@ -117,12 +118,16 @@ export default function CheckoutScreen() {
   const continueToPayment = async () => {
     setProfileSaveError('');
 
-    if (!items.length || !form.name || !form.phone || !form.address) {
+    if (!items.length || !deliveryRule.canDeliver || !form.name || !form.phone || !form.address) {
       Alert.alert(
-        isRTL ? 'بيانات ناقصة' : 'Incomplete details',
-        isRTL
-          ? 'الاسم والجوال والعنوان مطلوبة قبل الدفع.'
-          : 'Name, phone, and address are required before payment.'
+        isRTL ? 'الطلب غير مكتمل' : 'Incomplete order',
+        !deliveryRule.canDeliver
+          ? (isRTL
+              ? `أكمل الحد الأدنى أولًا: ${deliveryRule.getMinimumShortfall(true)}.`
+              : `Complete the minimum first: ${deliveryRule.getMinimumShortfall(false)}.`)
+          : (isRTL
+              ? 'الاسم والجوال والعنوان مطلوبة قبل الدفع.'
+              : 'Name, phone, and address are required before payment.')
       );
       return;
     }

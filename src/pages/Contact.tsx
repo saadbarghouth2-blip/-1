@@ -107,32 +107,32 @@ export default function Contact() {
     {
       q: isRTL ? 'ما هي سياسة الطلب والتوصيل؟' : 'What is the order and delivery policy?',
       a: isRTL
-        ? 'الحد الأدنى للطلب 10 كراتين. رسوم التوصيل 20 ريال للطلبات الأقل من 20 كرتون، والتوصيل مجاني من 20 كرتون أو أكثر. التوصيل للأرضي بدون رسوم إضافية، الدور الأول 10 ريالات، الدور الثاني 20 ريالا، والأدوار الأعلى يتم الاتفاق عليها حسب حالة الموقع. يجب تسجيل الطلب قبل موعد التوصيل بيوم واحد على الأقل، والتوصيل داخل الرياض من 8:00 صباحا حتى 8:00 مساء وفق المواعيد المتاحة وجدول التشغيل.'
-        : 'Minimum order is 10 cartons. Delivery is 20 SAR for orders below 20 cartons, and free from 20 cartons or more. Ground-floor delivery has no extra fee, first floor is 10 SAR, second floor is 20 SAR, and higher floors are quoted by site conditions. Orders should be placed at least one day before delivery. Riyadh delivery runs from 8:00 AM to 8:00 PM according to available slots and the operating schedule.',
+        ? 'الحد الأدنى للمياه العادية 15 كرتون، ولربطات رفا مكة المحددة 20 ربطة، وللمياه الزجاجية 10 كراتين. رسوم التوصيل 25 ريال داخل الرياض. التوصيل مجاني من 20 كرتون عادي، أو 35 ربطة، أو 15 كرتون زجاج، وجميع العروض تشمل توصيلًا مجانيًا. مدة التوصيل من 24 إلى 48 ساعة.'
+        : 'Minimums are 15 regular cartons, 20 specified Rafa Makkah bundles, or 10 glass cartons. Riyadh delivery costs 25 SAR. Delivery is free from 20 regular cartons, 35 bundles, or 15 glass cartons, and every offer includes free delivery. Delivery takes 24 to 48 hours.',
     },
     {
       q: isRTL ? 'ما هي مناطق التوصيل المتاحة؟' : 'What are the available delivery areas?',
       a: isRTL 
-        ? 'نوفر خدمة التوصيل لجميع مناطق المملكة العربية السعودية بما في ذلك الرياض، جدة، الدمام، مكة المكرمة، المدينة المنورة، وجميع المدن الأخرى. التوصيل داخل المدن الرئيسية يستغرق 24-48 ساعة، بينما المناطق البعيدة قد تستغرق 3-5 أيام عمل.'
-        : 'We provide delivery service to all regions of Saudi Arabia including Riyadh, Jeddah, Dammam, Makkah, Madinah, and all other cities. Delivery within major cities takes 24-48 hours, while remote areas may take 3-5 business days.',
+        ? 'التوصيل متاح حاليًا داخل حدود مدينة الرياض. تمت إضافة الدمام كمدينة قادمة، لكن الطلب إليها غير مفعّل حتى يتم اعتماد قائمة المنتجات المتاحة هناك.'
+        : 'Delivery is currently available within Riyadh city limits. Dammam is listed as an upcoming city, but checkout there remains disabled until the available product list is approved.',
     },
     {
       q: isRTL ? 'كم تستغرق عملية التوصيل؟' : 'How long does delivery take?',
       a: isRTL
-        ? 'التوصيل داخل المدن الرئيسية (الرياض، جدة، الدمام، مكة، المدينة) يستغرق 24-48 ساعة. أما المناطق البعيدة فقد تستغرق 3-5 أيام عمل. نحن نعمل على تقليل وقت التوصيل قدر الإمكان.'
-        : 'Delivery within major cities (Riyadh, Jeddah, Dammam, Makkah, Madinah) takes 24-48 hours. Remote areas may take 3-5 business days. We work to minimize delivery time as much as possible.',
+        ? 'مدة التوصيل داخل حدود مدينة الرياض من 24 إلى 48 ساعة بعد تأكيد الطلب وتوفر المنتجات.'
+        : 'Delivery within Riyadh city limits takes 24 to 48 hours after order confirmation and product availability checks.',
     },
     {
       q: isRTL ? 'ما هي طرق الدفع المتاحة؟' : 'What payment methods are available?',
       a: isRTL
-        ? '\u0627\u0644\u0645\u062a\u0627\u062d \u062d\u0627\u0644\u064a\u064b\u0627 \u0647\u0648 \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0627\u0644\u0628\u0646\u0643\u064a \u0627\u0644\u064a\u062f\u0648\u064a \u0645\u0639 \u0625\u0631\u0633\u0627\u0644 \u0625\u064a\u0635\u0627\u0644 \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628. \u0628\u0648\u0627\u0628\u0627\u062a \u0627\u0644\u062f\u0641\u0639 \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a \u0645\u062a\u0648\u0642\u0641\u0629 \u0645\u0624\u0642\u062a\u064b\u0627 \u0644\u062d\u064a\u0646 \u0627\u062e\u062a\u064a\u0627\u0631 \u0623\u0646\u0633\u0628 \u0628\u0648\u0627\u0628\u0629 \u062f\u0641\u0639.'
-        : 'Manual bank transfer is currently available, with the transfer receipt sent on WhatsApp. Online payment gateways are paused temporarily until we choose the best payment provider.',
+        ? 'المتاح حاليًا: الدفع عند الاستلام، التحويل البنكي مع إرسال الإيصال، أو شبكة مع المندوب. الدفع الإلكتروني مجهز للربط وسيتم تفعيله بمجرد استلام بيانات حساب شركة المدفوعات ومفاتيح الإنتاج وإعداد رابط التحقق.'
+        : 'Currently available: cash on delivery, bank transfer with receipt confirmation, or a card machine with the driver. Online payment is prepared for integration and will be enabled after receiving the provider account, production keys, and verification callback details.',
     },
     {
       q: isRTL ? 'هل يوجد حد أدنى للطلب؟' : 'Is there a minimum order?',
       a: isRTL
-        ? 'الحد الأدنى للتوصيل هو 10 كراتين. رسوم التوصيل 20 ريال للطلبات من 10 إلى 19 كرتونة، والتوصيل مجاني عند طلب 20 كرتونة أو أكثر.'
-        : 'The minimum delivery order is 10 cartons. Delivery costs 20 SAR for orders from 10 to 19 cartons, and it is free from 20 cartons or more.',
+        ? 'نعم: 15 كرتون للمياه العادية، و20 ربطة لرفا مكة 250 مل ×24 أو 330 مل ×20، و10 كراتين للمياه الزجاجية. العروض مقبولة وتشمل توصيلًا مجانيًا.'
+        : 'Yes: 15 regular water cartons, 20 Rafa Makkah bundles for 250ml ×24 or 330ml ×20, and 10 glass-water cartons. Offers qualify and include free delivery.',
     },
     {
       q: isRTL ? 'هل يمكنني إرجاع المنتج؟' : 'Can I return the product?',

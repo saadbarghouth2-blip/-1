@@ -12,7 +12,10 @@ import type { BrandSummary, Product as RawProduct } from '../../../src/data/prod
 
 export type Product = RawProduct & { price: number };
 
-export const products = rawProducts as Product[];
+export const products = rawProducts.filter(
+  (product): product is RawProduct & { price: number } =>
+    product.isPurchasable && typeof product.price === 'number',
+);
 export const brands = rawBrands as BrandSummary[];
 
 export { categories };

@@ -122,8 +122,25 @@ type OrderEmailPayload = {
   discount: number;
   finalTotal: number;
   paymentMethod?: ManualPaymentMethod;
+  paymentStatus?: 'paid' | 'unpaid' | 'pending_verification';
   isRTL: boolean;
 };
+
+function getPaymentStatusLabel(payload: Pick<OrderEmailPayload, 'paymentMethod' | 'paymentStatus' | 'isRTL'>) {
+  const status = payload.paymentStatus ?? (
+    payload.paymentMethod === 'bank_transfer' ? 'pending_verification' : 'unpaid'
+  );
+
+  if (payload.isRTL) {
+    if (status === 'paid') return 'تم الدفع';
+    if (status === 'pending_verification') return 'بانتظار التحقق من التحويل';
+    return 'لم يتم الدفع';
+  }
+
+  if (status === 'paid') return 'Paid';
+  if (status === 'pending_verification') return 'Pending transfer verification';
+  return 'Unpaid';
+}
 
 function formatTimestamp() {
   return new Intl.DateTimeFormat('en-GB', {
@@ -277,6 +294,7 @@ export function buildOrderWhatsAppLink(payload: OrderEmailPayload) {
   const fallback = payload.isRTL ? '\u063a\u064a\u0631 \u0645\u062a\u0648\u0641\u0631' : 'Not provided';
   const locationUrl = buildGoogleMapsLink(payload.lat, payload.lng);
   const paymentMethodLabel = getManualPaymentMethodLabel(payload.paymentMethod, payload.isRTL);
+  const paymentStatusLabel = getPaymentStatusLabel(payload);
   const orderItems = payload.items
     .map((item, index) => {
       const unitPrice = formatSarPrice(item.unitPrice, payload.isRTL);
@@ -323,6 +341,7 @@ export function buildOrderWhatsAppLink(payload: OrderEmailPayload) {
     '',
     payload.isRTL ? '\u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u062f\u0641\u0639' : 'Payment method',
     `${payload.isRTL ? '\u0627\u0644\u0627\u062e\u062a\u064a\u0627\u0631' : 'Selected'}: ${paymentMethodLabel}`,
+    `${payload.isRTL ? 'حالة الدفع' : 'Payment status'}: ${paymentStatusLabel}`,
     ...bankTransferLines,
     '',
     payload.isRTL ? '\u062a\u0641\u0627\u0635\u064a\u0644 \u0627\u0644\u0645\u0646\u062a\u062c\u0627\u062a' : 'Order items',
@@ -371,6 +390,7 @@ export function buildOrderWhatsAppLink(payload: OrderEmailPayload) {
     '',
     payload.isRTL ? '\u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u062f\u0641\u0639' : 'Payment method',
     `${payload.isRTL ? '\u0627\u0644\u0627\u062e\u062a\u064a\u0627\u0631' : 'Selected'}: ${paymentMethodLabel}`,
+    `${payload.isRTL ? 'حالة الدفع' : 'Payment status'}: ${paymentStatusLabel}`,
     ...bankTransferLines,
     '',
     payload.isRTL ? '\u062a\u0641\u0627\u0635\u064a\u0644 \u0627\u0644\u0645\u0646\u062a\u062c\u0627\u062a' : 'Order items',

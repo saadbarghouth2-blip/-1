@@ -197,7 +197,7 @@ export async function persistCompletedOrder(params: {
   payload: CheckoutPayload;
 }) {
   const client = getClientOrThrow();
-  const { data: orderRow, error: orderError } = await client
+  const { data: insertedOrderRow, error: orderError } = await client
     .from('orders')
     .upsert(
       {
@@ -219,13 +219,29 @@ export async function persistCompletedOrder(params: {
         locale: params.payload.locale,
         payment_status: 'paid',
       },
-      { onConflict: 'payment_reference' }
+      { onConflict: 'payment_reference', ignoreDuplicates: true }
     )
     .select('*')
-    .single<OrderRow>();
+    .maybeSingle<OrderRow>();
 
   if (orderError) {
     throw orderError;
+  }
+
+  let orderRow = insertedOrderRow;
+  if (!orderRow) {
+    const { data: existingOrderRow, error: existingOrderError } = await client
+      .from('orders')
+      .select('*')
+      .eq('payment_reference', params.paymentReference)
+      .eq('user_id', params.userId)
+      .single<OrderRow>();
+
+    if (existingOrderError) {
+      throw existingOrderError;
+    }
+
+    orderRow = existingOrderRow;
   }
 
   const orderItems = params.payload.items.map((item) => ({
@@ -241,7 +257,7 @@ export async function persistCompletedOrder(params: {
   if (orderItems.length) {
     const { error: itemsError } = await client
       .from('order_items')
-      .upsert(orderItems, { onConflict: 'order_id,product_id' });
+      .upsert(orderItems, { onConflict: 'order_id,product_id', ignoreDuplicates: true });
 
     if (itemsError) {
       throw itemsError;

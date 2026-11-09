@@ -369,7 +369,7 @@ export default function AdminProducts() {
     );
   }
 
-  if (!session) {
+  if (!session?.email) {
     return (
       <main className="relative z-10 min-h-screen py-20">
         <div className="mx-auto w-full max-w-md rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_24px_70px_-44px_rgba(15,23,42,0.35)]">

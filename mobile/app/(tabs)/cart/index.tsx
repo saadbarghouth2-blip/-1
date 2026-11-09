@@ -1,7 +1,7 @@
 import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { buildOrderWhatsAppLink, formatSarPrice } from '@riq/shared';
+import { buildOrderWhatsAppLink, formatSarPrice, getCartDeliveryRuleState } from '@riq/shared';
 import { ActionButton } from '../../../src/components/ActionButton';
 import { AccountEntryButton } from '../../../src/components/AccountEntryButton';
 import { CartItemCard } from '../../../src/components/CartItemCard';
@@ -18,7 +18,8 @@ export default function CartScreen() {
   const { i18n, t } = useTranslation();
   const { items, totalItems, subtotal, updateQuantity, removeFromCart, clearCart } = useCart();
   const isRTL = i18n.language === 'ar';
-  const deliveryFee = subtotal >= 100 ? 0 : 15;
+  const deliveryRule = getCartDeliveryRuleState(items);
+  const deliveryFee = deliveryRule.deliveryFee;
   const finalTotal = subtotal + deliveryFee;
 
   if (!items.length) {
@@ -108,7 +109,17 @@ export default function CartScreen() {
           <Row label={t('cart.subtotal')} value={formatSarPrice(subtotal, isRTL)} isRTL={isRTL} />
           <Row label={t('cart.delivery')} value={formatSarPrice(deliveryFee, isRTL)} isRTL={isRTL} />
           <Row label={t('cart.total')} value={formatSarPrice(finalTotal, isRTL)} isRTL={isRTL} strong />
-          <Text style={[styles.note, isRTL && styles.alignRight]}>{t('cart.freeDelivery')}</Text>
+          <Text style={[styles.note, isRTL && styles.alignRight]}>
+            {deliveryRule.hasFreeDelivery
+              ? (isRTL ? 'التوصيل مجاني لهذا الطلب.' : 'This order has free delivery.')
+              : deliveryRule.canDeliver
+                ? (isRTL
+                    ? `رسوم التوصيل 25 ريال. المتبقي للمجاني: ${deliveryRule.getFreeDeliveryShortfall(true)}.`
+                    : `Delivery costs 25 SAR. Remaining for free delivery: ${deliveryRule.getFreeDeliveryShortfall(false)}.`)
+                : (isRTL
+                    ? `أكمل الحد الأدنى: ${deliveryRule.getMinimumShortfall(true)}.`
+                    : `Complete the minimum: ${deliveryRule.getMinimumShortfall(false)}.`)}
+          </Text>
           <View style={[styles.actions, isRTL && styles.actionsRtl]}>
             <ActionButton
               testID="cart-clear-button"
@@ -120,6 +131,7 @@ export default function CartScreen() {
               testID="cart-checkout-button"
               label={t('common.checkout')}
               onPress={() => router.push('/checkout')}
+              disabled={!deliveryRule.canDeliver}
             />
           </View>
           <ActionButton
@@ -127,6 +139,7 @@ export default function CartScreen() {
             label={isRTL ? 'إرسال الطلب إلى واتساب' : 'Send order to WhatsApp'}
             variant="ghost"
             onPress={sendOrderToWhatsApp}
+            disabled={!deliveryRule.canDeliver}
           />
         </View>
       </ScrollView>

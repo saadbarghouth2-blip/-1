@@ -10,13 +10,12 @@ import {
 import { useCart } from '../context/CartContext';
 import ProductImage from '../components/ProductImage';
 import { formatSarPrice } from '../lib/utils';
-import { FREE_DELIVERY_CARTONS, MIN_DELIVERY_CARTONS, getDeliveryPolicySummary, getDeliveryRuleState } from '../lib/deliveryRules';
-import { isOfferProduct } from '../data/products';
+import { getCartDeliveryRuleState, getDeliveryPolicySummary } from '../lib/deliveryRules';
 
 export default function Cart() {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
-  const { items, removeFromCart, updateQuantity, totalItems, totalCartons, totalPrice, clearCart } = useCart();
+  const { items, removeFromCart, updateQuantity, totalItems, totalPrice, clearCart } = useCart();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
   const isRTL = i18n.language === 'ar';
@@ -25,19 +24,29 @@ export default function Cart() {
   const [promoApplied, setPromoApplied] = useState(false);
   const [showPromoInput, setShowPromoInput] = useState(false);
 
-  const hasOffer = items.some((item) => isOfferProduct(item.product));
-  const deliveryRule = getDeliveryRuleState(totalCartons, hasOffer);
+  const deliveryRule = getCartDeliveryRuleState(items);
   const deliveryFee = deliveryRule.deliveryFee;
   const discount = promoApplied ? totalPrice * 0.1 : 0;
   const finalTotal = totalPrice + deliveryFee - discount;
-  const freeDeliveryProgress = hasOffer ? 100 : Math.min((totalCartons / FREE_DELIVERY_CARTONS) * 100, 100);
+  const freeDeliveryProgress = deliveryRule.freeDeliveryProgress;
+  const deliveryQuantities = [
+    deliveryRule.summary.cartons + deliveryRule.summary.offerCartons > 0
+      ? `${deliveryRule.summary.cartons + deliveryRule.summary.offerCartons} ${isRTL ? 'كرتون' : 'cartons'}`
+      : '',
+    deliveryRule.summary.bundles > 0
+      ? `${deliveryRule.summary.bundles} ${isRTL ? 'ربطة' : 'bundles'}`
+      : '',
+    deliveryRule.summary.glassCartons > 0
+      ? `${deliveryRule.summary.glassCartons} ${isRTL ? 'كرتون زجاج' : 'glass cartons'}`
+      : '',
+  ].filter(Boolean).join(' • ');
   const distinctBrands = new Set(items.map((item) => item.product.brand)).size;
   const deliveryPolicy = getDeliveryPolicySummary(isRTL);
   const cartInsights = [
     {
       icon: ShoppingBag,
-      label: isRTL ? 'عدد الكراتين' : 'Cartons in cart',
-      value: `${totalCartons}`,
+      label: isRTL ? 'كميات التوصيل' : 'Delivery quantities',
+      value: deliveryQuantities,
       tone: 'from-sky-500 to-cyan-500',
     },
     {
@@ -181,7 +190,7 @@ export default function Cart() {
                   <span className="font-bold text-white">
                     {deliveryRule.hasFreeDelivery
                       ? isRTL ? 'تم الوصول' : 'Unlocked'
-                      : isRTL ? `${deliveryRule.cartonsToFreeDelivery} كرتونة متبقية` : `${deliveryRule.cartonsToFreeDelivery} cartons left`}
+                      : deliveryRule.getFreeDeliveryShortfall(isRTL)}
                   </span>
                 </div>
                 <div className="h-3 overflow-hidden rounded-full bg-white/20">
@@ -195,7 +204,9 @@ export default function Cart() {
                 <p className="mt-3 text-xs leading-6 text-white/80 sm:text-sm">
                   {deliveryRule.hasFreeDelivery
                     ? (isRTL ? 'طلبك مؤهل الآن لتوصيل مجاني، ويمكنك إتمام الشراء مباشرة.' : 'Your cart already qualifies for free delivery, so you can check out immediately.')
-                    : (isRTL ? `أضف حتى ${FREE_DELIVERY_CARTONS} كرتونة للحصول على توصيل مجاني.` : `Add up to ${FREE_DELIVERY_CARTONS} cartons to unlock free delivery.`)}
+                    : (isRTL
+                        ? `المتبقي للتوصيل المجاني: ${deliveryRule.getFreeDeliveryShortfall(true)}.`
+                        : `Remaining for free delivery: ${deliveryRule.getFreeDeliveryShortfall(false)}.`)}
                 </p>
               </div>
             </div>
@@ -421,15 +432,15 @@ export default function Cart() {
                 {!deliveryRule.canDeliver && (
                   <div className="text-xs sm:text-sm text-amber-700 bg-amber-50 p-2 rounded-lg">
                     {isRTL
-                      ? `الحد الأدنى للتوصيل ${MIN_DELIVERY_CARTONS} كراتين. أضف ${deliveryRule.cartonsToMinimum} كرتونة لإتمام الطلب.`
-                      : `Minimum delivery order is ${MIN_DELIVERY_CARTONS} cartons. Add ${deliveryRule.cartonsToMinimum} more to check out.`}
+                      ? `الطلب لم يصل للحد الأدنى. أضف ${deliveryRule.getMinimumShortfall(true)} لإتمام الطلب.`
+                      : `The order is below the minimum. Add ${deliveryRule.getMinimumShortfall(false)} to check out.`}
                   </div>
                 )}
                 {deliveryRule.canDeliver && !deliveryRule.hasFreeDelivery && (
                   <div className="text-xs sm:text-sm text-[#153b66] bg-[#edf4fa] p-2 rounded-lg">
                     {isRTL
-                      ? `رسوم التوصيل ${formatSarPrice(deliveryFee, isRTL)}. التوصيل مجاني من ${FREE_DELIVERY_CARTONS} كرتونة.`
-                      : `Delivery fee is ${formatSarPrice(deliveryFee, isRTL)}. Free delivery starts at ${FREE_DELIVERY_CARTONS} cartons.`}
+                      ? `رسوم التوصيل ${formatSarPrice(deliveryFee, isRTL)}. المتبقي للمجاني: ${deliveryRule.getFreeDeliveryShortfall(true)}.`
+                      : `Delivery fee is ${formatSarPrice(deliveryFee, isRTL)}. Remaining for free delivery: ${deliveryRule.getFreeDeliveryShortfall(false)}.`}
                   </div>
                 )}
                 <div className="border-t pt-3">
@@ -450,7 +461,7 @@ export default function Cart() {
               >
                 {deliveryRule.canDeliver
                   ? (isRTL ? 'إكمال بيانات الطلب' : 'Complete order details')
-                  : (isRTL ? `أضف ${deliveryRule.cartonsToMinimum} كرتونة للتوصيل` : `Add ${deliveryRule.cartonsToMinimum} cartons to deliver`)}
+                  : (isRTL ? `أضف ${deliveryRule.getMinimumShortfall(true)}` : `Add ${deliveryRule.getMinimumShortfall(false)}`)}
                 <ArrowRight className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
               </motion.button>
 
@@ -465,8 +476,8 @@ export default function Cart() {
               ) : (
                 <div className="mb-3 flex w-full items-center justify-center rounded-xl border-2 border-amber-200 bg-amber-50 px-3 py-3 text-center text-sm font-semibold text-amber-700 sm:py-4">
                   {isRTL
-                    ? `إرسال الطلب متاح عند الوصول إلى ${MIN_DELIVERY_CARTONS} كراتين.`
-                    : `Order submission is available from ${MIN_DELIVERY_CARTONS} cartons.`}
+                    ? `أكمل الحد الأدنى أولًا: ${deliveryRule.getMinimumShortfall(true)}.`
+                    : `Complete the minimum first: ${deliveryRule.getMinimumShortfall(false)}.`}
                 </div>
               )}
 

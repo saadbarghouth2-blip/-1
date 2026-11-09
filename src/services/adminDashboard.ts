@@ -8,6 +8,10 @@ export type AdminOrder = {
   customerPhone: string;
   customerEmail: string | null;
   customerAddress: string | null;
+  source: string;
+  channel: string | null;
+  paymentMethod: string | null;
+  paymentStatus: 'paid' | 'unpaid' | 'pending_verification';
   totalItems: number;
   finalTotal: number;
   createdAt: string;
@@ -28,6 +32,8 @@ export type AdminSalesDashboard = {
   totalRevenue: number;
   totalItems: number;
   averageOrderValue: number;
+  orders: AdminOrder[];
+  items: AdminOrderItem[];
   recentOrders: AdminOrder[];
   topProducts: Array<{
     productId: string;
@@ -45,6 +51,95 @@ function getClient() {
   return getSupabaseClient();
 }
 
+function parseOrderNotes(
+  value: unknown,
+  fallbackSource: unknown,
+): Pick<AdminOrder, 'source' | 'channel' | 'paymentMethod' | 'paymentStatus'> {
+  const source = typeof fallbackSource === 'string' && fallbackSource ? fallbackSource : 'unknown';
+  if (typeof value !== 'string' || !value.trim()) {
+    return { source, channel: null, paymentMethod: null, paymentStatus: 'paid' as const };
+  }
+
+  try {
+    const notes = JSON.parse(value) as {
+      source?: unknown;
+      channel?: unknown;
+      paymentMethod?: unknown;
+      paymentStatus?: unknown;
+    };
+    const paymentStatus = notes.paymentStatus === 'unpaid' || notes.paymentStatus === 'pending_verification'
+      ? notes.paymentStatus
+      : 'paid';
+    return {
+      source: typeof notes.source === 'string' ? notes.source : source,
+      channel: typeof notes.channel === 'string' ? notes.channel : null,
+      paymentMethod: typeof notes.paymentMethod === 'string' ? notes.paymentMethod : null,
+      paymentStatus,
+    };
+  } catch {
+    return { source, channel: null, paymentMethod: null, paymentStatus: 'paid' as const };
+  }
+}
+
+const SALES_PAGE_SIZE = 1000;
+
+type AdminOrderRow = {
+  id: string;
+  payment_reference: string;
+  source: string | null;
+  customer_name: string;
+  customer_phone: string;
+  customer_email: string | null;
+  customer_address: string | null;
+  customer_notes: string | null;
+  total_items: number | string | null;
+  final_total: number | string | null;
+  created_at: string;
+};
+
+type AdminOrderItemRow = {
+  order_id: string;
+  product_id: string;
+  name: string;
+  quantity: number | string | null;
+  unit_price: number | string | null;
+  line_total: number | string | null;
+  image: string | null;
+  created_at: string;
+};
+
+async function loadAllOrderRows(client: ReturnType<typeof getClient>) {
+  const rows: AdminOrderRow[] = [];
+  for (let start = 0; ; start += SALES_PAGE_SIZE) {
+    const { data, error } = await client
+      .from('orders')
+      .select('id, payment_reference, source, customer_name, customer_phone, customer_email, customer_address, customer_notes, total_items, final_total, created_at')
+      .order('created_at', { ascending: false })
+      .range(start, start + SALES_PAGE_SIZE - 1);
+
+    if (error) throw error;
+    const page = (data ?? []) as AdminOrderRow[];
+    rows.push(...page);
+    if (page.length < SALES_PAGE_SIZE) return rows;
+  }
+}
+
+async function loadAllOrderItemRows(client: ReturnType<typeof getClient>) {
+  const rows: AdminOrderItemRow[] = [];
+  for (let start = 0; ; start += SALES_PAGE_SIZE) {
+    const { data, error } = await client
+      .from('order_items')
+      .select('order_id, product_id, name, quantity, unit_price, line_total, image, created_at')
+      .order('created_at', { ascending: false })
+      .range(start, start + SALES_PAGE_SIZE - 1);
+
+    if (error) throw error;
+    const page = (data ?? []) as AdminOrderItemRow[];
+    rows.push(...page);
+    if (page.length < SALES_PAGE_SIZE) return rows;
+  }
+}
+
 export async function loadAdminSalesDashboard(email: string | null | undefined): Promise<AdminSalesDashboard> {
   const allowed = await isCurrentUserProductAdmin(email);
   if (!allowed) {
@@ -52,39 +147,31 @@ export async function loadAdminSalesDashboard(email: string | null | undefined):
   }
 
   const client = getClient();
-  const [ordersResult, itemsResult] = await Promise.all([
-    client
-      .from('orders')
-      .select('id, payment_reference, customer_name, customer_phone, customer_email, customer_address, total_items, final_total, created_at')
-      .order('created_at', { ascending: false })
-      .limit(100),
-    client
-      .from('order_items')
-      .select('order_id, product_id, name, quantity, unit_price, line_total, image')
-      .limit(1000),
+  const [orderRows, itemRows] = await Promise.all([
+    loadAllOrderRows(client),
+    loadAllOrderItemRows(client),
   ]);
 
-  if (ordersResult.error) {
-    throw ordersResult.error;
-  }
+  const orders = orderRows.map((order) => {
+    const orderMetadata = parseOrderNotes(order.customer_notes, order.source);
+    return {
+      id: order.id,
+      paymentReference: order.payment_reference,
+      customerName: order.customer_name,
+      customerPhone: order.customer_phone,
+      customerEmail: order.customer_email,
+      customerAddress: order.customer_address,
+      source: orderMetadata.source,
+      channel: orderMetadata.channel,
+      paymentMethod: orderMetadata.paymentMethod,
+      paymentStatus: orderMetadata.paymentStatus,
+      totalItems: Number(order.total_items ?? 0),
+      finalTotal: Number(order.final_total ?? 0),
+      createdAt: order.created_at,
+    };
+  }) satisfies AdminOrder[];
 
-  if (itemsResult.error) {
-    throw itemsResult.error;
-  }
-
-  const orders = (ordersResult.data ?? []).map((order) => ({
-    id: order.id,
-    paymentReference: order.payment_reference,
-    customerName: order.customer_name,
-    customerPhone: order.customer_phone,
-    customerEmail: order.customer_email,
-    customerAddress: order.customer_address,
-    totalItems: Number(order.total_items ?? 0),
-    finalTotal: Number(order.final_total ?? 0),
-    createdAt: order.created_at,
-  })) satisfies AdminOrder[];
-
-  const items = (itemsResult.data ?? []).map((item) => ({
+  const items = itemRows.map((item) => ({
     orderId: item.order_id,
     productId: item.product_id,
     name: item.name,
@@ -116,6 +203,8 @@ export async function loadAdminSalesDashboard(email: string | null | undefined):
     totalRevenue,
     totalItems,
     averageOrderValue: orders.length > 0 ? totalRevenue / orders.length : 0,
+    orders,
+    items,
     recentOrders: orders.slice(0, 12),
     topProducts: Array.from(products.values())
       .sort((left, right) => right.revenue - left.revenue)

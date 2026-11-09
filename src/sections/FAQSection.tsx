@@ -11,22 +11,22 @@ const faqs = [
   {
     qAr: 'ما هي سياسة الطلب والتوصيل داخل الرياض؟',
     qEn: 'What is the order and delivery policy in Riyadh?',
-    aAr: 'الحد الأدنى للطلب 10 كراتين. تطبق رسوم توصيل 20 ريال على الطلبات الأقل من 20 كرتون، ويكون التوصيل مجانيا عند طلب 20 كرتون أو أكثر. التوصيل حتى الدور الأرضي بدون رسوم إضافية، والدور الأول 10 ريالات، والدور الثاني 20 ريالا، أما الأدوار الأعلى فيتم الاتفاق على رسومها حسب حالة الموقع. يجب تسجيل الطلب قبل موعد التوصيل بيوم واحد على الأقل، ويتم التوصيل خلال ساعات العمل الرسمية من 8:00 صباحا حتى 8:00 مساء. الخدمة متاحة لجميع أحياء مدينة الرياض وفق المواعيد المتاحة وجدول التشغيل، وتحتفظ الإدارة بحق تحديث السياسة بما يناسب جودة الخدمة.',
-    aEn: 'Minimum order is 10 cartons. A 20 SAR delivery fee applies to orders below 20 cartons, and delivery is free from 20 cartons or more. Delivery to the ground floor has no extra fee; first floor is 10 SAR, second floor is 20 SAR, and higher floors are quoted according to site conditions. Orders should be placed at least one day before delivery, and delivery runs from 8:00 AM to 8:00 PM. Service covers all Riyadh districts according to available slots and the operating schedule. Management may update this policy to maintain service quality.',
+    aAr: 'الحد الأدنى 15 كرتون للمياه العادية، و20 ربطة لرفا مكة المحددة، و10 كراتين للمياه الزجاجية. رسوم التوصيل داخل الرياض 25 ريال. التوصيل مجاني من 20 كرتون عادي أو 35 ربطة أو 15 كرتون زجاج، وجميع العروض توصيلها مجاني. مدة التوصيل من 24 إلى 48 ساعة.',
+    aEn: 'Minimums are 15 regular cartons, 20 specified Rafa Makkah bundles, or 10 glass cartons. Riyadh delivery costs 25 SAR. Delivery is free from 20 regular cartons, 35 bundles, or 15 glass cartons, and every offer includes free delivery. Delivery takes 24 to 48 hours.',
     category: 'delivery',
   },
   {
     qAr: 'ما هي المناطق التي يشملها التوصيل؟',
     qEn: 'Which areas does delivery cover?',
-    aAr: 'نغطي جميع مدن المملكة العربية السعودية الرئيسية بما فيها الرياض، جدة، الدمام، مكة المكرمة، والمدينة المنورة. كما نوفر خدمة التوصيل إلى أكثر من 30 مدينة ومنطقة في المملكة مع خطط توسع مستمرة لتشمل مناطق جديدة.',
-    aEn: 'We cover all major cities in Saudi Arabia including Riyadh, Jeddah, Dammam, Makkah, and Madinah. We also provide delivery service to over 30 cities and regions across the Kingdom with continuous expansion plans to include new areas.',
+    aAr: 'التوصيل متاح حاليًا داخل حدود مدينة الرياض. الدمام مضافة كمدينة قادمة، لكن الطلب إليها لن يتفعل قبل اعتماد قائمة المنتجات المتاحة هناك.',
+    aEn: 'Delivery is currently available within Riyadh city limits. Dammam is listed as an upcoming city, but checkout will remain disabled until its available product list is approved.',
     category: 'delivery',
   },
   {
     qAr: 'ما هو الحد الأدنى للطلب؟',
     qEn: 'What is the minimum order?',
-    aAr: 'الحد الأدنى للتوصيل هو 10 كراتين. رسوم التوصيل 20 ريال للطلبات من 10 إلى 19 كرتونة، والتوصيل مجاني عند طلب 20 كرتونة أو أكثر.',
-    aEn: 'The minimum delivery order is 10 cartons. Delivery costs 20 SAR for orders from 10 to 19 cartons, and it is free from 20 cartons or more.',
+    aAr: 'الحد الأدنى 15 كرتون للمياه العادية، و20 ربطة لرفا مكة 250 مل ×24 أو 330 مل ×20، و10 كراتين للمياه الزجاجية.',
+    aEn: 'The minimum is 15 regular cartons, 20 Rafa Makkah bundles (250ml ×24 or 330ml ×20), or 10 glass-water cartons.',
     category: 'order',
   },
   {
@@ -53,15 +53,15 @@ const faqs = [
   {
     qAr: 'هل يتوفر توصيل في نفس اليوم؟',
     qEn: 'Is same-day delivery available?',
-    aAr: 'نعم، التوصيل في نفس اليوم متاح في الرياض للطلبات المقدمة قبل الساعة 2 مساءً. أما المدن الأخرى فمتوسط وقت التوصيل 24-48 ساعة حسب المنطقة. في رمضان والمناسبات الكبرى قد يختلف الجدول الزمني.',
-    aEn: 'Yes, same-day delivery is available in Riyadh for orders placed before 2 PM. For other cities, the average delivery time is 24-48 hours depending on the area. During Ramadan and major occasions, the schedule may vary.',
+    aAr: 'مدة التوصيل المعتمدة داخل حدود مدينة الرياض من 24 إلى 48 ساعة بعد تأكيد الطلب وتوفر المنتجات.',
+    aEn: 'The standard delivery time within Riyadh city limits is 24 to 48 hours after order confirmation and availability checks.',
     category: 'delivery',
   },
   {
     qAr: 'ما طرق الدفع المتاحة؟',
     qEn: 'What payment methods are available?',
-    aAr: '\u0627\u0644\u0645\u062a\u0627\u062d \u062d\u0627\u0644\u064a\u064b\u0627 \u0647\u0648 \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0627\u0644\u0628\u0646\u0643\u064a \u0627\u0644\u064a\u062f\u0648\u064a \u0645\u0639 \u0625\u0631\u0633\u0627\u0644 \u0625\u064a\u0635\u0627\u0644 \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628. \u0628\u0648\u0627\u0628\u0627\u062a \u0627\u0644\u062f\u0641\u0639 \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a \u0645\u062a\u0648\u0642\u0641\u0629 \u0645\u0624\u0642\u062a\u064b\u0627 \u0644\u062d\u064a\u0646 \u0627\u062e\u062a\u064a\u0627\u0631 \u0623\u0646\u0633\u0628 \u0628\u0648\u0627\u0628\u0629 \u062f\u0641\u0639.',
-    aEn: 'Manual bank transfer is currently available, with the transfer receipt sent on WhatsApp. Online payment gateways are paused temporarily until we choose the best payment provider.',
+    aAr: 'المتاح حاليًا الدفع عند الاستلام أو التحويل البنكي أو شبكة مع المندوب. الدفع الإلكتروني سيُفعّل بعد استلام حساب شركة المدفوعات ومفاتيح الإنتاج وبيانات Webhook للتحقق من حالة العملية.',
+    aEn: 'Cash on delivery, bank transfer, and a card machine with the driver are currently available. Online payment will be enabled after receiving the provider account, production keys, and webhook verification details.',
     category: 'payment',
   },
   {

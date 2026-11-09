@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const STATIC_CACHE_NAME = `riq-static-${CACHE_VERSION}`;
 const PAGE_CACHE_NAME = `riq-pages-${CACHE_VERSION}`;
 const CACHEABLE_DESTINATIONS = new Set(['script', 'style', 'image', 'font', 'manifest']);
@@ -10,6 +10,7 @@ const SHELL_ASSETS = [
   '/icons/app-icon-192.png',
   '/icons/app-icon-512.png',
   '/icons/apple-touch-icon.png',
+  '/WhatsApp%20Image%202026-11-06%20at%204.11.00%20PM.jpeg',
 ];
 
 function getScopeUrl() {

@@ -100,11 +100,7 @@ for insert
 with check (auth.uid() = user_id);
 
 drop policy if exists "orders_update_own" on public.orders;
-create policy "orders_update_own"
-on public.orders
-for update
-using (auth.uid() = user_id)
-with check (auth.uid() = user_id);
+-- Sales records are append-only. Do not add an UPDATE or DELETE policy here.
 
 drop policy if exists "order_items_select_own" on public.order_items;
 create policy "order_items_select_own"
@@ -133,22 +129,4 @@ with check (
 );
 
 drop policy if exists "order_items_update_own" on public.order_items;
-create policy "order_items_update_own"
-on public.order_items
-for update
-using (
-  exists (
-    select 1
-    from public.orders
-    where public.orders.id = public.order_items.order_id
-      and public.orders.user_id = auth.uid()
-  )
-)
-with check (
-  exists (
-    select 1
-    from public.orders
-    where public.orders.id = public.order_items.order_id
-      and public.orders.user_id = auth.uid()
-  )
-);
+-- Sales line items are append-only. Do not add an UPDATE or DELETE policy here.

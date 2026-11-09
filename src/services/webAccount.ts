@@ -185,9 +185,23 @@ export async function listUserOrders(userId: string) {
 }
 
 export async function persistCompletedOrder(userId: string, email: string | null, draft: CheckoutDraftRecord) {
+  return persistOrderRecord(userId, email, draft, null);
+}
+
+type SubmittedWebOrderMetadata = {
+  paymentMethod: string;
+  paymentStatus: 'unpaid' | 'pending_verification';
+};
+
+async function persistOrderRecord(
+  userId: string,
+  email: string | null,
+  draft: CheckoutDraftRecord,
+  customerNotes: string | null,
+) {
   const client = getClient();
 
-  const { data: orderData, error: orderError } = await client
+  const { data: insertedOrder, error: orderError } = await client
     .from('orders')
     .upsert({
       user_id: userId,
@@ -196,7 +210,7 @@ export async function persistCompletedOrder(userId: string, email: string | null
       customer_phone: draft.customerPhone,
       customer_email: email,
       customer_address: draft.customerAddress,
-      customer_notes: null,
+      customer_notes: customerNotes,
       customer_lat: draft.customerLat,
       customer_lng: draft.customerLng,
       total_items: draft.items.reduce((sum, item) => sum + (item.cartonQuantity ?? item.quantity), 0),
@@ -207,12 +221,33 @@ export async function persistCompletedOrder(userId: string, email: string | null
       locale: draft.locale,
     }, {
       onConflict: 'payment_reference',
+      ignoreDuplicates: true,
     })
     .select('id')
-    .single();
+    .maybeSingle();
 
   if (orderError) {
     throw orderError;
+  }
+
+  let orderData = insertedOrder;
+  if (!orderData) {
+    const { data: existingOrder, error: existingOrderError } = await client
+      .from('orders')
+      .select('id')
+      .eq('payment_reference', draft.reference)
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (existingOrderError) {
+      throw existingOrderError;
+    }
+
+    if (!existingOrder) {
+      throw new Error('The order already exists but could not be loaded safely.');
+    }
+
+    orderData = existingOrder;
   }
 
   const orderItems = draft.items.map((item) => ({
@@ -230,6 +265,7 @@ export async function persistCompletedOrder(userId: string, email: string | null
       .from('order_items')
       .upsert(orderItems, {
         onConflict: 'order_id,product_id',
+        ignoreDuplicates: true,
       });
 
     if (itemError) {
@@ -238,4 +274,44 @@ export async function persistCompletedOrder(userId: string, email: string | null
   }
 
   return orderData.id;
+}
+
+export async function persistSubmittedWebOrder(
+  email: string | null,
+  draft: CheckoutDraftRecord,
+  metadata: SubmittedWebOrderMetadata,
+) {
+  const client = getClient();
+  const { data: sessionData, error: sessionError } = await client.auth.getSession();
+
+  if (sessionError) {
+    throw sessionError;
+  }
+
+  let activeSession = sessionData.session;
+  if (!activeSession?.user) {
+    const { data: anonymousData, error: anonymousError } = await client.auth.signInAnonymously();
+    if (anonymousError) {
+      throw new Error(`Anonymous checkout session is unavailable: ${anonymousError.message}`);
+    }
+    activeSession = anonymousData.session;
+  }
+
+  if (!activeSession?.user) {
+    throw new Error('Unable to create a secure checkout session for this order.');
+  }
+
+  const customerNotes = JSON.stringify({
+    source: 'website',
+    channel: 'whatsapp',
+    paymentMethod: metadata.paymentMethod,
+    paymentStatus: metadata.paymentStatus,
+  });
+
+  return persistOrderRecord(
+    activeSession.user.id,
+    email ?? activeSession.user.email ?? null,
+    draft,
+    customerNotes,
+  );
 }
