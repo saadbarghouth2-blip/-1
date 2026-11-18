@@ -13,6 +13,9 @@ export type AdminOrder = {
   paymentMethod: string | null;
   paymentStatus: 'paid' | 'unpaid' | 'pending_verification';
   totalItems: number;
+  subtotal: number;
+  deliveryFee: number;
+  discount: number;
   finalTotal: number;
   createdAt: string;
 };
@@ -93,6 +96,9 @@ type AdminOrderRow = {
   customer_address: string | null;
   customer_notes: string | null;
   total_items: number | string | null;
+  subtotal: number | string | null;
+  delivery_fee: number | string | null;
+  discount: number | string | null;
   final_total: number | string | null;
   created_at: string;
 };
@@ -119,7 +125,7 @@ async function loadAllOrderRows(client: ReturnType<typeof getClient>) {
   for (let start = 0; ; start += SALES_PAGE_SIZE) {
     const { data, error } = await client
       .from('orders')
-      .select('id, payment_reference, source, customer_name, customer_phone, customer_email, customer_address, customer_notes, total_items, final_total, created_at')
+      .select('id, payment_reference, source, customer_name, customer_phone, customer_email, customer_address, customer_notes, total_items, subtotal, delivery_fee, discount, final_total, created_at')
       .order('created_at', { ascending: false })
       .range(start, start + SALES_PAGE_SIZE - 1);
 
@@ -199,6 +205,9 @@ export async function loadAdminSalesDashboard(email: string | null | undefined):
       paymentMethod: orderMetadata.paymentMethod,
       paymentStatus: getDisplayedPaymentStatus(latestPaymentEvents.get(order.id), orderMetadata.paymentStatus),
       totalItems: Number(order.total_items ?? 0),
+      subtotal: Number(order.subtotal ?? 0),
+      deliveryFee: Number(order.delivery_fee ?? 0),
+      discount: Number(order.discount ?? 0),
       finalTotal: Number(order.final_total ?? 0),
       createdAt: order.created_at,
     };

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ArrowLeft, Banknote, CheckCircle2, CreditCard, Landmark, Mail, MapPin, Locate, Search, Navigation
+  ArrowLeft, Banknote, CheckCircle2, CreditCard, Download, FileText, Image as ImageIcon, Landmark, Mail, MapPin, Locate, Search, Navigation
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useWebAuth } from '../features/auth/WebAuthProvider';
@@ -35,6 +35,7 @@ import {
 } from '../lib/deliveryRules';
 import ProductImage from '../components/ProductImage';
 import { isOfferProduct } from '../data/products';
+import { downloadInvoice, type InvoiceData, type InvoiceDownloadFormat } from '../lib/invoice';
 
 const LEAFLET_SCRIPT_URL = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
 const LEAFLET_STYLES_URL = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
@@ -103,6 +104,7 @@ export default function Checkout() {
 
   const [orderRecordNotice, setOrderRecordNotice] = useState('');
   const [isRecordingOrder, setIsRecordingOrder] = useState(false);
+  const [invoiceDownloadFormat, setInvoiceDownloadFormat] = useState<InvoiceDownloadFormat | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<ManualPaymentMethod>('cash_on_delivery');
   const [orderReference] = useState(() => createWebCheckoutReference());
 
@@ -354,6 +356,47 @@ export default function Checkout() {
     });
 
   const buildCurrentOrderWhatsAppLink = () => buildOrderWhatsAppLink(buildCurrentOrderPayload());
+
+  const buildCurrentInvoiceData = (): InvoiceData => ({
+    invoiceNumber: `INV-${orderReference}`,
+    orderNumber: orderReference,
+    issuedAt: new Date(),
+    customerName: formData.name.trim(),
+    customerPhone: formData.phone.trim(),
+    customerEmail: normalizedCustomerEmail || session?.email || null,
+    customerAddress: deliveryAddress,
+    paymentMethod: selectedPaymentMethodLabel,
+    paymentStatus: paymentMethod === 'bank_transfer' ? 'pending_verification' : 'unpaid',
+    items: items.map((item) => ({
+      name: `${isRTL ? item.product.name.ar : item.product.name.en}${item.selectedSize ? ` (${isRTL ? 'الحجم' : 'size'}: ${item.selectedSize})` : ''}`,
+      quantity: item.quantity,
+      unitPrice: item.product.price ?? 0,
+      lineTotal: (item.product.price ?? 0) * item.quantity,
+    })),
+    subtotal: totalPrice,
+    deliveryFee: totalDeliveryFee,
+    discount: 0,
+    total: finalTotal,
+  });
+
+  const handleInvoiceDownload = async (format: InvoiceDownloadFormat) => {
+    if (!canSubmitCustomerDetails) return;
+    setInvoiceDownloadFormat(format);
+    setOrderRecordNotice('');
+    try {
+      await downloadInvoice(buildCurrentInvoiceData(), format);
+      setOrderRecordNotice(
+        isRTL
+          ? `تم تنزيل الفاتورة ${format === 'pdf' ? 'PDF' : 'كصورة'} بنجاح.`
+          : `The invoice was downloaded successfully as ${format === 'pdf' ? 'PDF' : 'an image'}.`,
+      );
+    } catch (error) {
+      console.error('Unable to generate the order invoice.', error);
+      setOrderRecordNotice(isRTL ? 'تعذر تجهيز الفاتورة الآن. حاول مرة أخرى.' : 'The invoice could not be generated. Please try again.');
+    } finally {
+      setInvoiceDownloadFormat(null);
+    }
+  };
 
   const recordSubmittedOrder = async (channel: 'whatsapp' | 'email') => {
     const draft = saveCurrentOrderDraft();
@@ -868,7 +911,7 @@ export default function Checkout() {
                       </p>
                     </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-4 sm:grid-cols-3">
                       <button
                         type="button"
                         onClick={handleWhatsAppOrder}
@@ -896,6 +939,33 @@ export default function Checkout() {
                           {isRTL ? 'تأكيد طلبك بضغطة واحدة' : 'Confirm your order in one click'}
                         </span>
                       </button>
+
+                      <div className="min-h-44 rounded-[1.8rem] border-2 border-sky-200 bg-sky-50 p-5 text-start transition-all hover:-translate-y-1 hover:border-sky-400 hover:shadow-xl">
+                        <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-600 text-white shadow-lg shadow-sky-600/20">
+                          <FileText className="h-6 w-6" />
+                        </span>
+                        <span className="block text-lg font-black text-sky-900">
+                          {isRTL ? 'تنزيل فاتورة الطلب' : 'Download order invoice'}
+                        </span>
+                        <div className="mt-4 grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => void handleInvoiceDownload('pdf')}
+                            disabled={!canSubmitCustomerDetails || invoiceDownloadFormat !== null}
+                            className="flex items-center justify-center gap-1.5 rounded-xl bg-[#153b66] px-3 py-2.5 text-xs font-black text-white transition hover:bg-[#0f2f53] disabled:cursor-wait disabled:opacity-40"
+                          >
+                            <Download className="h-4 w-4" /> PDF
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => void handleInvoiceDownload('png')}
+                            disabled={!canSubmitCustomerDetails || invoiceDownloadFormat !== null}
+                            className="flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2.5 text-xs font-black text-sky-800 ring-1 ring-sky-200 transition hover:bg-sky-100 disabled:cursor-wait disabled:opacity-40"
+                          >
+                            <ImageIcon className="h-4 w-4" /> PNG
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </motion.div>

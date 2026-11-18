@@ -6,7 +6,9 @@ import {
   CalendarDays,
   ClipboardList,
   Filter,
+  FileText,
   Globe2,
+  Image as ImageIcon,
   Lock,
   Package,
   RefreshCw,
@@ -22,6 +24,7 @@ import {
 } from '../services/adminDashboard';
 import { PRODUCT_ADMIN_EMAIL } from '../services/productAdmin';
 import { formatSarPrice } from '../lib/utils';
+import { downloadInvoice, type InvoiceData, type InvoiceDownloadFormat } from '../lib/invoice';
 
 const ARABIC_MONTHS = [
   'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
@@ -104,6 +107,7 @@ export default function AdminDashboard() {
   const [isBusy, setIsBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [downloadingInvoice, setDownloadingInvoice] = useState('');
 
   const loadDashboard = useCallback(async () => {
     setIsBusy(true);
@@ -205,6 +209,42 @@ export default function AdminDashboard() {
     });
     return Array.from(sources.values()).sort((left, right) => right.revenue - left.revenue);
   }, [filteredOrders]);
+
+  const handleInvoiceDownload = async (order: AdminOrder, format: InvoiceDownloadFormat) => {
+    const key = `${order.id}:${format}`;
+    setDownloadingInvoice(key);
+    setError('');
+    try {
+      const orderItems = items.filter((item) => item.orderId === order.id);
+      const invoiceData: InvoiceData = {
+        invoiceNumber: `INV-${order.paymentReference || order.id.slice(0, 8)}`,
+        orderNumber: order.paymentReference || order.id,
+        issuedAt: order.createdAt,
+        customerName: order.customerName || 'غير مسجل',
+        customerPhone: order.customerPhone || 'غير مسجل',
+        customerEmail: order.customerEmail,
+        customerAddress: order.customerAddress || 'غير مسجل',
+        paymentMethod: paymentMethodLabel(order.paymentMethod),
+        paymentStatus: order.paymentStatus,
+        items: orderItems.map((item) => ({
+          name: item.name,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          lineTotal: item.lineTotal,
+        })),
+        subtotal: order.subtotal,
+        deliveryFee: order.deliveryFee,
+        discount: order.discount,
+        total: order.finalTotal,
+      };
+      await downloadInvoice(invoiceData, format);
+    } catch (nextError) {
+      console.error('Unable to generate the admin invoice.', nextError);
+      setError('تعذر تجهيز فاتورة الطلب. حاول مرة أخرى.');
+    } finally {
+      setDownloadingInvoice('');
+    }
+  };
 
   const handleSendLogin = async (event: FormEvent) => {
     event.preventDefault();
@@ -339,8 +379,8 @@ export default function AdminDashboard() {
         <section className="mt-6 rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_-36px_rgba(15,23,42,0.22)] sm:p-5">
           <SectionHeading icon={<ClipboardList className="h-5 w-5" />} title="كل الطلبات" description={`${filteredOrders.length} طلب ضمن الفترة المحددة — دون أي إمكانية للتعديل أو الحذف.`} />
           <div className="mt-4 overflow-x-auto rounded-[1.3rem] border border-slate-200">
-            <table className="w-full min-w-[1120px] text-right text-sm">
-              <thead className="bg-slate-50 text-xs font-black text-slate-500"><tr><th scope="col" className="px-4 py-3">العميل</th><th scope="col" className="px-4 py-3">الجوال</th><th scope="col" className="px-4 py-3">المصدر</th><th scope="col" className="px-4 py-3">الكمية</th><th scope="col" className="px-4 py-3">الإجمالي</th><th scope="col" className="px-4 py-3">الدفع</th><th scope="col" className="px-4 py-3">الحالة</th><th scope="col" className="px-4 py-3">التاريخ</th><th scope="col" className="px-4 py-3">المرجع</th></tr></thead>
+            <table className="w-full min-w-[1280px] text-right text-sm">
+              <thead className="bg-slate-50 text-xs font-black text-slate-500"><tr><th scope="col" className="px-4 py-3">العميل</th><th scope="col" className="px-4 py-3">الجوال</th><th scope="col" className="px-4 py-3">المصدر</th><th scope="col" className="px-4 py-3">الكمية</th><th scope="col" className="px-4 py-3">الإجمالي</th><th scope="col" className="px-4 py-3">الدفع</th><th scope="col" className="px-4 py-3">الحالة</th><th scope="col" className="px-4 py-3">التاريخ</th><th scope="col" className="px-4 py-3">المرجع</th><th scope="col" className="px-4 py-3">الفاتورة</th></tr></thead>
               <tbody className="divide-y divide-slate-100">
                 {paginatedOrders.map((order) => (
                   <tr key={order.id} className="transition hover:bg-slate-50/70">
@@ -353,9 +393,15 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3"><PaymentBadge status={order.paymentStatus} /></td>
                     <td className="px-4 py-3 text-xs text-slate-500">{getOrderDate(order)?.toLocaleString('ar-SA') ?? '—'}</td>
                     <td className="px-4 py-3 font-mono text-xs text-slate-500" dir="ltr">{order.paymentReference || order.id.slice(0, 8)}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2" dir="rtl">
+                        <button type="button" onClick={() => void handleInvoiceDownload(order, 'pdf')} disabled={Boolean(downloadingInvoice)} className="inline-flex items-center gap-1 rounded-lg bg-[#153b66] px-2.5 py-2 text-xs font-black text-white disabled:cursor-wait disabled:opacity-40"><FileText className="h-3.5 w-3.5" /> PDF</button>
+                        <button type="button" onClick={() => void handleInvoiceDownload(order, 'png')} disabled={Boolean(downloadingInvoice)} className="inline-flex items-center gap-1 rounded-lg border border-sky-200 bg-sky-50 px-2.5 py-2 text-xs font-black text-sky-800 disabled:cursor-wait disabled:opacity-40"><ImageIcon className="h-3.5 w-3.5" /> صورة</button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
-                {!filteredOrders.length && <EmptyTable colSpan={9} message="لا توجد طلبات في الفترة المحددة." />}
+                {!filteredOrders.length && <EmptyTable colSpan={10} message="لا توجد طلبات في الفترة المحددة." />}
               </tbody>
             </table>
           </div>
