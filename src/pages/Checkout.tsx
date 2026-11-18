@@ -16,6 +16,7 @@ import {
   getManualPaymentMethodLabel,
   openWhatsAppLink,
   sendOrderEmail,
+  sendOrderConfirmationEmail,
   type ManualPaymentMethod,
   type OrderEmailPayload,
 } from '../lib/contact';
@@ -41,6 +42,7 @@ const LEAFLET_STYLES_URL = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
 type CheckoutFormData = {
   name: string;
   phone: string;
+  email: string;
   address: string;
   city: DeliveryCity;
   floorLevel: DeliveryFloorLevel;
@@ -72,12 +74,14 @@ export default function Checkout() {
 
     return savedData ? {
       ...savedData,
+      email: savedData.email ?? '',
       city: savedData.city ?? 'riyadh',
       floorLevel: savedData.floorLevel ?? 'ground',
       locationConfirmed: savedData.locationConfirmed === true,
     } : {
       name: '',
       phone: '',
+      email: '',
       address: '',
       city: 'riyadh',
       floorLevel: 'ground',
@@ -109,8 +113,14 @@ export default function Checkout() {
   const totalDeliveryFee = deliveryFee + floorDeliveryFee;
   const finalTotal = totalPrice + totalDeliveryFee;
   const deliveryPolicy = getDeliveryPolicySummary(isRTL);
+  const normalizedCustomerEmail = formData.email.trim().toLowerCase();
+  const hasValidOptionalEmail = !normalizedCustomerEmail || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedCustomerEmail);
   const canSubmitCustomerDetails = Boolean(
-    formData.name.trim() && formData.phone.trim() && formData.address.trim() && formData.city === 'riyadh'
+    formData.name.trim()
+      && formData.phone.trim()
+      && formData.address.trim()
+      && formData.city === 'riyadh'
+      && hasValidOptionalEmail
   );
   const selectedPaymentMethodLabel = getManualPaymentMethodLabel(paymentMethod, isRTL);
   const selectedCity = DELIVERY_CITY_OPTIONS.find((city) => city.id === formData.city);
@@ -130,6 +140,7 @@ export default function Checkout() {
       ...current,
       name: current.name || profile.fullName || '',
       phone: current.phone || profile.phone || '',
+      email: current.email || session?.email || profile.email || '',
       address: current.address || profile.defaultAddress || '',
       lat: current.address ? current.lat : (profile.defaultLat ?? current.lat),
       lng: current.address ? current.lng : (profile.defaultLng ?? current.lng),
@@ -137,7 +148,7 @@ export default function Checkout() {
         !current.address && Number.isFinite(profile.defaultLat) && Number.isFinite(profile.defaultLng)
       ),
     }));
-  }, [profile]);
+  }, [profile, session?.email]);
 
   useEffect(() => {
     if (!showMap) {
@@ -325,7 +336,7 @@ export default function Checkout() {
       address: deliveryAddress,
       lat: formData.locationConfirmed ? formData.lat : undefined,
       lng: formData.locationConfirmed ? formData.lng : undefined,
-      email: session?.email ?? undefined,
+      email: normalizedCustomerEmail || session?.email || undefined,
       items: items.map((item) => ({
         name: `${isRTL ? item.product.name.ar : item.product.name.en}${item.selectedSize ? ` (${isRTL ? 'الحجم' : 'size'}: ${item.selectedSize})` : ''}`,
         quantity: item.quantity,
@@ -353,7 +364,7 @@ export default function Checkout() {
 
     const { persistSubmittedWebOrder } = await import('../services/webAccount');
     await persistSubmittedWebOrder(
-      session?.email ?? null,
+      normalizedCustomerEmail || session?.email || null,
       draft,
       {
         channel,
@@ -402,6 +413,12 @@ export default function Checkout() {
       );
     }
 
+    if (normalizedCustomerEmail) {
+      void sendOrderConfirmationEmail(buildCurrentOrderPayload()).catch((error) => {
+        console.error('Unable to send the optional WhatsApp order email confirmation.', error);
+      });
+    }
+
     openWhatsAppLink(whatsappLink);
   };
 
@@ -422,21 +439,19 @@ export default function Checkout() {
     try {
       await sendOrderEmail(buildCurrentOrderPayload());
 
-      try {
-        await recordSubmittedOrder('email');
-        setOrderRecordNotice(
-          isRTL
-            ? 'تم إرسال الطلب على البريد الإلكتروني وتسجيله في لوحة المبيعات بنجاح.'
-            : 'The order was emailed and saved to the sales dashboard successfully.',
-        );
-      } catch (recordError) {
+      setOrderRecordNotice(
+        isRTL
+          ? normalizedCustomerEmail
+            ? 'تم تأكيد طلبك وإرساله بنجاح، وبعتنالك رسالة تأكيد على بريدك الإلكتروني.'
+            : 'تم تأكيد طلبك وإرساله بنجاح.'
+          : normalizedCustomerEmail
+            ? 'Your order was confirmed successfully. We also sent a confirmation to your email.'
+            : 'Your order was confirmed and sent successfully.',
+      );
+
+      void recordSubmittedOrder('email').catch((recordError) => {
         console.error('The order email was sent, but the sales record could not be saved.', recordError);
-        setOrderRecordNotice(
-          isRTL
-            ? 'تم إرسال الطلب على البريد الإلكتروني، لكن تعذر تسجيله في لوحة المبيعات الآن.'
-            : 'The order was emailed, but it could not be saved to the sales dashboard.',
-        );
-      }
+      });
     } catch (error) {
       console.error('Unable to send the order with EmailJS.', error);
       setOrderRecordNotice(
@@ -637,6 +652,32 @@ export default function Checkout() {
                       <div className="space-y-3">
                         <label className="text-sm font-bold text-gray-500">{isRTL ? 'رقم الهاتف (واتساب)' : 'Phone (WhatsApp)'}</label>
                         <input type="tel" dir="ltr" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} placeholder="966 50 000 0000" className="w-full h-16 rounded-2xl bg-gray-50 border border-gray-100 px-6 text-lg font-bold focus:border-[#153b66] outline-none transition-all" />
+                      </div>
+                      <div className="space-y-3 md:col-span-2">
+                        <label className="text-sm font-bold text-gray-500">
+                          {isRTL ? 'البريد الإلكتروني (اختياري)' : 'Email address (optional)'}
+                        </label>
+                        <input
+                          type="email"
+                          dir="ltr"
+                          inputMode="email"
+                          autoComplete="email"
+                          value={formData.email}
+                          onChange={(event) => setFormData({ ...formData, email: event.target.value })}
+                          placeholder="name@example.com"
+                          className={`h-16 w-full rounded-2xl border bg-gray-50 px-6 text-lg font-bold outline-none transition-all ${
+                            hasValidOptionalEmail
+                              ? 'border-gray-100 focus:border-[#153b66]'
+                              : 'border-red-300 focus:border-red-500'
+                          }`}
+                        />
+                        <p className={`text-xs font-semibold ${hasValidOptionalEmail ? 'text-gray-500' : 'text-red-600'}`}>
+                          {hasValidOptionalEmail
+                            ? (isRTL
+                                ? 'لو كتبته، هنبعتلك عليه تأكيد استلام الطلب تلقائيًا.'
+                                : 'If provided, we will automatically email your order confirmation.')
+                            : (isRTL ? 'اكتب بريدًا إلكترونيًا صحيحًا أو سيبه فاضي.' : 'Enter a valid email address or leave it empty.')}
+                        </p>
                       </div>
                     </div>
 

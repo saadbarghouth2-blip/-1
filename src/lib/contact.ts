@@ -88,6 +88,7 @@ export function getManualPaymentMethodLabel(method: ManualPaymentMethod | undefi
 
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID?.trim() || 'service_62zna42';
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID?.trim() || 'template_l26577p';
+const EMAILJS_AUTO_REPLY_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_AUTO_REPLY_TEMPLATE_ID?.trim() || 'template_sfek6x5';
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY?.trim() || 'WjU-HjPCfXZgkiice';
 const EMAILJS_ENDPOINT = 'https://api.emailjs.com/api/v1.0/email/send';
 
@@ -245,7 +246,7 @@ function buildTemplateLocaleParams(isRTL: boolean) {
   };
 }
 
-function sendEmail(templateParams: Record<string, string>) {
+function sendEmail(templateParams: Record<string, string>, templateId = EMAILJS_TEMPLATE_ID) {
   return fetch(EMAILJS_ENDPOINT, {
     method: 'POST',
     headers: {
@@ -253,7 +254,7 @@ function sendEmail(templateParams: Record<string, string>) {
     },
     body: JSON.stringify({
       service_id: EMAILJS_SERVICE_ID,
-      template_id: EMAILJS_TEMPLATE_ID,
+      template_id: templateId,
       user_id: EMAILJS_PUBLIC_KEY,
       template_params: templateParams,
     }),
@@ -526,7 +527,7 @@ export function sendOrderEmail(payload: OrderEmailPayload) {
   ].join('\n');
   const localeParams = buildTemplateLocaleParams(payload.isRTL);
 
-  return sendEmail({
+  const adminTemplateParams = {
     title: payload.isRTL ? 'طلب جديد من السلة' : 'New cart order',
     request_type: payload.isRTL ? 'طلب جديد' : 'New order',
     source: payload.isRTL ? 'صفحة السلة' : 'Cart page',
@@ -551,6 +552,56 @@ export function sendOrderEmail(payload: OrderEmailPayload) {
     to_email: CONTACT_EMAIL,
     whatsapp_number: WHATSAPP_PHONE_DISPLAY,
     ...localeParams,
-  });
+  };
+
+  const adminEmail = sendEmail(adminTemplateParams);
+  if (!payload.email?.trim()) {
+    return adminEmail;
+  }
+
+  const customerConfirmation = sendOrderConfirmationEmail(payload);
+
+  return Promise.all([adminEmail, customerConfirmation]).then(() => undefined);
+}
+
+export function sendOrderConfirmationEmail(payload: OrderEmailPayload) {
+  const customerEmail = payload.email?.trim();
+  if (!customerEmail) {
+    return Promise.resolve();
+  }
+
+  const orderItems = payload.items
+    .map((item, index) => `${index + 1}. ${item.name} × ${item.quantity}`)
+    .join('\n');
+  const localeParams = buildTemplateLocaleParams(payload.isRTL);
+
+  return sendEmail({
+    title: payload.isRTL ? 'تأكيد استلام الطلب' : 'Order confirmation',
+    request_type: payload.isRTL ? 'طلب جديد' : 'New order',
+    source: payload.isRTL ? 'متجر ريق' : 'Riq Store',
+    time: formatTimestamp(),
+    name: payload.customerName,
+    email: customerEmail,
+    from_email: CONTACT_EMAIL,
+    reply_to: CONTACT_EMAIL,
+    phone: payload.phone,
+    subject: payload.isRTL ? 'تم استلام طلبك بنجاح' : 'Your order has been received',
+    message: payload.isRTL
+      ? `استلمنا طلبك بقيمة ${formatSarPrice(payload.finalTotal, true)} وسنتواصل معك لتأكيد التفاصيل.`
+      : `We received your order for ${formatSarPrice(payload.finalTotal, false)} and will contact you to confirm the details.`,
+    order_items: orderItems,
+    order_total: formatSarPrice(payload.finalTotal, payload.isRTL),
+    to_email: customerEmail,
+    whatsapp_number: WHATSAPP_PHONE_DISPLAY,
+    ...localeParams,
+    auto_reply_subject: payload.isRTL ? 'تم استلام طلبك بنجاح' : 'Your order has been received',
+    auto_reply_heading: payload.isRTL ? 'طلبك وصلنا بنجاح' : 'We received your order',
+    auto_reply_greeting: payload.isRTL
+      ? `مرحبًا ${payload.customerName}،`
+      : `Hello ${payload.customerName},`,
+    auto_reply_intro: payload.isRTL
+      ? 'شكرًا لطلبك من متجر ريق. استلمنا تفاصيل الطلب وسيتواصل معك فريقنا لتأكيد التوفر وموعد التوصيل.'
+      : 'Thank you for ordering from Riq Store. We received your order details and our team will contact you to confirm availability and delivery time.',
+  }, EMAILJS_AUTO_REPLY_TEMPLATE_ID);
 }
 
