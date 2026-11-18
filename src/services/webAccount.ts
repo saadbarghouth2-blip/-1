@@ -189,6 +189,7 @@ export async function persistCompletedOrder(userId: string, email: string | null
 }
 
 type SubmittedWebOrderMetadata = {
+  channel: 'whatsapp' | 'email';
   paymentMethod: string;
   paymentStatus: 'unpaid' | 'pending_verification';
 };
@@ -303,7 +304,7 @@ export async function persistSubmittedWebOrder(
 
   const customerNotes = JSON.stringify({
     source: 'website',
-    channel: 'whatsapp',
+    channel: metadata.channel,
     paymentMethod: metadata.paymentMethod,
     paymentStatus: metadata.paymentStatus,
   });

@@ -18,7 +18,7 @@ export const CONTACT_PHONE_NUMBERS = [
   },
   ...CONTACT_ADDITIONAL_PHONES.map((phone) => ({ ...phone, primary: false })),
 ];
-export const CONTACT_EMAIL = 'saadsaad50begiseralex6@gmail.com';
+export const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL?.trim() || 'saadsaad50begiseralex6@gmail.com';
 export const CONTACT_EMAIL_HREF = `mailto:${CONTACT_EMAIL}`;
 export const WHATSAPP_PHONE_RAW = '966505457251';
 export const WHATSAPP_PHONE_DISPLAY = '+966 50 545 7251';
@@ -86,9 +86,9 @@ export function getManualPaymentMethodLabel(method: ManualPaymentMethod | undefi
   return isRTL ? paymentMethod.labelAr : paymentMethod.labelEn;
 }
 
-const EMAILJS_SERVICE_ID = 'service_62zna42';
-const EMAILJS_TEMPLATE_ID = 'template_l26577p';
-const EMAILJS_PUBLIC_KEY = 'WjU-HjPCfXZgkiice';
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID?.trim() || 'service_62zna42';
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID?.trim() || 'template_l26577p';
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY?.trim() || 'WjU-HjPCfXZgkiice';
 const EMAILJS_ENDPOINT = 'https://api.emailjs.com/api/v1.0/email/send';
 
 type ContactEmailPayload = {
@@ -107,7 +107,7 @@ type OrderEmailItem = {
   lineTotal: number;
 };
 
-type OrderEmailPayload = {
+export type OrderEmailPayload = {
   customerName: string;
   phone: string;
   email?: string;

@@ -60,6 +60,7 @@ function paymentMethodLabel(method: string | null) {
 function sourceLabel(source: string | null | undefined) {
   if (source === 'mobile_app' || source === 'app' || source === 'mobile') return 'التطبيق';
   if (source === 'whatsapp') return 'واتساب';
+  if (source === 'email') return 'البريد الإلكتروني';
   if (source === 'website' || source === 'web') return 'الموقع';
   return source || 'غير محدد';
 }
@@ -195,7 +196,7 @@ export default function AdminDashboard() {
   const sourceSummary = useMemo(() => {
     const sources = new Map<string, { key: string; orders: number; items: number; revenue: number }>();
     filteredOrders.forEach((order) => {
-      const key = order.source || order.channel || 'unknown';
+      const key = order.channel || order.source || 'unknown';
       const current = sources.get(key) ?? { key, orders: 0, items: 0, revenue: 0 };
       current.orders += 1;
       current.items += order.totalItems;
@@ -345,7 +346,7 @@ export default function AdminDashboard() {
                   <tr key={order.id} className="transition hover:bg-slate-50/70">
                     <td className="px-4 py-3 font-bold text-slate-900">{order.customerName || 'غير مسجل'}</td>
                     <td className="px-4 py-3 text-slate-600" dir="ltr">{order.customerPhone || '—'}</td>
-                    <td className="px-4 py-3"><SourceBadge source={order.source || order.channel} /></td>
+                    <td className="px-4 py-3"><SourceBadge source={order.channel || order.source} /></td>
                     <td className="px-4 py-3 font-bold text-slate-700">{order.totalItems}</td>
                     <td className="px-4 py-3 font-black text-[#153b66]">{formatSarPrice(order.finalTotal, true)}</td>
                     <td className="px-4 py-3 text-xs font-bold text-slate-600">{paymentMethodLabel(order.paymentMethod)}</td>

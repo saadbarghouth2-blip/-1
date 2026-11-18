@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ArrowLeft, Banknote, CheckCircle2, CreditCard, Landmark, MapPin, Locate, Search, Navigation
+  ArrowLeft, Banknote, CheckCircle2, CreditCard, Landmark, Mail, MapPin, Locate, Search, Navigation
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useWebAuth } from '../features/auth/WebAuthProvider';
@@ -15,7 +15,9 @@ import {
   buildOrderWhatsAppLink,
   getManualPaymentMethodLabel,
   openWhatsAppLink,
+  sendOrderEmail,
   type ManualPaymentMethod,
+  type OrderEmailPayload,
 } from '../lib/contact';
 import { formatSarPrice } from '../lib/utils';
 import {
@@ -54,9 +56,8 @@ const MAX_ACCEPTABLE_LOCATION_ACCURACY_METERS = 150;
 export default function Checkout() {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
   const { items, totalPrice, totalItems, totalCartons } = useCart();
-  const { isConfigured, session, profile, saveProfile, openAccountDialog } = useWebAuth();
+  const { isConfigured, session, profile, openAccountDialog } = useWebAuth();
   const isRTL = i18n.language === 'ar';
 
   const mapRef = useRef<any>(null);
@@ -96,9 +97,6 @@ export default function Checkout() {
   const [isLeafletReady, setIsLeafletReady] = useState(false);
   const [mapLoadError, setMapLoadError] = useState('');
 
-  const queryParams = new URLSearchParams(location.search);
-  const isWhatsAppCheckout = queryParams.get('channel') === 'whatsapp';
-  const [accountNotice, setAccountNotice] = useState('');
   const [orderRecordNotice, setOrderRecordNotice] = useState('');
   const [isRecordingOrder, setIsRecordingOrder] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<ManualPaymentMethod>('cash_on_delivery');
@@ -321,51 +319,7 @@ export default function Checkout() {
     })),
   });
 
-  const handleNextStep = async () => {
-    if (!deliveryRule.canDeliver) {
-      navigate('/cart');
-      return;
-    }
-
-    if (step === 1) {
-      if (!formData.name || !formData.phone || !formData.address) {
-        return;
-      }
-
-      if (session?.email) {
-        try {
-          await saveProfile({
-            fullName: formData.name,
-            phone: formData.phone,
-            defaultAddress: formData.address,
-            defaultLat: formData.locationConfirmed ? formData.lat : null,
-            defaultLng: formData.locationConfirmed ? formData.lng : null,
-            locale: isRTL ? 'ar' : 'en',
-          });
-          setAccountNotice(
-            isRTL
-              ? '\u062a\u0645 \u062a\u062d\u062f\u064a\u062b \u0628\u064a\u0627\u0646\u0627\u062a\u0643 \u062f\u0627\u062e\u0644 \u0627\u0644\u062d\u0633\u0627\u0628 \u0642\u0628\u0644 \u0639\u0631\u0636 \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062a\u062d\u0648\u064a\u0644.'
-              : 'Your account details were updated before showing bank transfer details.',
-          );
-        } catch (error) {
-          console.error('Unable to save the signed-in shopper profile before checkout.', error);
-          setAccountNotice(
-            isRTL
-              ? '\u062a\u0639\u0630\u0631 \u062a\u062d\u062f\u064a\u062b \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062d\u0633\u0627\u0628 \u0627\u0644\u0622\u0646\u060c \u0644\u0643\u0646 \u064a\u0645\u0643\u0646\u0643 \u0645\u062a\u0627\u0628\u0639\u0629 \u0627\u0644\u0637\u0644\u0628 \u0628\u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0627\u0644\u0628\u0646\u0643\u064a.'
-              : 'We could not update your profile right now, but you can continue the order with bank transfer.',
-          );
-        }
-      } else {
-        setAccountNotice('');
-      }
-
-      saveCurrentOrderDraft();
-    }
-    setStep(step + 1);
-  };
-
-  const buildCurrentOrderWhatsAppLink = () =>
-    buildOrderWhatsAppLink({
+  const buildCurrentOrderPayload = (): OrderEmailPayload => ({
       customerName: formData.name.trim(),
       phone: formData.phone.trim(),
       address: deliveryAddress,
@@ -388,6 +342,27 @@ export default function Checkout() {
       isRTL,
     });
 
+  const buildCurrentOrderWhatsAppLink = () => buildOrderWhatsAppLink(buildCurrentOrderPayload());
+
+  const recordSubmittedOrder = async (channel: 'whatsapp' | 'email') => {
+    const draft = saveCurrentOrderDraft();
+
+    if (!isConfigured) {
+      throw new Error('Supabase connection is not configured.');
+    }
+
+    const { persistSubmittedWebOrder } = await import('../services/webAccount');
+    await persistSubmittedWebOrder(
+      session?.email ?? null,
+      draft,
+      {
+        channel,
+        paymentMethod,
+        paymentStatus: paymentMethod === 'bank_transfer' ? 'pending_verification' : 'unpaid',
+      },
+    );
+  };
+
   const handleWhatsAppOrder = () => {
     if (!deliveryRule.canDeliver) {
       navigate('/cart');
@@ -400,20 +375,12 @@ export default function Checkout() {
     }
 
     const whatsappLink = buildCurrentOrderWhatsAppLink();
-    const draft = saveCurrentOrderDraft();
+    saveCurrentOrderDraft();
 
     setIsRecordingOrder(true);
     setOrderRecordNotice('');
     if (isConfigured) {
-      void import('../services/webAccount')
-        .then(({ persistSubmittedWebOrder }) => persistSubmittedWebOrder(
-          session?.email ?? null,
-          draft,
-          {
-            paymentMethod,
-            paymentStatus: paymentMethod === 'bank_transfer' ? 'pending_verification' : 'unpaid',
-          },
-        ))
+      void recordSubmittedOrder('whatsapp')
         .then(() => {
           setOrderRecordNotice(isRTL ? 'تم تسجيل الطلب في لوحة المبيعات.' : 'The order was saved to the sales dashboard.');
         })
@@ -436,6 +403,50 @@ export default function Checkout() {
     }
 
     openWhatsAppLink(whatsappLink);
+  };
+
+  const handleEmailOrder = async () => {
+    if (!deliveryRule.canDeliver) {
+      navigate('/cart');
+      return;
+    }
+
+    if (!canSubmitCustomerDetails) {
+      setStep(1);
+      return;
+    }
+
+    setIsRecordingOrder(true);
+    setOrderRecordNotice('');
+
+    try {
+      await sendOrderEmail(buildCurrentOrderPayload());
+
+      try {
+        await recordSubmittedOrder('email');
+        setOrderRecordNotice(
+          isRTL
+            ? 'تم إرسال الطلب على البريد الإلكتروني وتسجيله في لوحة المبيعات بنجاح.'
+            : 'The order was emailed and saved to the sales dashboard successfully.',
+        );
+      } catch (recordError) {
+        console.error('The order email was sent, but the sales record could not be saved.', recordError);
+        setOrderRecordNotice(
+          isRTL
+            ? 'تم إرسال الطلب على البريد الإلكتروني، لكن تعذر تسجيله في لوحة المبيعات الآن.'
+            : 'The order was emailed, but it could not be saved to the sales dashboard.',
+        );
+      }
+    } catch (error) {
+      console.error('Unable to send the order with EmailJS.', error);
+      setOrderRecordNotice(
+        isRTL
+          ? 'تعذر إرسال الطلب على البريد الإلكتروني. جرّب مرة أخرى أو أرسله عبر واتساب.'
+          : 'The order email could not be sent. Try again or send it through WhatsApp.',
+      );
+    } finally {
+      setIsRecordingOrder(false);
+    }
   };
 
   if (items.length === 0 || !deliveryRule.canDeliver) {
@@ -507,9 +518,6 @@ export default function Checkout() {
                                 ? 'يمكنك إكمال الطلب كضيف، أو تسجيل الدخول بالإيميل لحفظ الاسم والجوال والعنوان والطلبات الناجحة.'
                                 : 'You can continue as a guest, or sign in with email to save your name, phone, address, and successful orders.')}
                         </p>
-                        {accountNotice ? (
-                          <p className="mt-2 text-sm font-semibold text-[#153b66]">{accountNotice}</p>
-                        ) : null}
                         {!session && !isConfigured ? (
                           <p className="mt-2 text-sm font-semibold text-[#153b66]">
                             {isRTL
@@ -808,33 +816,46 @@ export default function Checkout() {
                       ) : null}
                     </div>
 
-                    {isWhatsAppCheckout ? (
-                      <div className="rounded-[1.7rem] border border-green-200 bg-green-50 px-4 py-3 text-center text-sm font-bold leading-7 text-green-700">
+                    <div className="rounded-[1.7rem] border border-[#153b66]/10 bg-[#edf4fa]/70 px-4 py-4 text-center">
+                      <p className="text-base font-black text-[#153b66]">
+                        {isRTL ? 'اختار طريقة إرسال طلبك' : 'Choose how to send your order'}
+                      </p>
+                      <p className="mt-1 text-xs font-semibold leading-6 text-gray-500">
                         {isRTL
-                          ? 'أكمل بياناتك أولاً، ثم أرسل الطلب عبر واتساب وسيصل لنا الاسم والجوال والعنوان مع تفاصيل السلة.'
-                          : 'Complete your details first, then send the order on WhatsApp with your name, phone, address, and cart details.'}
-                      </div>
-                    ) : null}
+                          ? 'الطريقتين بيرسلوا بيانات العميل والعنوان وكل تفاصيل السلة.'
+                          : 'Both options include the customer, address, and complete cart details.'}
+                      </p>
+                    </div>
 
-                    <button
-                      onClick={isWhatsAppCheckout ? handleWhatsAppOrder : handleNextStep}
-                      disabled={!canSubmitCustomerDetails || isRecordingOrder}
-                      className="w-full h-20 bg-gradient-to-r from-[#153b66] to-[#2b648c] text-white rounded-[1.7rem] font-black text-xl hover:shadow-2xl transition-all disabled:opacity-30"
-                    >
-                      {isWhatsAppCheckout
-                        ? (isRTL ? 'إرسال الطلب عبر واتساب' : 'Send order via WhatsApp')
-                        : (isRTL ? 'متابعة تأكيد الطلب' : 'Continue order confirmation')}
-                    </button>
-                    {!isWhatsAppCheckout ? (
+                    <div className="grid gap-4 sm:grid-cols-2">
                       <button
                         type="button"
                         onClick={handleWhatsAppOrder}
                         disabled={!canSubmitCustomerDetails || isRecordingOrder}
-                        className="w-full h-16 rounded-[1.4rem] border-2 border-green-200 bg-green-50 font-black text-green-700 transition-all hover:bg-green-100 disabled:opacity-30"
+                        className="group min-h-44 rounded-[1.8rem] border-2 border-green-200 bg-green-50 p-5 text-start transition-all hover:-translate-y-1 hover:border-green-400 hover:bg-green-100 hover:shadow-xl disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-30"
                       >
-                        {isRTL ? 'إرسال الطلب عبر واتساب' : 'Send order via WhatsApp'}
+                        <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-green-600 text-xl font-black text-white shadow-lg shadow-green-600/20">
+                          W
+                        </span>
+                        <span className="block text-lg font-black text-green-800">
+                          {isRTL ? 'إرسال ومتابعة على واتساب' : 'Send and follow up on WhatsApp'}
+                        </span>
                       </button>
-                    ) : null}
+
+                      <button
+                        type="button"
+                        onClick={handleEmailOrder}
+                        disabled={!canSubmitCustomerDetails || isRecordingOrder}
+                        className="group min-h-44 rounded-[1.8rem] border-2 border-[#153b66]/15 bg-white p-5 text-start transition-all hover:-translate-y-1 hover:border-[#153b66]/40 hover:bg-[#edf4fa] hover:shadow-xl disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-30"
+                      >
+                        <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#153b66] text-white shadow-lg shadow-[#153b66]/20">
+                          <CheckCircle2 className="h-6 w-6" />
+                        </span>
+                        <span className="block text-lg font-black text-[#153b66]">
+                          {isRTL ? 'تأكيد طلبك بضغطة واحدة' : 'Confirm your order in one click'}
+                        </span>
+                      </button>
+                    </div>
                   </div>
                 </motion.div>
               )}
@@ -884,10 +905,8 @@ export default function Checkout() {
                     ) : null}
                     <p className="mt-4 text-sm font-semibold leading-7 text-gray-500">
                       {isRTL
-                        ? paymentMethod === 'bank_transfer'
-                          ? '\u0627\u0636\u063a\u0637 \u0625\u0631\u0633\u0627\u0644 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628\u060c \u0648\u0628\u0639\u062f \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0628\u0631\u062c\u0627\u0621 \u0625\u0631\u0633\u0627\u0644 \u0635\u0648\u0631\u0629 \u0625\u064a\u0635\u0627\u0644 \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0644\u062a\u0623\u0643\u064a\u062f \u0627\u0644\u0637\u0644\u0628.'
-                          : '\u0627\u0636\u063a\u0637 \u0625\u0631\u0633\u0627\u0644 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628 \u0644\u064a\u0635\u0644\u0646\u0627 \u0627\u0644\u0637\u0644\u0628 \u0645\u0639 \u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u062f\u0641\u0639 \u0627\u0644\u0645\u062e\u062a\u0627\u0631\u0629.'
-                        : 'Send via WhatsApp so we receive the order with the selected payment method.'}
+                        ? 'اختار إرسال الطلب على إيميل الإدارة مباشرة أو فتحه في واتساب. في الحالتين هتوصل كل بيانات العميل والمنتجات وطريقة الدفع.'
+                        : 'Choose to send the order directly to the admin email or open it in WhatsApp. Both options include the customer, cart, and payment details.'}
                     </p>
                   </div>
                   <div className="bg-white rounded-[2.5rem] p-6 sm:p-10 shadow-xl shadow-gray-200/30 border border-gray-100 overflow-hidden">
@@ -896,14 +915,25 @@ export default function Checkout() {
                         ? 'الدفع الإلكتروني جاهز للربط فور استلام مفتاح الإنتاج ورابط التحقق من شركة المدفوعات. حاليًا ستظهر حالة الدفع داخل فاتورة واتساب: غير مدفوع أو بانتظار التحقق من التحويل.'
                         : 'Online payment is ready for integration once the provider supplies the production key and verification callback. For now, the WhatsApp invoice shows Unpaid or Pending transfer verification.'}
                     </div>
-                    <button
-                      type="button"
-                      onClick={handleWhatsAppOrder}
-                      disabled={isRecordingOrder}
-                      className="mt-5 w-full rounded-[1.7rem] bg-green-600 px-5 py-5 text-lg font-black text-white transition hover:bg-green-700 hover:shadow-2xl disabled:cursor-wait disabled:opacity-60"
-                    >
-                      {isRTL ? '\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0637\u0644\u0628 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628' : 'Send order on WhatsApp'}
-                    </button>
+                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                      <button
+                        type="button"
+                        onClick={handleEmailOrder}
+                        disabled={isRecordingOrder}
+                        className="flex min-h-20 items-center justify-center gap-3 rounded-[1.7rem] bg-[#153b66] px-5 py-5 text-lg font-black text-white transition hover:bg-[#0f2f53] hover:shadow-2xl disabled:cursor-wait disabled:opacity-60"
+                      >
+                        <Mail className="h-5 w-5" />
+                        {isRTL ? 'إرسال على الإيميل' : 'Send by email'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleWhatsAppOrder}
+                        disabled={isRecordingOrder}
+                        className="min-h-20 rounded-[1.7rem] bg-green-600 px-5 py-5 text-lg font-black text-white transition hover:bg-green-700 hover:shadow-2xl disabled:cursor-wait disabled:opacity-60"
+                      >
+                        {isRTL ? 'إرسال عبر واتساب' : 'Send on WhatsApp'}
+                      </button>
+                    </div>
                     <button
                       type="button"
                       onClick={() => setStep(1)}
@@ -922,7 +952,7 @@ export default function Checkout() {
                   : 'border-emerald-200 bg-emerald-50 text-emerald-800'
               }`}>
                 {isRecordingOrder
-                  ? (isRTL ? 'جاري تسجيل الطلب في لوحة المبيعات…' : 'Saving the order to the sales dashboard…')
+                  ? (isRTL ? 'جاري إرسال الطلب وتسجيله…' : 'Sending and saving the order…')
                   : orderRecordNotice}
               </div>
             ) : null}

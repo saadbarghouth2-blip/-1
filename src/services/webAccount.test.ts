@@ -69,6 +69,7 @@ describe('persistSubmittedWebOrder', () => {
         image: '/water.jpg',
       }],
     }, {
+      channel: 'whatsapp',
       paymentMethod: 'cash_on_delivery',
       paymentStatus: 'unpaid',
     });
@@ -105,6 +106,7 @@ describe('persistSubmittedWebOrder', () => {
       locale: 'ar',
       items: [],
     }, {
+      channel: 'whatsapp',
       paymentMethod: 'cash_on_delivery',
       paymentStatus: 'unpaid',
     });

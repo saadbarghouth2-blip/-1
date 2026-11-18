@@ -82,6 +82,7 @@ export default function MobileCheckoutBridge() {
           })),
         },
         {
+          channel: 'whatsapp',
           paymentMethod,
           paymentStatus: paymentMethod === 'bank_transfer' ? 'pending_verification' : 'unpaid',
         },
