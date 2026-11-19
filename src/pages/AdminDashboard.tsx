@@ -27,7 +27,7 @@ import {
 } from '../services/adminDashboard';
 import { PRODUCT_ADMIN_EMAIL } from '../services/productAdmin';
 import { formatSarPrice } from '../lib/utils';
-import { downloadInvoice, type InvoiceData, type InvoiceDownloadFormat } from '../lib/invoice';
+import { downloadInvoice, formatShortOrderReference, type InvoiceData, type InvoiceDownloadFormat } from '../lib/invoice';
 
 const ARABIC_MONTHS = [
   'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
@@ -441,7 +441,9 @@ export default function AdminDashboard() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-xs text-slate-500">{getOrderDate(order)?.toLocaleString('ar-SA') ?? '—'}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-slate-500" dir="ltr">{order.paymentReference || order.id.slice(0, 8)}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-slate-500" dir="ltr">
+                      <span title={order.paymentReference || order.id}>#{formatShortOrderReference(order.paymentReference || order.id)}</span>
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2" dir="rtl">
                         <button type="button" onClick={() => void handleInvoiceDownload(order, 'pdf')} disabled={Boolean(downloadingInvoice)} className="inline-flex items-center gap-1 rounded-lg bg-[#153b66] px-2.5 py-2 text-xs font-black text-white disabled:cursor-wait disabled:opacity-40"><FileText className="h-3.5 w-3.5" /> PDF</button>

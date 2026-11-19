@@ -58,7 +58,7 @@ function safeFilePart(value: string) {
   return value.replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-+|-+$/g, '') || 'order';
 }
 
-function shortReference(value: string) {
+export function formatShortOrderReference(value: string) {
   const normalized = String(value || '')
     .replace(/^(inv|web|order)[-_:]*/i, '')
     .replace(/[^a-zA-Z0-9]/g, '');
@@ -66,7 +66,7 @@ function shortReference(value: string) {
 }
 
 function buildInvoiceElement(data: InvoiceData) {
-  const displayReference = shortReference(data.orderNumber);
+  const displayReference = formatShortOrderReference(data.orderNumber);
   const issuedAt = new Date(data.issuedAt);
   const issuedLabel = Number.isNaN(issuedAt.getTime())
     ? String(data.issuedAt)
