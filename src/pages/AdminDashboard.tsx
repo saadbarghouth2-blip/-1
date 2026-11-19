@@ -12,6 +12,7 @@ import {
   Lock,
   Package,
   RefreshCw,
+  Save,
   ShieldCheck,
   ShoppingBag,
   Wallet,
@@ -19,7 +20,9 @@ import {
 import { useWebAuth } from '../features/auth/WebAuthProvider';
 import {
   loadAdminSalesDashboard,
+  recordAdminPaymentStatus,
   type AdminOrder,
+  type AdminPaymentStatus,
   type AdminSalesDashboard,
 } from '../services/adminDashboard';
 import { PRODUCT_ADMIN_EMAIL } from '../services/productAdmin';
@@ -45,12 +48,6 @@ type PeriodSummary = {
 function getOrderDate(order: AdminOrder) {
   const date = new Date(order.createdAt);
   return Number.isNaN(date.getTime()) ? null : date;
-}
-
-function paymentStatusLabel(status: AdminOrder['paymentStatus']) {
-  if (status === 'paid') return 'مدفوع';
-  if (status === 'pending_verification') return 'تحويل قيد المراجعة';
-  return 'غير مدفوع';
 }
 
 function paymentMethodLabel(method: string | null) {
@@ -108,6 +105,8 @@ export default function AdminDashboard() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [downloadingInvoice, setDownloadingInvoice] = useState('');
+  const [paymentStatusDrafts, setPaymentStatusDrafts] = useState<Record<string, AdminPaymentStatus>>({});
+  const [updatingPaymentOrderId, setUpdatingPaymentOrderId] = useState('');
 
   const loadDashboard = useCallback(async () => {
     setIsBusy(true);
@@ -219,7 +218,7 @@ export default function AdminDashboard() {
       const invoiceData: InvoiceData = {
         invoiceNumber: `INV-${order.paymentReference || order.id.slice(0, 8)}`,
         orderNumber: order.paymentReference || order.id,
-        issuedAt: order.createdAt,
+        issuedAt: new Date(),
         customerName: order.customerName || 'غير مسجل',
         customerPhone: order.customerPhone || 'غير مسجل',
         customerEmail: order.customerEmail,
@@ -243,6 +242,33 @@ export default function AdminDashboard() {
       setError('تعذر تجهيز فاتورة الطلب. حاول مرة أخرى.');
     } finally {
       setDownloadingInvoice('');
+    }
+  };
+
+  const handlePaymentStatusUpdate = async (order: AdminOrder) => {
+    const nextStatus = paymentStatusDrafts[order.id] ?? order.paymentStatus;
+    if (nextStatus === order.paymentStatus) return;
+    setUpdatingPaymentOrderId(order.id);
+    setError('');
+    setMessage('');
+    try {
+      await recordAdminPaymentStatus(session?.email, order.id, nextStatus, order.finalTotal);
+      setDashboard((current) => current ? {
+        ...current,
+        orders: current.orders.map((item) => item.id === order.id ? { ...item, paymentStatus: nextStatus } : item),
+        recentOrders: current.recentOrders.map((item) => item.id === order.id ? { ...item, paymentStatus: nextStatus } : item),
+      } : current);
+      setPaymentStatusDrafts((current) => {
+        const next = { ...current };
+        delete next[order.id];
+        return next;
+      });
+      setMessage('تم تحديث حالة الدفع وحفظها في سجل الطلب. فاتورة الإدارة ستظهر بالحالة الجديدة.');
+    } catch (nextError) {
+      console.error('Unable to update payment status.', nextError);
+      setError(nextError instanceof Error ? nextError.message : 'تعذر تحديث حالة الدفع.');
+    } finally {
+      setUpdatingPaymentOrderId('');
     }
   };
 
@@ -377,7 +403,7 @@ export default function AdminDashboard() {
         </section>
 
         <section className="mt-6 rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_-36px_rgba(15,23,42,0.22)] sm:p-5">
-          <SectionHeading icon={<ClipboardList className="h-5 w-5" />} title="كل الطلبات" description={`${filteredOrders.length} طلب ضمن الفترة المحددة — دون أي إمكانية للتعديل أو الحذف.`} />
+          <SectionHeading icon={<ClipboardList className="h-5 w-5" />} title="كل الطلبات" description={`${filteredOrders.length} طلب ضمن الفترة المحددة — الطلبات محفوظة دون حذف، ويمكن تحديث حالة الدفع فقط مع الاحتفاظ بسجل التغييرات.`} />
           <div className="mt-4 overflow-x-auto rounded-[1.3rem] border border-slate-200">
             <table className="w-full min-w-[1280px] text-right text-sm">
               <thead className="bg-slate-50 text-xs font-black text-slate-500"><tr><th scope="col" className="px-4 py-3">العميل</th><th scope="col" className="px-4 py-3">الجوال</th><th scope="col" className="px-4 py-3">المصدر</th><th scope="col" className="px-4 py-3">الكمية</th><th scope="col" className="px-4 py-3">الإجمالي</th><th scope="col" className="px-4 py-3">الدفع</th><th scope="col" className="px-4 py-3">الحالة</th><th scope="col" className="px-4 py-3">التاريخ</th><th scope="col" className="px-4 py-3">المرجع</th><th scope="col" className="px-4 py-3">الفاتورة</th></tr></thead>
@@ -390,7 +416,30 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3 font-bold text-slate-700">{order.totalItems}</td>
                     <td className="px-4 py-3 font-black text-[#153b66]">{formatSarPrice(order.finalTotal, true)}</td>
                     <td className="px-4 py-3 text-xs font-bold text-slate-600">{paymentMethodLabel(order.paymentMethod)}</td>
-                    <td className="px-4 py-3"><PaymentBadge status={order.paymentStatus} /></td>
+                    <td className="px-4 py-3">
+                      <div className="flex min-w-[190px] items-center gap-2">
+                        <select
+                          aria-label={`حالة دفع طلب ${order.paymentReference || order.id}`}
+                          value={paymentStatusDrafts[order.id] ?? order.paymentStatus}
+                          onChange={(event) => setPaymentStatusDrafts((current) => ({ ...current, [order.id]: event.target.value as AdminPaymentStatus }))}
+                          className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs font-black text-slate-700 outline-none focus:border-[#153b66]"
+                        >
+                          <option value="unpaid">غير مدفوع</option>
+                          <option value="pending_verification">قيد المراجعة</option>
+                          <option value="paid">مدفوع</option>
+                        </select>
+                        <button
+                          type="button"
+                          aria-label="حفظ حالة الدفع"
+                          title="حفظ حالة الدفع"
+                          onClick={() => void handlePaymentStatusUpdate(order)}
+                          disabled={updatingPaymentOrderId === order.id || (paymentStatusDrafts[order.id] ?? order.paymentStatus) === order.paymentStatus}
+                          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
+                        >
+                          {updatingPaymentOrderId === order.id ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </td>
                     <td className="px-4 py-3 text-xs text-slate-500">{getOrderDate(order)?.toLocaleString('ar-SA') ?? '—'}</td>
                     <td className="px-4 py-3 font-mono text-xs text-slate-500" dir="ltr">{order.paymentReference || order.id.slice(0, 8)}</td>
                     <td className="px-4 py-3">
@@ -466,11 +515,6 @@ function MetricCard({ icon: Icon, label, value, tone = 'navy' }: { icon: typeof 
 
 function SectionHeading({ icon, title, description }: { icon: ReactNode; title: string; description: string }) {
   return <div className="flex items-start gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#153b66]/10 text-[#153b66]">{icon}</span><div><h2 className="text-lg font-black text-slate-900 sm:text-xl">{title}</h2><p className="mt-1 text-sm leading-6 text-slate-500">{description}</p></div></div>;
-}
-
-function PaymentBadge({ status }: { status: AdminOrder['paymentStatus'] }) {
-  const classes = status === 'paid' ? 'bg-emerald-50 text-emerald-700' : status === 'pending_verification' ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700';
-  return <span className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${classes}`}>{paymentStatusLabel(status)}</span>;
 }
 
 function SourceBadge({ source }: { source: string | null | undefined }) {

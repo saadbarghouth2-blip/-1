@@ -44,7 +44,7 @@ alter table public.invoice_events enable row level security;
 
 revoke all on table public.payment_events from anon, authenticated;
 revoke all on table public.invoice_events from anon, authenticated;
-grant select on table public.payment_events to authenticated;
+grant select, insert on table public.payment_events to authenticated;
 grant select on table public.invoice_events to authenticated;
 
 do $$
@@ -52,6 +52,8 @@ begin
   if to_regprocedure('public.is_product_admin()') is not null then
     execute 'drop policy if exists "Product admins can read payment events" on public.payment_events';
     execute 'create policy "Product admins can read payment events" on public.payment_events for select to authenticated using (public.is_product_admin())';
+    execute 'drop policy if exists "Product admins can append manual payment events" on public.payment_events';
+    execute 'create policy "Product admins can append manual payment events" on public.payment_events for insert to authenticated with check (public.is_product_admin() and provider = ''admin'' and is_live = true)';
     execute 'drop policy if exists "Product admins can read invoice events" on public.invoice_events';
     execute 'create policy "Product admins can read invoice events" on public.invoice_events for select to authenticated using (public.is_product_admin())';
   end if;
@@ -79,7 +81,7 @@ before update or delete on public.invoice_events
 for each row execute function public.prevent_financial_event_mutation();
 
 comment on table public.payment_events is
-  'Append-only provider-confirmed payment status history. Existing orders stay immutable.';
+  'Append-only provider-confirmed and admin-recorded payment status history. Existing orders stay immutable.';
 comment on table public.invoice_events is
   'Append-only WhatsApp invoice delivery history.';
 

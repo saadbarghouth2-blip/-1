@@ -46,6 +46,8 @@ export type AdminSalesDashboard = {
   }>;
 };
 
+export type AdminPaymentStatus = AdminOrder['paymentStatus'];
+
 function getClient() {
   if (!isSupabaseConfigured()) {
     throw new Error(getSupabaseConfigError());
@@ -176,6 +178,40 @@ function getDisplayedPaymentStatus(
   if (eventStatus === 'paid') return 'paid';
   if (eventStatus === 'initiated' || eventStatus === 'pending') return 'pending_verification';
   return 'unpaid';
+}
+
+function toPaymentEventStatus(status: AdminPaymentStatus): PaymentEventRow['status'] {
+  if (status === 'paid') return 'paid';
+  if (status === 'pending_verification') return 'pending';
+  return 'failed';
+}
+
+export async function recordAdminPaymentStatus(
+  email: string | null | undefined,
+  orderId: string,
+  status: AdminPaymentStatus,
+  amount: number,
+) {
+  const allowed = await isCurrentUserProductAdmin(email);
+  if (!allowed) {
+    throw new Error('This account is not allowed to change payment status.');
+  }
+
+  const client = getClient();
+  const uniquePart = typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const { error } = await client.from('payment_events').insert({
+    order_id: orderId,
+    provider: 'admin',
+    provider_event_id: `admin:${orderId}:${uniquePart}`,
+    status: toPaymentEventStatus(status),
+    amount: Math.max(0, Number(amount) || 0),
+    currency: 'SAR',
+    is_live: true,
+  });
+
+  if (error) throw error;
 }
 
 export async function loadAdminSalesDashboard(email: string | null | undefined): Promise<AdminSalesDashboard> {
