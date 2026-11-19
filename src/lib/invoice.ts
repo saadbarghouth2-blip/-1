@@ -58,7 +58,15 @@ function safeFilePart(value: string) {
   return value.replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-+|-+$/g, '') || 'order';
 }
 
+function shortReference(value: string) {
+  const normalized = String(value || '')
+    .replace(/^(inv|web|order)[-_:]*/i, '')
+    .replace(/[^a-zA-Z0-9]/g, '');
+  return (normalized.slice(0, 8) || 'ORDER').toUpperCase();
+}
+
 function buildInvoiceElement(data: InvoiceData) {
+  const displayReference = shortReference(data.orderNumber);
   const issuedAt = new Date(data.issuedAt);
   const issuedLabel = Number.isNaN(issuedAt.getTime())
     ? String(data.issuedAt)
@@ -84,13 +92,13 @@ function buildInvoiceElement(data: InvoiceData) {
           <img src="${escapeHtml(BRAND_LOGO_SRC)}" alt="ريق" style="width:86px;height:86px;border-radius:22px;object-fit:cover;border:2px solid rgba(255,255,255,.78);box-shadow:0 8px 24px rgba(0,0,0,.18);flex:0 0 auto;" />
           <div style="min-width:0;"><div style="font-size:26px;font-weight:900;line-height:1.35;">متجر ريق لتوصيل المياه</div><div style="margin-top:7px;color:#d8eef7;font-size:13px;">المتجر الإلكتروني للمياه</div></div>
         </div>
-        <div style="padding-right:24px;border-right:1px solid rgba(255,255,255,.28);text-align:right;direction:rtl;"><div style="font-size:25px;font-weight:900;">فاتورة طلب</div><div style="margin-top:9px;font-size:12px;direction:ltr;text-align:right;unicode-bidi:plaintext;">${escapeHtml(data.invoiceNumber)}</div><div style="margin-top:7px;font-size:12px;color:#d8eef7;direction:rtl;unicode-bidi:plaintext;">${escapeHtml(issuedLabel)}</div></div>
+        <div style="padding-right:24px;border-right:1px solid rgba(255,255,255,.28);text-align:right;direction:rtl;"><div style="font-size:25px;font-weight:900;">فاتورة طلب</div><div style="margin-top:9px;font-size:11px;direction:ltr;text-align:right;unicode-bidi:plaintext;letter-spacing:.4px;">INV-${escapeHtml(displayReference)}</div><div style="margin-top:7px;font-size:11px;color:#d8eef7;direction:rtl;unicode-bidi:plaintext;">${escapeHtml(issuedLabel)}</div></div>
       </header>
 
       <main style="padding:26px 42px;direction:rtl;text-align:right;">
         <div style="display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;margin-bottom:20px;direction:rtl;">
           <div style="padding:10px 18px;border-radius:999px;background:${data.paymentStatus === 'paid' ? '#dcfce7' : '#fff7ed'};color:${data.paymentStatus === 'paid' ? '#15803d' : '#b45309'};font-weight:900;white-space:nowrap;">${paymentStatusLabel(data.paymentStatus)}</div>
-          <div style="font-size:13px;color:#607286;text-align:left;">رقم الطلب: <strong style="color:#153b66;direction:ltr;display:inline-block;unicode-bidi:plaintext;">${escapeHtml(data.orderNumber)}</strong></div>
+          <div style="font-size:12px;color:#607286;text-align:left;">رقم الطلب: <strong style="color:#153b66;direction:ltr;display:inline-block;unicode-bidi:plaintext;letter-spacing:.3px;">#${escapeHtml(displayReference)}</strong></div>
         </div>
 
         <section style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;direction:rtl;">
