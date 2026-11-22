@@ -8,6 +8,8 @@ export type AdminOrder = {
   customerPhone: string;
   customerEmail: string | null;
   customerAddress: string | null;
+  customerLat: number | null;
+  customerLng: number | null;
   source: string;
   channel: string | null;
   paymentMethod: string | null;
@@ -96,6 +98,8 @@ type AdminOrderRow = {
   customer_phone: string;
   customer_email: string | null;
   customer_address: string | null;
+  customer_lat: number | string | null;
+  customer_lng: number | string | null;
   customer_notes: string | null;
   total_items: number | string | null;
   subtotal: number | string | null;
@@ -127,7 +131,7 @@ async function loadAllOrderRows(client: ReturnType<typeof getClient>) {
   for (let start = 0; ; start += SALES_PAGE_SIZE) {
     const { data, error } = await client
       .from('orders')
-      .select('id, payment_reference, source, customer_name, customer_phone, customer_email, customer_address, customer_notes, total_items, subtotal, delivery_fee, discount, final_total, created_at')
+      .select('id, payment_reference, source, customer_name, customer_phone, customer_email, customer_address, customer_lat, customer_lng, customer_notes, total_items, subtotal, delivery_fee, discount, final_total, created_at')
       .order('created_at', { ascending: false })
       .range(start, start + SALES_PAGE_SIZE - 1);
 
@@ -236,6 +240,8 @@ export async function loadAdminSalesDashboard(email: string | null | undefined):
       customerPhone: order.customer_phone,
       customerEmail: order.customer_email,
       customerAddress: order.customer_address,
+      customerLat: order.customer_lat == null ? null : Number(order.customer_lat),
+      customerLng: order.customer_lng == null ? null : Number(order.customer_lng),
       source: orderMetadata.source,
       channel: orderMetadata.channel,
       paymentMethod: orderMetadata.paymentMethod,

@@ -1,22 +1,28 @@
-import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   BarChart3,
   Boxes,
   CalendarDays,
   ClipboardList,
   Filter,
+  Eye,
   FileText,
   Globe2,
+  LayoutDashboard,
+  MapPinned,
   Image as ImageIcon,
   Lock,
   Package,
   RefreshCw,
   Save,
+  Search,
   ShieldCheck,
   ShoppingBag,
   Wallet,
+  X,
 } from 'lucide-react';
+import AdminSalesMap from '../components/admin/AdminSalesMap';
 import { useWebAuth } from '../features/auth/WebAuthProvider';
 import {
   loadAdminSalesDashboard,
@@ -34,7 +40,15 @@ const ARABIC_MONTHS = [
   'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
 ];
 
-const ORDERS_PER_PAGE = 25;
+type AdminView = 'overview' | 'orders' | 'map' | 'products' | 'reports';
+
+const ADMIN_VIEWS: Array<{ id: AdminView; label: string; icon: typeof LayoutDashboard }> = [
+  { id: 'overview', label: 'نظرة عامة', icon: LayoutDashboard },
+  { id: 'orders', label: 'الطلبات', icon: ClipboardList },
+  { id: 'map', label: 'خريطة المبيعات', icon: MapPinned },
+  { id: 'products', label: 'المنتجات', icon: Package },
+  { id: 'reports', label: 'التقارير', icon: BarChart3 },
+];
 
 type PeriodSummary = {
   key: string;
@@ -93,6 +107,7 @@ function summarizePeriods(
 }
 
 export default function AdminDashboard() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { authReady, isConfigured, configError, session, requestEmailOtp, confirmEmailOtp, signOut } = useWebAuth();
   const [email, setEmail] = useState(PRODUCT_ADMIN_EMAIL);
   const [token, setToken] = useState('');
@@ -101,12 +116,30 @@ export default function AdminDashboard() {
   const [selectedYear, setSelectedYear] = useState('all');
   const [selectedMonth, setSelectedMonth] = useState('all');
   const [ordersPage, setOrdersPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+  const [orderSearch, setOrderSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | AdminPaymentStatus>('all');
+  const [sourceFilter, setSourceFilter] = useState('all');
   const [isBusy, setIsBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [downloadingInvoice, setDownloadingInvoice] = useState('');
   const [paymentStatusDrafts, setPaymentStatusDrafts] = useState<Record<string, AdminPaymentStatus>>({});
   const [updatingPaymentOrderId, setUpdatingPaymentOrderId] = useState('');
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const ordersSectionRef = useRef<HTMLElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
+  const drawerCloseRef = useRef<HTMLButtonElement>(null);
+  const drawerTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const requestedView = searchParams.get('view');
+  const activeView: AdminView = ADMIN_VIEWS.some((view) => view.id === requestedView)
+    ? requestedView as AdminView
+    : 'overview';
+
+  const setActiveView = (view: AdminView) => {
+    setSearchParams(view === 'overview' ? {} : { view });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const loadDashboard = useCallback(async () => {
     setIsBusy(true);
@@ -132,52 +165,64 @@ export default function AdminDashboard() {
       .sort((left, right) => Number(right) - Number(left));
   }, [orders]);
 
-  const filteredOrders = useMemo(() => orders.filter((order) => {
+  const periodOrders = useMemo(() => orders.filter((order) => {
     const date = getOrderDate(order);
     if (!date) return false;
     if (selectedYear !== 'all' && String(date.getFullYear()) !== selectedYear) return false;
     return selectedMonth === 'all' || String(date.getMonth() + 1) === selectedMonth;
   }), [orders, selectedMonth, selectedYear]);
 
-  const filteredOrderIds = useMemo(() => new Set(filteredOrders.map((order) => order.id)), [filteredOrders]);
-  const filteredItems = useMemo(() => items.filter((item) => filteredOrderIds.has(item.orderId)), [items, filteredOrderIds]);
-  const ordersPageCount = Math.max(1, Math.ceil(filteredOrders.length / ORDERS_PER_PAGE));
+  const availableSources = useMemo(() => Array.from(new Set(periodOrders.map((order) => order.channel || order.source).filter(Boolean))).sort(), [periodOrders]);
+  const filteredOrders = useMemo(() => {
+    const needle = orderSearch.trim().toLocaleLowerCase('ar');
+    return periodOrders.filter((order) => {
+      if (statusFilter !== 'all' && order.paymentStatus !== statusFilter) return false;
+      if (sourceFilter !== 'all' && (order.channel || order.source) !== sourceFilter) return false;
+      if (!needle) return true;
+      return [order.customerName, order.customerPhone, order.customerEmail, order.paymentReference, order.id]
+        .some((value) => String(value ?? '').toLocaleLowerCase('ar').includes(needle));
+    });
+  }, [orderSearch, periodOrders, sourceFilter, statusFilter]);
+
+  const periodOrderIds = useMemo(() => new Set(periodOrders.map((order) => order.id)), [periodOrders]);
+  const filteredItems = useMemo(() => items.filter((item) => periodOrderIds.has(item.orderId)), [items, periodOrderIds]);
+  const ordersPageCount = Math.max(1, Math.ceil(filteredOrders.length / pageSize));
   const paginatedOrders = useMemo(() => {
-    const start = (ordersPage - 1) * ORDERS_PER_PAGE;
-    return filteredOrders.slice(start, start + ORDERS_PER_PAGE);
-  }, [filteredOrders, ordersPage]);
+    const start = (ordersPage - 1) * pageSize;
+    return filteredOrders.slice(start, start + pageSize);
+  }, [filteredOrders, ordersPage, pageSize]);
 
   useEffect(() => {
     setOrdersPage(1);
-  }, [selectedMonth, selectedYear]);
+  }, [selectedMonth, selectedYear, orderSearch, sourceFilter, statusFilter, pageSize]);
 
   useEffect(() => {
     setOrdersPage((currentPage) => Math.min(currentPage, ordersPageCount));
   }, [ordersPageCount]);
 
   const totals = useMemo(() => {
-    const revenue = filteredOrders.reduce((sum, order) => sum + order.finalTotal, 0);
+    const revenue = periodOrders.reduce((sum, order) => sum + order.finalTotal, 0);
     return {
-      orders: filteredOrders.length,
+      orders: periodOrders.length,
       revenue,
-      items: filteredOrders.reduce((sum, order) => sum + order.totalItems, 0),
-      average: filteredOrders.length ? revenue / filteredOrders.length : 0,
-      unpaid: filteredOrders.filter((order) => order.paymentStatus === 'unpaid').length,
-      pending: filteredOrders.filter((order) => order.paymentStatus === 'pending_verification').length,
+      items: periodOrders.reduce((sum, order) => sum + order.totalItems, 0),
+      average: periodOrders.length ? revenue / periodOrders.length : 0,
+      unpaid: periodOrders.filter((order) => order.paymentStatus === 'unpaid').length,
+      pending: periodOrders.filter((order) => order.paymentStatus === 'pending_verification').length,
     };
-  }, [filteredOrders]);
+  }, [periodOrders]);
 
   const yearlySummary = useMemo(() => summarizePeriods(
-    filteredOrders,
+    periodOrders,
     (date) => String(date.getFullYear()),
     (date) => String(date.getFullYear()),
-  ), [filteredOrders]);
+  ), [periodOrders]);
 
   const monthlySummary = useMemo(() => summarizePeriods(
-    filteredOrders,
+    periodOrders,
     (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`,
     (date) => `${ARABIC_MONTHS[date.getMonth()]} ${date.getFullYear()}`,
-  ), [filteredOrders]);
+  ), [periodOrders]);
 
   const productSummary = useMemo(() => {
     const products = new Map<string, { key: string; name: string; orderIds: Set<string>; quantity: number; revenue: number }>();
@@ -198,7 +243,7 @@ export default function AdminDashboard() {
 
   const sourceSummary = useMemo(() => {
     const sources = new Map<string, { key: string; orders: number; items: number; revenue: number }>();
-    filteredOrders.forEach((order) => {
+    periodOrders.forEach((order) => {
       const key = order.channel || order.source || 'unknown';
       const current = sources.get(key) ?? { key, orders: 0, items: 0, revenue: 0 };
       current.orders += 1;
@@ -207,7 +252,49 @@ export default function AdminDashboard() {
       sources.set(key, current);
     });
     return Array.from(sources.values()).sort((left, right) => right.revenue - left.revenue);
-  }, [filteredOrders]);
+  }, [periodOrders]);
+  const selectedOrder = orders.find((order) => order.id === selectedOrderId) ?? null;
+  const recentPeriodOrders = useMemo(() => periodOrders.slice(0, 5), [periodOrders]);
+  const paymentSummary = useMemo(() => [
+    { key: 'paid', label: 'مدفوع', value: periodOrders.filter((order) => order.paymentStatus === 'paid').length, color: 'bg-emerald-500' },
+    { key: 'pending', label: 'قيد المراجعة', value: periodOrders.filter((order) => order.paymentStatus === 'pending_verification').length, color: 'bg-sky-500' },
+    { key: 'unpaid', label: 'غير مدفوع', value: periodOrders.filter((order) => order.paymentStatus === 'unpaid').length, color: 'bg-amber-500' },
+  ], [periodOrders]);
+
+  const changeOrdersPage = (page: number) => {
+    setOrdersPage(Math.max(1, Math.min(ordersPageCount, page)));
+    window.requestAnimationFrame(() => ordersSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  };
+
+  const openOrderDrawer = (orderId: string, trigger: HTMLButtonElement) => {
+    drawerTriggerRef.current = trigger;
+    setSelectedOrderId(orderId);
+  };
+
+  const closeOrderDrawer = useCallback(() => {
+    setSelectedOrderId(null);
+    window.requestAnimationFrame(() => drawerTriggerRef.current?.focus());
+  }, []);
+
+  useEffect(() => {
+    if (!selectedOrder) return;
+    drawerCloseRef.current?.focus();
+    const handleEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') closeOrderDrawer();
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [closeOrderDrawer, selectedOrder]);
+
+  const trapDrawerFocus = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key !== 'Tab' || !drawerRef.current) return;
+    const focusable = Array.from(drawerRef.current.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')).filter((element) => !element.hasAttribute('disabled'));
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  };
 
   const handleInvoiceDownload = async (order: AdminOrder, format: InvoiceDownloadFormat) => {
     const key = `${order.id}:${format}`;
@@ -349,7 +436,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <main className="relative z-10 min-h-screen py-12 sm:py-16" dir="rtl">
+    <main className="relative min-h-screen py-12 sm:py-16" dir="rtl">
       <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-20">
         <section className="overflow-hidden rounded-[2rem] bg-[#153b66] p-5 text-white shadow-[0_28px_80px_-42px_rgba(21,59,102,0.62)] sm:p-7">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -368,6 +455,16 @@ export default function AdminDashboard() {
           </div>
         </section>
 
+        <nav aria-label="أقسام لوحة الإدارة" className="sticky top-[5.5rem] z-40 mt-4 overflow-x-auto rounded-[1.35rem] border border-sky-100 bg-white/95 p-2 shadow-[0_16px_45px_-28px_rgba(21,59,102,.45)] backdrop-blur">
+          <div className="flex min-w-max gap-2">
+            {ADMIN_VIEWS.map(({ id, label, icon: Icon }) => (
+              <button key={id} type="button" onClick={() => setActiveView(id)} aria-current={activeView === id ? 'page' : undefined} className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black transition ${activeView === id ? 'bg-[#153b66] text-white shadow-md' : 'text-slate-600 hover:bg-sky-50 hover:text-[#153b66]'}`}>
+                <Icon className="h-4 w-4" />{label}
+              </button>
+            ))}
+          </div>
+        </nav>
+
         <section className="mt-4 flex flex-col gap-3 rounded-[1.4rem] border border-sky-200 bg-sky-50 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#153b66] shadow-sm"><ShieldCheck className="h-5 w-5" /></span>
@@ -379,7 +476,7 @@ export default function AdminDashboard() {
         <p className="sr-only" role="status" aria-live="polite">{isBusy ? 'جاري تحميل بيانات المبيعات.' : 'اكتمل تحميل بيانات المبيعات.'}</p>
         {error && <section role="alert" aria-live="assertive" className="mt-4 rounded-[1.4rem] border border-red-100 bg-red-50 p-4 text-sm font-bold text-red-700">{error}</section>}
 
-        <section className="mt-6 rounded-[1.6rem] border border-slate-200 bg-white p-4 shadow-[0_18px_50px_-38px_rgba(15,23,42,0.3)] sm:p-5">
+        {(activeView === 'overview' || activeView === 'reports' || activeView === 'orders' || activeView === 'products') && <section className="mt-6 rounded-[1.6rem] border border-slate-200 bg-white p-4 shadow-[0_18px_50px_-38px_rgba(15,23,42,0.3)] sm:p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#153b66]/10 text-[#153b66]"><Filter className="h-5 w-5" /></span><div><h2 className="font-black text-slate-900">تصفية الفترة</h2><p className="text-xs text-slate-500">كل الأرقام والجداول التالية تتبع الاختيار.</p></div></div>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -391,22 +488,40 @@ export default function AdminDashboard() {
               </FilterSelect>
             </div>
           </div>
-        </section>
+        </section>}
 
-        <section className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+        {activeView === 'overview' && <section className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
           <MetricCard icon={ClipboardList} label="عدد الطلبات" value={String(totals.orders)} />
           <MetricCard icon={Wallet} label="قيمة المبيعات" value={formatSarPrice(totals.revenue, true)} />
           <MetricCard icon={Package} label="المنتجات المباعة" value={String(totals.items)} />
           <MetricCard icon={ShoppingBag} label="متوسط الطلب" value={formatSarPrice(totals.average, true)} />
           <MetricCard icon={Lock} label="طلبات غير مدفوعة" value={String(totals.unpaid)} tone="amber" />
           <MetricCard icon={RefreshCw} label="تحويلات قيد المراجعة" value={String(totals.pending)} tone="sky" />
-        </section>
+        </section>}
 
-        <section className="mt-6 rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_-36px_rgba(15,23,42,0.22)] sm:p-5">
+        {activeView === 'overview' && <section className="mt-6 grid gap-6 xl:grid-cols-[1.1fr_.9fr]">
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-[0_20px_60px_-36px_rgba(15,23,42,.22)]"><SectionHeading icon={<ClipboardList className="h-5 w-5" />} title="أحدث الطلبات" description="آخر الطلبات ضمن الفترة الظاهرة في لوحة التحكم." /><div className="mt-4 space-y-2">{recentPeriodOrders.map((order) => <button key={order.id} type="button" onClick={(event) => openOrderDrawer(order.id, event.currentTarget)} className="flex w-full items-center justify-between gap-3 rounded-xl border border-slate-100 p-3 text-right transition hover:border-sky-200 hover:bg-sky-50"><div><b className="text-sm text-slate-900">{order.customerName || 'غير مسجل'}</b><div className="mt-1 text-xs text-slate-500">#{formatShortOrderReference(order.paymentReference || order.id)} · {getOrderDate(order)?.toLocaleDateString('ar-SA') ?? '—'}</div></div><strong className="text-sm text-[#153b66]">{formatSarPrice(order.finalTotal, true)}</strong></button>)}{!recentPeriodOrders.length && <p className="rounded-xl bg-slate-50 p-6 text-center text-sm font-bold text-slate-500">لا توجد طلبات في الفترة.</p>}</div></div>
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-[0_20px_60px_-36px_rgba(15,23,42,.22)]"><SectionHeading icon={<BarChart3 className="h-5 w-5" />} title="حالة التحصيل" description="مقارنة حقيقية لحالات الدفع ضمن الفترة المختارة." /><div className="mt-6 space-y-5">{paymentSummary.map((entry) => { const percentage = periodOrders.length ? Math.round(entry.value / periodOrders.length * 100) : 0; return <div key={entry.key}><div className="mb-2 flex items-center justify-between text-sm font-black"><span className="text-slate-700">{entry.label}</span><span className="text-[#153b66]">{entry.value} · {percentage}%</span></div><div className="h-3 overflow-hidden rounded-full bg-slate-100"><div className={`h-full rounded-full ${entry.color}`} style={{ width: `${percentage}%` }} /></div></div>; })}</div><button type="button" onClick={() => setActiveView('map')} className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#153b66] px-4 py-3 text-sm font-black text-white"><MapPinned className="h-4 w-4" /> فتح خريطة المبيعات</button></div>
+        </section>}
+
+        {activeView === 'map' && (
+          <section className="mt-6">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-[1.3rem] border border-sky-200 bg-sky-50 px-4 py-3"><div><b className="text-sm text-[#153b66]">نطاق الخريطة الحالي</b><p className="mt-1 text-xs text-slate-600">{selectedYear === 'all' ? 'كل السنوات' : selectedYear} · {selectedMonth === 'all' ? 'كل الشهور' : ARABIC_MONTHS[Number(selectedMonth) - 1]}</p></div><button type="button" onClick={() => { setSelectedYear('all'); setSelectedMonth('all'); }} className="rounded-full bg-white px-4 py-2 text-xs font-black text-[#153b66] shadow-sm">عرض كل الوقت</button></div>
+            <AdminSalesMap orders={periodOrders} />
+          </section>
+        )}
+
+        {activeView === 'orders' && <section ref={ordersSectionRef} className="mt-6 scroll-mt-28 rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_-36px_rgba(15,23,42,0.22)] sm:p-5">
           <SectionHeading icon={<ClipboardList className="h-5 w-5" />} title="كل الطلبات" description={`${filteredOrders.length} طلب ضمن الفترة المحددة — الطلبات محفوظة دون حذف، ويمكن تحديث حالة الدفع فقط مع الاحتفاظ بسجل التغييرات.`} />
-          <div className="mt-4 overflow-x-auto rounded-[1.3rem] border border-slate-200">
+          <div className="mt-4 grid gap-3 rounded-[1.25rem] bg-slate-50 p-3 sm:grid-cols-2 xl:grid-cols-[minmax(240px,1fr)_180px_180px_110px]">
+            <label className="relative"><span className="sr-only">ابحث في الطلبات</span><Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" /><input value={orderSearch} onChange={(event) => setOrderSearch(event.target.value)} placeholder="اسم العميل، الجوال أو رقم الطلب" className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-3 pr-10 text-sm font-bold outline-none focus:border-[#0b587e]" /></label>
+            <select aria-label="تصفية حالة الدفع" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as 'all' | AdminPaymentStatus)} className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold"><option value="all">كل حالات الدفع</option><option value="paid">مدفوع</option><option value="unpaid">غير مدفوع</option><option value="pending_verification">قيد المراجعة</option></select>
+            <select aria-label="تصفية مصدر الطلب" value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold"><option value="all">كل المصادر</option>{availableSources.map((source) => <option key={source} value={source}>{sourceLabel(source)}</option>)}</select>
+            <select aria-label="عدد الطلبات في الصفحة" value={pageSize} onChange={(event) => setPageSize(Number(event.target.value))} className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold"><option value={10}>10 / صفحة</option><option value={25}>25 / صفحة</option><option value={50}>50 / صفحة</option></select>
+          </div>
+          <div className="mt-4 hidden overflow-x-auto rounded-[1.3rem] border border-slate-200 lg:block">
             <table className="w-full min-w-[1280px] text-right text-sm">
-              <thead className="bg-slate-50 text-xs font-black text-slate-500"><tr><th scope="col" className="px-4 py-3">العميل</th><th scope="col" className="px-4 py-3">الجوال</th><th scope="col" className="px-4 py-3">المصدر</th><th scope="col" className="px-4 py-3">الكمية</th><th scope="col" className="px-4 py-3">الإجمالي</th><th scope="col" className="px-4 py-3">الدفع</th><th scope="col" className="px-4 py-3">الحالة</th><th scope="col" className="px-4 py-3">التاريخ</th><th scope="col" className="px-4 py-3">المرجع</th><th scope="col" className="px-4 py-3">الفاتورة</th></tr></thead>
+              <thead className="bg-slate-50 text-xs font-black text-slate-500"><tr><th scope="col" className="px-4 py-3">العميل</th><th scope="col" className="px-4 py-3">الجوال</th><th scope="col" className="px-4 py-3">المصدر</th><th scope="col" className="px-4 py-3">الكمية</th><th scope="col" className="px-4 py-3">الإجمالي</th><th scope="col" className="px-4 py-3">الدفع</th><th scope="col" className="px-4 py-3">الحالة</th><th scope="col" className="px-4 py-3">التاريخ</th><th scope="col" className="px-4 py-3">المرجع</th><th scope="col" className="px-4 py-3">الفاتورة</th><th scope="col" className="px-4 py-3">التفاصيل</th></tr></thead>
               <tbody className="divide-y divide-slate-100">
                 {paginatedOrders.map((order) => (
                   <tr key={order.id} className="transition hover:bg-slate-50/70">
@@ -450,33 +565,39 @@ export default function AdminDashboard() {
                         <button type="button" onClick={() => void handleInvoiceDownload(order, 'png')} disabled={Boolean(downloadingInvoice)} className="inline-flex items-center gap-1 rounded-lg border border-sky-200 bg-sky-50 px-2.5 py-2 text-xs font-black text-sky-800 disabled:cursor-wait disabled:opacity-40"><ImageIcon className="h-3.5 w-3.5" /> صورة</button>
                       </div>
                     </td>
+                    <td className="px-4 py-3"><button type="button" onClick={(event) => openOrderDrawer(order.id, event.currentTarget)} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-black text-[#153b66] hover:bg-sky-50"><Eye className="h-3.5 w-3.5" /> عرض</button></td>
                   </tr>
                 ))}
-                {!filteredOrders.length && <EmptyTable colSpan={10} message="لا توجد طلبات في الفترة المحددة." />}
+                {!filteredOrders.length && <EmptyTable colSpan={11} message="لا توجد طلبات في الفترة المحددة." />}
               </tbody>
             </table>
           </div>
+          <div className="mt-4 space-y-3 lg:hidden">{paginatedOrders.map((order) => <article key={order.id} className="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-sm"><div className="flex items-start justify-between gap-3"><div><h3 className="font-black text-slate-900">{order.customerName || 'غير مسجل'}</h3><p className="mt-1 text-xs text-slate-500" dir="ltr">{order.customerPhone || '—'}</p></div><div className="text-left"><strong className="text-[#153b66]">{formatSarPrice(order.finalTotal, true)}</strong><p className="mt-1 font-mono text-xs text-slate-400">#{formatShortOrderReference(order.paymentReference || order.id)}</p></div></div><div className="mt-3 flex flex-wrap items-center gap-2"><SourceBadge source={order.channel || order.source} /><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">{getOrderDate(order)?.toLocaleDateString('ar-SA') ?? '—'}</span><span className={`rounded-full px-3 py-1 text-xs font-black ${order.paymentStatus === 'paid' ? 'bg-emerald-50 text-emerald-700' : order.paymentStatus === 'pending_verification' ? 'bg-sky-50 text-sky-700' : 'bg-amber-50 text-amber-700'}`}>{order.paymentStatus === 'paid' ? 'مدفوع' : order.paymentStatus === 'pending_verification' ? 'قيد المراجعة' : 'غير مدفوع'}</span></div><div className="mt-4 grid grid-cols-[1fr_auto] gap-2"><select aria-label={`حالة دفع طلب ${order.paymentReference || order.id}`} value={paymentStatusDrafts[order.id] ?? order.paymentStatus} onChange={(event) => setPaymentStatusDrafts((current) => ({ ...current, [order.id]: event.target.value as AdminPaymentStatus }))} className="min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black"><option value="unpaid">غير مدفوع</option><option value="pending_verification">قيد المراجعة</option><option value="paid">مدفوع</option></select><button type="button" aria-label="حفظ حالة الدفع" onClick={() => void handlePaymentStatusUpdate(order)} disabled={updatingPaymentOrderId === order.id || (paymentStatusDrafts[order.id] ?? order.paymentStatus) === order.paymentStatus} className="rounded-xl bg-emerald-600 px-3 py-2 text-white disabled:bg-slate-200"><Save className="h-4 w-4" /></button></div><div className="mt-3 grid grid-cols-3 gap-2"><button type="button" onClick={(event) => openOrderDrawer(order.id, event.currentTarget)} className="inline-flex items-center justify-center gap-1 rounded-xl border border-slate-200 px-2 py-2 text-xs font-black text-[#153b66]"><Eye className="h-3.5 w-3.5" /> التفاصيل</button><button type="button" onClick={() => void handleInvoiceDownload(order, 'pdf')} disabled={Boolean(downloadingInvoice)} className="inline-flex items-center justify-center gap-1 rounded-xl bg-[#153b66] px-2 py-2 text-xs font-black text-white"><FileText className="h-3.5 w-3.5" /> PDF</button><button type="button" onClick={() => void handleInvoiceDownload(order, 'png')} disabled={Boolean(downloadingInvoice)} className="inline-flex items-center justify-center gap-1 rounded-xl bg-sky-50 px-2 py-2 text-xs font-black text-sky-800"><ImageIcon className="h-3.5 w-3.5" /> صورة</button></div></article>)}{!filteredOrders.length && <p className="rounded-xl bg-slate-50 p-8 text-center text-sm font-bold text-slate-500">لا توجد طلبات مطابقة.</p>}</div>
           {filteredOrders.length > 0 && (
             <nav aria-label="صفحات الطلبات" className="mt-4 flex flex-col gap-3 rounded-[1.2rem] bg-slate-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm font-bold text-slate-600" aria-live="polite">
-                الصفحة {ordersPage} من {ordersPageCount} · عرض {((ordersPage - 1) * ORDERS_PER_PAGE) + 1}–{Math.min(ordersPage * ORDERS_PER_PAGE, filteredOrders.length)} من {filteredOrders.length}
+                الصفحة {ordersPage} من {ordersPageCount} · عرض {((ordersPage - 1) * pageSize) + 1}–{Math.min(ordersPage * pageSize, filteredOrders.length)} من {filteredOrders.length}
               </p>
-              <div className="flex items-center gap-2">
-                <button type="button" onClick={() => setOrdersPage((page) => Math.max(1, page - 1))} disabled={ordersPage === 1} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-black text-[#153b66] disabled:cursor-not-allowed disabled:opacity-40">السابق</button>
-                <button type="button" onClick={() => setOrdersPage((page) => Math.min(ordersPageCount, page + 1))} disabled={ordersPage === ordersPageCount} className="rounded-full bg-[#153b66] px-4 py-2 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-40">التالي</button>
+              <div className="flex flex-wrap items-center gap-2">
+                <button type="button" onClick={() => changeOrdersPage(ordersPage - 1)} disabled={ordersPage === 1} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-black text-[#153b66] disabled:cursor-not-allowed disabled:opacity-40">السابق</button>
+                {Array.from({ length: ordersPageCount }, (_, index) => index + 1).filter((page) => page === 1 || page === ordersPageCount || Math.abs(page - ordersPage) <= 1).map((page, index, visible) => <span key={page} className="contents">{index > 0 && page - visible[index - 1] > 1 && <span className="px-1 text-slate-400">…</span>}<button type="button" onClick={() => changeOrdersPage(page)} aria-current={page === ordersPage ? 'page' : undefined} className={`h-9 min-w-9 rounded-full px-2 text-sm font-black ${page === ordersPage ? 'bg-[#0b587e] text-white' : 'border border-slate-200 bg-white text-[#153b66]'}`}>{page}</button></span>)}
+                <button type="button" onClick={() => changeOrdersPage(ordersPage + 1)} disabled={ordersPage === ordersPageCount} className="rounded-full bg-[#153b66] px-4 py-2 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-40">التالي</button>
               </div>
             </nav>
           )}
-        </section>
+        </section>}
 
-        <section className="mt-6 grid gap-6 xl:grid-cols-2">
+        {activeView === 'reports' && <section className="mt-6 grid gap-6 xl:grid-cols-2">
           <SummaryTable title="ملخص سنوي" description="الأداء السنوي حسب الفترة المختارة." rows={yearlySummary} />
           <SummaryTable title="ملخص شهري" description="الأداء الشهري حسب الفترة المختارة." rows={monthlySummary} />
-        </section>
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-5"><SectionHeading icon={<Globe2 className="h-5 w-5" />} title="الأداء حسب المصدر" description="الطلبات والإيراد لكل قناة ضمن الفترة." /><div className="mt-4 space-y-3">{sourceSummary.map((source) => <div key={source.key} className="flex items-center justify-between gap-4 rounded-xl bg-slate-50 p-4"><div><SourceBadge source={source.key} /><p className="mt-2 text-xs text-slate-500">{source.orders} طلب · {source.items} وحدة</p></div><strong className="text-[#153b66]">{formatSarPrice(source.revenue, true)}</strong></div>)}</div></div>
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-5"><SectionHeading icon={<Wallet className="h-5 w-5" />} title="حالات الدفع" description="توزيع التحصيل ضمن الفترة المختارة." /><div className="mt-5 space-y-4">{paymentSummary.map((entry) => <div key={entry.key} className="flex items-center gap-3"><span className={`h-3 w-3 rounded-full ${entry.color}`} /><span className="flex-1 text-sm font-bold text-slate-700">{entry.label}</span><strong className="text-[#153b66]">{entry.value}</strong></div>)}</div></div>
+        </section>}
 
-        <section className="mt-6 grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
+        {(activeView === 'products' || activeView === 'overview') && <section className={`mt-6 grid gap-6 ${activeView === 'overview' ? 'xl:grid-cols-[1.35fr_0.65fr]' : ''}`}>
           <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_-36px_rgba(15,23,42,0.22)] sm:p-5">
             <SectionHeading icon={<Package className="h-5 w-5" />} title="تفصيل المبيعات حسب المنتج" description="الطلبات والكمية والإيراد ومتوسط سعر الوحدة." />
+            {activeView === 'products' && <div className="mt-5 grid gap-3 sm:grid-cols-3">{productSummary.slice(0, 3).map((product, index) => <div key={product.key} className="rounded-[1.25rem] bg-gradient-to-br from-[#153b66] to-[#0b587e] p-4 text-white"><span className="text-xs font-black text-white/65">الترتيب #{index + 1}</span><h3 className="mt-2 line-clamp-2 font-black">{product.name}</h3><div className="mt-4 text-xl font-black">{formatSarPrice(product.revenue, true)}</div><p className="mt-1 text-xs text-white/70">{product.quantity} وحدة · {product.orders} طلب</p></div>)}</div>}
             <div className="mt-4 overflow-x-auto rounded-[1.3rem] border border-slate-200">
               <table className="w-full min-w-[760px] text-right text-sm">
                 <thead className="bg-slate-50 text-xs font-black text-slate-500"><tr><th scope="col" className="px-4 py-3">المنتج</th><th scope="col" className="px-4 py-3">طلبات تحتويه</th><th scope="col" className="px-4 py-3">الكمية</th><th scope="col" className="px-4 py-3">الإيراد</th><th scope="col" className="px-4 py-3">متوسط الوحدة</th></tr></thead>
@@ -488,7 +609,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_-36px_rgba(15,23,42,0.22)] sm:p-5">
+          <div className={`rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_-36px_rgba(15,23,42,0.22)] sm:p-5 ${activeView === 'products' ? 'hidden' : ''}`}>
             <SectionHeading icon={<Globe2 className="h-5 w-5" />} title="مصادر الطلبات" description="الموقع والتطبيق وأي قنوات أخرى مسجلة." />
             <div className="mt-4 space-y-3">
               {sourceSummary.map((source) => (
@@ -500,8 +621,19 @@ export default function AdminDashboard() {
               {!sourceSummary.length && <div className="rounded-[1.2rem] bg-slate-50 p-6 text-center text-sm font-bold text-slate-500">لا توجد مصادر مسجلة في الفترة المحددة.</div>}
             </div>
           </div>
-        </section>
+        </section>}
       </div>
+      {selectedOrder && (
+        <div className="fixed inset-0 z-[100] bg-slate-950/35 backdrop-blur-sm" onClick={closeOrderDrawer}>
+          <aside ref={drawerRef} role="dialog" aria-modal="true" aria-labelledby="order-drawer-title" onKeyDown={trapDrawerFocus} onClick={(event) => event.stopPropagation()} className="absolute inset-y-0 left-0 w-full max-w-lg overflow-y-auto bg-white p-5 shadow-2xl sm:p-7">
+            <div className="flex items-start justify-between gap-4"><div><span className="text-xs font-black text-sky-700">تفاصيل الطلب</span><h2 id="order-drawer-title" className="mt-1 text-2xl font-black text-[#153b66]">#{formatShortOrderReference(selectedOrder.paymentReference || selectedOrder.id)}</h2></div><button ref={drawerCloseRef} type="button" aria-label="إغلاق تفاصيل الطلب" onClick={closeOrderDrawer} className="rounded-full bg-slate-100 p-2 text-slate-600"><X className="h-5 w-5" /></button></div>
+            <div className="mt-6 grid grid-cols-2 gap-3">{[['العميل', selectedOrder.customerName], ['الجوال', selectedOrder.customerPhone], ['الإجمالي', formatSarPrice(selectedOrder.finalTotal, true)], ['الكمية', String(selectedOrder.totalItems)], ['طريقة الدفع', paymentMethodLabel(selectedOrder.paymentMethod)], ['المصدر', sourceLabel(selectedOrder.channel || selectedOrder.source)]].map(([label, value]) => <div key={label} className="rounded-xl bg-slate-50 p-3"><div className="text-xs font-bold text-slate-400">{label}</div><div className="mt-1 break-words text-sm font-black text-slate-800">{value || 'غير مسجل'}</div></div>)}</div>
+            <div className="mt-4 rounded-xl border border-sky-100 bg-sky-50 p-4"><div className="text-xs font-bold text-slate-500">عنوان التوصيل</div><div className="mt-2 text-sm font-black leading-7 text-[#153b66]">{selectedOrder.customerAddress || 'غير مسجل'}</div></div>
+            <h3 className="mt-6 font-black text-slate-900">المنتجات</h3><div className="mt-3 space-y-2">{items.filter((item) => item.orderId === selectedOrder.id).map((item) => <div key={`${item.orderId}-${item.productId}`} className="flex items-center justify-between gap-3 rounded-xl border border-slate-100 p-3"><div><div className="text-sm font-black text-slate-800">{item.name}</div><div className="mt-1 text-xs text-slate-500">الكمية: {item.quantity}</div></div><strong className="text-sm text-[#153b66]">{formatSarPrice(item.lineTotal, true)}</strong></div>)}</div>
+            <div className="mt-6 grid grid-cols-2 gap-2"><button type="button" onClick={() => void handleInvoiceDownload(selectedOrder, 'pdf')} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#153b66] px-4 py-3 text-sm font-black text-white"><FileText className="h-4 w-4" /> PDF</button><button type="button" onClick={() => void handleInvoiceDownload(selectedOrder, 'png')} className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-50 px-4 py-3 text-sm font-black text-sky-800"><ImageIcon className="h-4 w-4" /> صورة</button></div>
+          </aside>
+        </div>
+      )}
     </main>
   );
 }
