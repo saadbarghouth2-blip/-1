@@ -517,62 +517,23 @@ export default function AdminDashboard() {
             <label className="relative"><span className="sr-only">ابحث في الطلبات</span><Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" /><input value={orderSearch} onChange={(event) => setOrderSearch(event.target.value)} placeholder="اسم العميل، الجوال أو رقم الطلب" className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-3 pr-10 text-sm font-bold outline-none focus:border-[#0b587e]" /></label>
             <select aria-label="تصفية حالة الدفع" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as 'all' | AdminPaymentStatus)} className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold"><option value="all">كل حالات الدفع</option><option value="paid">مدفوع</option><option value="unpaid">غير مدفوع</option><option value="pending_verification">قيد المراجعة</option></select>
             <select aria-label="تصفية مصدر الطلب" value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold"><option value="all">كل المصادر</option>{availableSources.map((source) => <option key={source} value={source}>{sourceLabel(source)}</option>)}</select>
-            <select aria-label="عدد الطلبات في الصفحة" value={pageSize} onChange={(event) => setPageSize(Number(event.target.value))} className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold"><option value={10}>10 / صفحة</option><option value={25}>25 / صفحة</option><option value={50}>50 / صفحة</option></select>
+            <select aria-label="عدد الطلبات في الصفحة" value={pageSize} onChange={(event) => setPageSize(Number(event.target.value))} className="min-w-[132px] rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold"><option value={10}>10 في الصفحة</option><option value={25}>25 في الصفحة</option><option value={50}>50 في الصفحة</option></select>
           </div>
-          <div className="mt-4 hidden overflow-x-auto rounded-[1.3rem] border border-slate-200 lg:block">
-            <table className="w-full min-w-[1280px] text-right text-sm">
-              <thead className="bg-slate-50 text-xs font-black text-slate-500"><tr><th scope="col" className="px-4 py-3">العميل</th><th scope="col" className="px-4 py-3">الجوال</th><th scope="col" className="px-4 py-3">المصدر</th><th scope="col" className="px-4 py-3">الكمية</th><th scope="col" className="px-4 py-3">الإجمالي</th><th scope="col" className="px-4 py-3">الدفع</th><th scope="col" className="px-4 py-3">الحالة</th><th scope="col" className="px-4 py-3">التاريخ</th><th scope="col" className="px-4 py-3">المرجع</th><th scope="col" className="px-4 py-3">الفاتورة</th><th scope="col" className="px-4 py-3">التفاصيل</th></tr></thead>
-              <tbody className="divide-y divide-slate-100">
-                {paginatedOrders.map((order) => (
-                  <tr key={order.id} className="transition hover:bg-slate-50/70">
-                    <td className="px-4 py-3 font-bold text-slate-900">{order.customerName || 'غير مسجل'}</td>
-                    <td className="px-4 py-3 text-slate-600" dir="ltr">{order.customerPhone || '—'}</td>
-                    <td className="px-4 py-3"><SourceBadge source={order.channel || order.source} /></td>
-                    <td className="px-4 py-3 font-bold text-slate-700">{order.totalItems}</td>
-                    <td className="px-4 py-3 font-black text-[#153b66]">{formatSarPrice(order.finalTotal, true)}</td>
-                    <td className="px-4 py-3 text-xs font-bold text-slate-600">{paymentMethodLabel(order.paymentMethod)}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex min-w-[190px] items-center gap-2">
-                        <select
-                          aria-label={`حالة دفع طلب ${order.paymentReference || order.id}`}
-                          value={paymentStatusDrafts[order.id] ?? order.paymentStatus}
-                          onChange={(event) => setPaymentStatusDrafts((current) => ({ ...current, [order.id]: event.target.value as AdminPaymentStatus }))}
-                          className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs font-black text-slate-700 outline-none focus:border-[#153b66]"
-                        >
-                          <option value="unpaid">غير مدفوع</option>
-                          <option value="pending_verification">قيد المراجعة</option>
-                          <option value="paid">مدفوع</option>
-                        </select>
-                        <button
-                          type="button"
-                          aria-label="حفظ حالة الدفع"
-                          title="حفظ حالة الدفع"
-                          onClick={() => void handlePaymentStatusUpdate(order)}
-                          disabled={updatingPaymentOrderId === order.id || (paymentStatusDrafts[order.id] ?? order.paymentStatus) === order.paymentStatus}
-                          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
-                        >
-                          {updatingPaymentOrderId === order.id ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                        </button>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{getOrderDate(order)?.toLocaleString('ar-SA') ?? '—'}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-slate-500" dir="ltr">
-                      <span title={order.paymentReference || order.id}>#{formatShortOrderReference(order.paymentReference || order.id)}</span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2" dir="rtl">
-                        <button type="button" onClick={() => void handleInvoiceDownload(order, 'pdf')} disabled={Boolean(downloadingInvoice)} className="inline-flex items-center gap-1 rounded-lg bg-[#153b66] px-2.5 py-2 text-xs font-black text-white disabled:cursor-wait disabled:opacity-40"><FileText className="h-3.5 w-3.5" /> PDF</button>
-                        <button type="button" onClick={() => void handleInvoiceDownload(order, 'png')} disabled={Boolean(downloadingInvoice)} className="inline-flex items-center gap-1 rounded-lg border border-sky-200 bg-sky-50 px-2.5 py-2 text-xs font-black text-sky-800 disabled:cursor-wait disabled:opacity-40"><ImageIcon className="h-3.5 w-3.5" /> صورة</button>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3"><button type="button" onClick={(event) => openOrderDrawer(order.id, event.currentTarget)} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-black text-[#153b66] hover:bg-sky-50"><Eye className="h-3.5 w-3.5" /> عرض</button></td>
-                  </tr>
-                ))}
-                {!filteredOrders.length && <EmptyTable colSpan={11} message="لا توجد طلبات في الفترة المحددة." />}
-              </tbody>
-            </table>
+          <div className="mt-4 space-y-3">
+            <div className="hidden grid-cols-[minmax(150px,1.35fr)_minmax(86px,.75fr)_minmax(110px,.9fr)_minmax(170px,1fr)_auto] items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-xs font-black text-slate-500 xl:grid">
+              <span>العميل</span><span>المرجع</span><span>التاريخ والإجمالي</span><span>حالة الدفع</span><span>الإجراءات</span>
+            </div>
+            {paginatedOrders.map((order) => (
+              <article key={order.id} className="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-sm transition hover:border-sky-200 hover:shadow-md xl:grid xl:grid-cols-[minmax(150px,1.35fr)_minmax(86px,.75fr)_minmax(110px,.9fr)_minmax(170px,1fr)_auto] xl:items-center xl:gap-3">
+                <div className="min-w-0"><h3 className="truncate font-black text-slate-900">{order.customerName || 'غير مسجل'}</h3><div className="mt-1 flex flex-wrap items-center gap-2"><span className="text-xs text-slate-500" dir="ltr">{order.customerPhone || '—'}</span><SourceBadge source={order.channel || order.source} /></div></div>
+                <div className="mt-3 xl:mt-0"><span className="text-[11px] font-bold text-slate-400 xl:hidden">المرجع</span><p className="font-mono text-xs font-bold text-slate-500" dir="ltr" title={order.paymentReference || order.id}>#{formatShortOrderReference(order.paymentReference || order.id)}</p></div>
+                <div className="mt-3 xl:mt-0"><span className="text-[11px] font-bold text-slate-400 xl:hidden">التاريخ والإجمالي</span><p className="text-xs text-slate-500">{getOrderDate(order)?.toLocaleDateString('ar-SA') ?? '—'}</p><strong className="mt-1 block text-sm text-[#153b66]">{formatSarPrice(order.finalTotal, true)}</strong></div>
+                <div className="mt-4 grid grid-cols-[1fr_auto] gap-2 xl:mt-0"><select aria-label={`حالة دفع طلب ${order.paymentReference || order.id}`} value={paymentStatusDrafts[order.id] ?? order.paymentStatus} onChange={(event) => setPaymentStatusDrafts((current) => ({ ...current, [order.id]: event.target.value as AdminPaymentStatus }))} className="min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black"><option value="unpaid">غير مدفوع</option><option value="pending_verification">قيد المراجعة</option><option value="paid">مدفوع</option></select><button type="button" aria-label="حفظ حالة الدفع" title="حفظ حالة الدفع" onClick={() => void handlePaymentStatusUpdate(order)} disabled={updatingPaymentOrderId === order.id || (paymentStatusDrafts[order.id] ?? order.paymentStatus) === order.paymentStatus} className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400">{updatingPaymentOrderId === order.id ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}</button></div>
+                <div className="mt-3 flex items-center gap-2 xl:mt-0"><button type="button" aria-label="تنزيل الفاتورة PDF" title="تنزيل الفاتورة PDF" onClick={() => void handleInvoiceDownload(order, 'pdf')} disabled={Boolean(downloadingInvoice)} className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#153b66] text-white disabled:cursor-wait disabled:opacity-40"><FileText className="h-4 w-4" /></button><button type="button" aria-label="تنزيل الفاتورة صورة" title="تنزيل الفاتورة صورة" onClick={() => void handleInvoiceDownload(order, 'png')} disabled={Boolean(downloadingInvoice)} className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sky-200 bg-sky-50 text-sky-800 disabled:cursor-wait disabled:opacity-40"><ImageIcon className="h-4 w-4" /></button><button type="button" aria-label="عرض تفاصيل الطلب" title="عرض التفاصيل" onClick={(event) => openOrderDrawer(order.id, event.currentTarget)} className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#153b66] transition hover:bg-sky-50"><Eye className="h-4 w-4" /></button></div>
+              </article>
+            ))}
+            {!filteredOrders.length && <p className="rounded-xl bg-slate-50 p-8 text-center text-sm font-bold text-slate-500">لا توجد طلبات مطابقة.</p>}
           </div>
-          <div className="mt-4 space-y-3 lg:hidden">{paginatedOrders.map((order) => <article key={order.id} className="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-sm"><div className="flex items-start justify-between gap-3"><div><h3 className="font-black text-slate-900">{order.customerName || 'غير مسجل'}</h3><p className="mt-1 text-xs text-slate-500" dir="ltr">{order.customerPhone || '—'}</p></div><div className="text-left"><strong className="text-[#153b66]">{formatSarPrice(order.finalTotal, true)}</strong><p className="mt-1 font-mono text-xs text-slate-400">#{formatShortOrderReference(order.paymentReference || order.id)}</p></div></div><div className="mt-3 flex flex-wrap items-center gap-2"><SourceBadge source={order.channel || order.source} /><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">{getOrderDate(order)?.toLocaleDateString('ar-SA') ?? '—'}</span><span className={`rounded-full px-3 py-1 text-xs font-black ${order.paymentStatus === 'paid' ? 'bg-emerald-50 text-emerald-700' : order.paymentStatus === 'pending_verification' ? 'bg-sky-50 text-sky-700' : 'bg-amber-50 text-amber-700'}`}>{order.paymentStatus === 'paid' ? 'مدفوع' : order.paymentStatus === 'pending_verification' ? 'قيد المراجعة' : 'غير مدفوع'}</span></div><div className="mt-4 grid grid-cols-[1fr_auto] gap-2"><select aria-label={`حالة دفع طلب ${order.paymentReference || order.id}`} value={paymentStatusDrafts[order.id] ?? order.paymentStatus} onChange={(event) => setPaymentStatusDrafts((current) => ({ ...current, [order.id]: event.target.value as AdminPaymentStatus }))} className="min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black"><option value="unpaid">غير مدفوع</option><option value="pending_verification">قيد المراجعة</option><option value="paid">مدفوع</option></select><button type="button" aria-label="حفظ حالة الدفع" onClick={() => void handlePaymentStatusUpdate(order)} disabled={updatingPaymentOrderId === order.id || (paymentStatusDrafts[order.id] ?? order.paymentStatus) === order.paymentStatus} className="rounded-xl bg-emerald-600 px-3 py-2 text-white disabled:bg-slate-200"><Save className="h-4 w-4" /></button></div><div className="mt-3 grid grid-cols-3 gap-2"><button type="button" onClick={(event) => openOrderDrawer(order.id, event.currentTarget)} className="inline-flex items-center justify-center gap-1 rounded-xl border border-slate-200 px-2 py-2 text-xs font-black text-[#153b66]"><Eye className="h-3.5 w-3.5" /> التفاصيل</button><button type="button" onClick={() => void handleInvoiceDownload(order, 'pdf')} disabled={Boolean(downloadingInvoice)} className="inline-flex items-center justify-center gap-1 rounded-xl bg-[#153b66] px-2 py-2 text-xs font-black text-white"><FileText className="h-3.5 w-3.5" /> PDF</button><button type="button" onClick={() => void handleInvoiceDownload(order, 'png')} disabled={Boolean(downloadingInvoice)} className="inline-flex items-center justify-center gap-1 rounded-xl bg-sky-50 px-2 py-2 text-xs font-black text-sky-800"><ImageIcon className="h-3.5 w-3.5" /> صورة</button></div></article>)}{!filteredOrders.length && <p className="rounded-xl bg-slate-50 p-8 text-center text-sm font-bold text-slate-500">لا توجد طلبات مطابقة.</p>}</div>
           {filteredOrders.length > 0 && (
             <nav aria-label="صفحات الطلبات" className="mt-4 flex flex-col gap-3 rounded-[1.2rem] bg-slate-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm font-bold text-slate-600" aria-live="polite">
