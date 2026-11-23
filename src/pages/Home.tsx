@@ -698,8 +698,7 @@ export default function Home() {
   const homeOffers = offerProducts
     .filter((product): product is HomeOfferProduct => (
       isOfferProduct(product) && hasFixedPrice(product) && product.isPurchasable && product.inStock
-    ))
-    .slice(0, 4);
+    ));
   const discountedCount = catalogProducts.filter(isDiscountedProduct).length;
 
   const { scrollYProgress } = useScroll({
