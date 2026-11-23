@@ -27,7 +27,7 @@ function isAvailableOfferProduct(product: Product): product is AvailableOfferPro
 export default function Offers() {
   const { i18n } = useTranslation();
   const { addToCart } = useCart();
-  const { offerProducts } = useProductCatalog();
+  const { offerProducts, isLoading } = useProductCatalog();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-120px' });
   const isRTL = i18n.language === 'ar';
@@ -127,7 +127,11 @@ export default function Offers() {
           </div>
         </motion.section>
 
-        {availableOffers.length === 0 ? (
+        {isLoading ? (
+          <section aria-busy="true" aria-label={isRTL ? 'جارٍ تحميل العروض الحالية' : 'Loading current offers'} className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {Array.from({ length: 6 }, (_, index) => <div key={index} className="h-[29rem] animate-pulse rounded-[2rem] border border-sky-100 bg-white p-5"><div className="h-56 rounded-[1.4rem] bg-sky-50" /><div className="mt-5 h-5 w-3/4 rounded bg-slate-100" /><div className="mt-3 h-4 w-1/2 rounded bg-slate-100" /><div className="mt-8 h-12 rounded-xl bg-sky-50" /></div>)}
+          </section>
+        ) : availableOffers.length === 0 ? (
           <section className="mt-10 rounded-[2rem] border border-slate-200 bg-white p-8 text-center shadow-[0_24px_70px_-44px_rgba(15,23,42,0.45)]">
             <h2 className="text-2xl font-bold text-slate-900">
               {isRTL ? 'لا توجد عروض متاحة الآن' : 'No offers available right now'}

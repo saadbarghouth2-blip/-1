@@ -20,8 +20,8 @@ const badges = [
     icon: Truck,
     titleAr: 'شحن مجاني',
     titleEn: 'Free Shipping',
-    descAr: 'للطلبات فوق 200 ريال في الرياض',
-    descEn: 'On orders above SAR 200 in Riyadh',
+    descAr: 'وفق حد التوصيل المجاني في المدن المتاحة',
+    descEn: 'According to free-delivery thresholds in available cities',
   },
   {
     icon: RotateCcw,
@@ -60,10 +60,10 @@ const badges = [
   },
   {
     icon: Timer,
-    titleAr: 'توصيل فوري',
-    titleEn: 'Express Delivery',
-    descAr: 'نفس اليوم في الرياض قبل 2 مساءً',
-    descEn: 'Same day in Riyadh before 2 PM',
+    titleAr: 'موعد توصيل واضح',
+    titleEn: 'Clear delivery window',
+    descAr: 'خلال 24 إلى 48 ساعة بعد تأكيد الطلب',
+    descEn: 'Within 24 to 48 hours after order confirmation',
   },
   {
     icon: BadgeCheck,

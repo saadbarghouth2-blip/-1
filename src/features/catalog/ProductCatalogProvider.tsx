@@ -99,9 +99,14 @@ function normalizeProducts(products: Product[]) {
 }
 
 export function ProductCatalogProvider({ children }: { children: ReactNode }) {
-  const [allProducts, setAllProducts] = useState<Product[]>(fallbackProducts);
-  const [isLoading, setIsLoading] = useState(isSupabaseConfigured());
-  const [isFallback, setIsFallback] = useState(true);
+  const isRemoteCatalogConfigured = isSupabaseConfigured();
+  // Do not momentarily present bundled products as the current catalogue while
+  // a configured store is fetching the authoritative published catalogue.
+  const [allProducts, setAllProducts] = useState<Product[]>(() => (
+    isRemoteCatalogConfigured ? [] : fallbackProducts
+  ));
+  const [isLoading, setIsLoading] = useState(isRemoteCatalogConfigured);
+  const [isFallback, setIsFallback] = useState(!isRemoteCatalogConfigured);
   const [error, setError] = useState<string | null>(null);
 
   const refreshProducts = useCallback(async () => {

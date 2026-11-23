@@ -99,10 +99,12 @@ export default function Checkout() {
 
   const [showMap, setShowMap] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
+  const [locationAccuracy, setLocationAccuracy] = useState<number | null>(null);
   const [isLeafletReady, setIsLeafletReady] = useState(false);
   const [mapLoadError, setMapLoadError] = useState('');
 
   const [orderRecordNotice, setOrderRecordNotice] = useState('');
+  const [confirmedOrderChannel, setConfirmedOrderChannel] = useState<'whatsapp' | 'email' | null>(null);
   const [isRecordingOrder, setIsRecordingOrder] = useState(false);
   const [invoiceDownloadFormat, setInvoiceDownloadFormat] = useState<InvoiceDownloadFormat | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<ManualPaymentMethod>('cash_on_delivery');
@@ -121,7 +123,7 @@ export default function Checkout() {
     formData.name.trim()
       && formData.phone.trim()
       && formData.address.trim()
-      && formData.city === 'riyadh'
+      && DELIVERY_CITY_OPTIONS.some((city) => city.id === formData.city && city.enabled)
       && hasValidOptionalEmail
   );
   const selectedPaymentMethodLabel = getManualPaymentMethodLabel(paymentMethod, isRTL);
@@ -197,12 +199,11 @@ export default function Checkout() {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(mapRef.current);
 
-      const icon = L.icon({
-        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
+      const icon = L.divIcon({
+        className: 'riq-location-marker',
+        html: '<span aria-hidden="true" style="display:grid;place-items:center;width:42px;height:42px;border-radius:50% 50% 50% 0;background:#153b66;border:4px solid #fff;box-shadow:0 8px 20px rgba(15,59,102,.32);transform:rotate(-45deg)"><span style="display:block;width:11px;height:11px;border-radius:999px;background:#60c7e8;box-shadow:0 0 0 4px rgba(96,199,232,.22)"></span></span>',
+        iconSize: [42, 42],
+        iconAnchor: [21, 39],
       });
 
       markerRef.current = L.marker([formData.lat, formData.lng], {
@@ -281,6 +282,7 @@ export default function Checkout() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude, accuracy } = position.coords;
+          setLocationAccuracy(Math.round(accuracy));
           if (accuracy > MAX_ACCEPTABLE_LOCATION_ACCURACY_METERS) {
             setIsLocating(false);
             setShowMap(true);
@@ -437,6 +439,7 @@ export default function Checkout() {
       void recordSubmittedOrder('whatsapp')
         .then(() => {
           setOrderRecordNotice(isRTL ? 'تم تسجيل الطلب في لوحة المبيعات.' : 'The order was saved to the sales dashboard.');
+          setConfirmedOrderChannel('whatsapp');
         })
         .catch((error) => {
           console.error('Unable to record the submitted website order.', error);
@@ -492,15 +495,14 @@ export default function Checkout() {
             : 'Your order was confirmed and sent successfully.',
       );
 
-      void recordSubmittedOrder('email').catch((recordError) => {
-        console.error('The order email was sent, but the sales record could not be saved.', recordError);
-      });
+      await recordSubmittedOrder('email');
+      setConfirmedOrderChannel('email');
     } catch (error) {
       console.error('Unable to send the order with EmailJS.', error);
       setOrderRecordNotice(
         isRTL
-          ? 'تعذر إرسال الطلب على البريد الإلكتروني. جرّب مرة أخرى أو أرسله عبر واتساب.'
-          : 'The order email could not be sent. Try again or send it through WhatsApp.',
+          ? 'تعذر تأكيد الطلب كاملًا. جرّب مرة أخرى أو أرسله عبر واتساب.'
+          : 'The order could not be confirmed completely. Try again or send it through WhatsApp.',
       );
     } finally {
       setIsRecordingOrder(false);
@@ -618,7 +620,7 @@ export default function Checkout() {
                       <div>
                         <p className="text-sm font-black text-gray-900">{isRTL ? 'مدينة التوصيل' : 'Delivery city'}</p>
                         <p className="text-xs text-gray-500">
-                          {isRTL ? `التوصيل داخل الرياض خلال ${DELIVERY_DURATION_AR}.` : `Riyadh delivery takes ${DELIVERY_DURATION_EN}.`}
+                          {isRTL ? `التوصيل في المدن المتاحة خلال ${DELIVERY_DURATION_AR}.` : `Delivery in available cities takes ${DELIVERY_DURATION_EN}.`}
                         </p>
                       </div>
                     </div>
@@ -763,6 +765,11 @@ export default function Checkout() {
                                 <span className="text-xs font-bold text-gray-600">{isRTL ? 'حرك العلامة لتحديد الموقع بدقة' : 'Drag marker to set exact location'}</span>
                              </div>
                           </div>
+                          {locationAccuracy !== null && (
+                            <div className="absolute bottom-4 right-4 z-10 rounded-xl border border-white/70 bg-white/95 px-3 py-2 text-xs font-bold text-[#153b66] shadow-md backdrop-blur">
+                              {isRTL ? `دقة موقعك الحالية: حوالي ${locationAccuracy} متر` : `Current location accuracy: about ${locationAccuracy}m`}
+                            </div>
+                          )}
                         </motion.div>
                       )}
 
@@ -1115,6 +1122,36 @@ export default function Checkout() {
 
         </div>
       </div>
+      <AnimatePresence>
+        {confirmedOrderChannel && (
+          <motion.div
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            role="dialog" aria-modal="true" aria-labelledby="order-confirmed-title"
+          >
+            <motion.section
+              initial={{ opacity: 0, scale: 0.94, y: 18 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96 }}
+              className="w-full max-w-md overflow-hidden rounded-[2rem] bg-white text-center shadow-2xl"
+              dir={isRTL ? 'rtl' : 'ltr'}
+            >
+              <div className="bg-[#153b66] px-6 py-7 text-white">
+                <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-white/15"><CheckCircle2 className="h-8 w-8" /></span>
+                <h2 id="order-confirmed-title" className="mt-4 text-2xl font-black">{isRTL ? 'تم تأكيد طلبك بنجاح' : 'Your order was confirmed'}</h2>
+              </div>
+              <div className="p-6">
+                <p className="text-sm leading-7 text-slate-600">{isRTL ? 'احتفظ برقم الطلب للمتابعة مع فريقنا.' : 'Keep this order reference for follow-up with our team.'}</p>
+                <p dir="ltr" className="mt-4 rounded-2xl bg-sky-50 px-4 py-3 font-mono text-lg font-black tracking-wide text-[#153b66]">#{orderReference.slice(-8).toUpperCase()}</p>
+                <p className="mt-5 text-sm leading-7 text-slate-600">
+                  {confirmedOrderChannel === 'whatsapp'
+                    ? (isRTL ? 'تم فتح واتساب لإرسال تفاصيل الطلب ومتابعته مع خدمة العملاء.' : 'WhatsApp has been opened to send and follow up on your order.')
+                    : (isRTL ? 'تم إرسال الطلب، وسنراجع التفاصيل ونتواصل معك عند الحاجة.' : 'Your order was sent. We will review the details and contact you if needed.')}
+                </p>
+                <button type="button" onClick={() => setConfirmedOrderChannel(null)} className="mt-6 w-full rounded-xl bg-[#153b66] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0f2f53]">{isRTL ? 'متابعة التسوق' : 'Continue shopping'}</button>
+              </div>
+            </motion.section>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

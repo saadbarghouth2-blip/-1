@@ -9,7 +9,6 @@ import {
   Clock,
   Award,
   Package,
-  Tag,
   ShoppingCart,
   CircleHelp,
   Info,
@@ -23,7 +22,7 @@ import {
 import { useCart } from '../context/CartContext';
 import HeroWordmark from '../components/HeroWordmark';
 import ProductImage from '../components/ProductImage';
-import { hasFixedPrice, isDiscountedProduct, isOfferProduct, products, type Product } from '../data/products';
+import { hasFixedPrice, isDiscountedProduct, isOfferProduct, type Product } from '../data/products';
 import { useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import { formatSarPrice } from '../lib/utils';
 
@@ -695,15 +694,13 @@ export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
   const isRTL = i18n.language === 'ar';
   const { totalItems, addToCart } = useCart();
-  const { offerProducts } = useProductCatalog();
+  const { offerProducts, products: catalogProducts } = useProductCatalog();
   const homeOffers = offerProducts
     .filter((product): product is HomeOfferProduct => (
       isOfferProduct(product) && hasFixedPrice(product) && product.isPurchasable && product.inStock
     ))
     .slice(0, 4);
-  const catalogProducts = products.filter((product) => !isOfferProduct(product));
   const discountedCount = catalogProducts.filter(isDiscountedProduct).length;
-  const brandCount = new Set(catalogProducts.map((product) => product.brand)).size;
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -738,12 +735,6 @@ export default function Home() {
       title: isRTL ? 'المنتجات' : 'Products',
       desc: isRTL ? 'اختار الحجم واطلب فورًا.' : 'Pick a size and order.',
       icon: Package,
-    },
-    {
-      href: '/brands',
-      title: isRTL ? 'العلامات التجارية' : 'Brands',
-      desc: isRTL ? 'قارن بين العلامات بسرعة.' : 'Compare brands quickly.',
-      icon: Tag,
     },
     {
       href: '/products#how-to-order',
@@ -994,7 +985,6 @@ export default function Home() {
           >
             {[
               { value: catalogProducts.length, suffix: '', label: isRTL ? 'منتج' : 'Products' },
-              { value: brandCount, suffix: '', label: isRTL ? 'علامة تجارية' : 'Brands' },
               { value: discountedCount, suffix: '', label: isRTL ? 'منتج مخفض' : 'Discounted' },
               { value: 3, suffix: '', label: isRTL ? 'فئات فعالة' : 'Active Sizes' },
             ].map((stat, index) => (

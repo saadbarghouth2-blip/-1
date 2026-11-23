@@ -107,20 +107,20 @@ export default function Contact() {
     {
       q: isRTL ? 'ما هي سياسة الطلب والتوصيل؟' : 'What is the order and delivery policy?',
       a: isRTL
-        ? 'الحد الأدنى للمياه العادية 15 كرتون، ولربطات رفا مكة المحددة 20 ربطة، وللمياه الزجاجية 10 كراتين. رسوم التوصيل 25 ريال داخل الرياض. التوصيل مجاني من 20 كرتون عادي، أو 35 ربطة، أو 15 كرتون زجاج، وجميع العروض تشمل توصيلًا مجانيًا. مدة التوصيل من 24 إلى 48 ساعة.'
-        : 'Minimums are 15 regular cartons, 20 specified Rafa Makkah bundles, or 10 glass cartons. Riyadh delivery costs 25 SAR. Delivery is free from 20 regular cartons, 35 bundles, or 15 glass cartons, and every offer includes free delivery. Delivery takes 24 to 48 hours.',
+        ? 'الحد الأدنى للمياه العادية 15 كرتون، ولربطات رفا مكة المحددة 20 ربطة، وللمياه الزجاجية 10 كراتين. رسوم التوصيل 25 ريال في المدن المتاحة عند عدم بلوغ الحد المجاني. التوصيل مجاني من 20 كرتون عادي، أو 35 ربطة، أو 15 كرتون زجاج، وجميع العروض تشمل توصيلًا مجانيًا. مدة التوصيل من 24 إلى 48 ساعة.'
+        : 'Minimums are 15 regular cartons, 20 specified Rafa Makkah bundles, or 10 glass cartons. Delivery costs 25 SAR in available cities below the free-delivery threshold. Delivery is free from 20 regular cartons, 35 bundles, or 15 glass cartons, and every offer includes free delivery. Delivery takes 24 to 48 hours.',
     },
     {
       q: isRTL ? 'ما هي مناطق التوصيل المتاحة؟' : 'What are the available delivery areas?',
       a: isRTL 
-        ? 'التوصيل متاح حاليًا داخل حدود مدينة الرياض. تمت إضافة الدمام كمدينة قادمة، لكن الطلب إليها غير مفعّل حتى يتم اعتماد قائمة المنتجات المتاحة هناك.'
-        : 'Delivery is currently available within Riyadh city limits. Dammam is listed as an upcoming city, but checkout there remains disabled until the available product list is approved.',
+        ? 'التوصيل متاح حاليًا في الرياض والدمام والأحساء. جدة ومكة المكرمة والمدينة المنورة ضمن خطة التوسع القادمة وسيتم الإعلان عند التفعيل.'
+        : 'Delivery is currently available in Riyadh, Dammam and Al-Ahsa. Jeddah, Makkah and Madinah are planned for the next expansion and will be announced when activated.',
     },
     {
       q: isRTL ? 'كم تستغرق عملية التوصيل؟' : 'How long does delivery take?',
       a: isRTL
-        ? 'مدة التوصيل داخل حدود مدينة الرياض من 24 إلى 48 ساعة بعد تأكيد الطلب وتوفر المنتجات.'
-        : 'Delivery within Riyadh city limits takes 24 to 48 hours after order confirmation and product availability checks.',
+        ? 'مدة التوصيل في المدن المتاحة من 24 إلى 48 ساعة بعد تأكيد الطلب وتوفر المنتجات.'
+        : 'Delivery in available cities takes 24 to 48 hours after order confirmation and product availability checks.',
     },
     {
       q: isRTL ? 'ما هي طرق الدفع المتاحة؟' : 'What payment methods are available?',

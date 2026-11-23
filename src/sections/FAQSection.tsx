@@ -9,17 +9,17 @@ interface FAQSectionProps {
 
 const faqs = [
   {
-    qAr: 'ما هي سياسة الطلب والتوصيل داخل الرياض؟',
-    qEn: 'What is the order and delivery policy in Riyadh?',
-    aAr: 'الحد الأدنى 15 كرتون للمياه العادية، و20 ربطة لرفا مكة المحددة، و10 كراتين للمياه الزجاجية. رسوم التوصيل داخل الرياض 25 ريال. التوصيل مجاني من 20 كرتون عادي أو 35 ربطة أو 15 كرتون زجاج، وجميع العروض توصيلها مجاني. مدة التوصيل من 24 إلى 48 ساعة.',
-    aEn: 'Minimums are 15 regular cartons, 20 specified Rafa Makkah bundles, or 10 glass cartons. Riyadh delivery costs 25 SAR. Delivery is free from 20 regular cartons, 35 bundles, or 15 glass cartons, and every offer includes free delivery. Delivery takes 24 to 48 hours.',
+    qAr: 'ما هي سياسة الطلب والتوصيل في المدن المتاحة؟',
+    qEn: 'What is the order and delivery policy in available cities?',
+    aAr: 'الحد الأدنى 15 كرتون للمياه العادية، و20 ربطة لرفا مكة المحددة، و10 كراتين للمياه الزجاجية. رسوم التوصيل 25 ريال عند عدم بلوغ حد المجاني. التوصيل مجاني من 20 كرتون عادي أو 35 ربطة أو 15 كرتون زجاج، وجميع العروض توصيلها مجاني. مدة التوصيل من 24 إلى 48 ساعة.',
+    aEn: 'Minimums are 15 regular cartons, 20 specified Rafa Makkah bundles, or 10 glass cartons. Delivery costs 25 SAR below the free-delivery threshold. Delivery is free from 20 regular cartons, 35 bundles, or 15 glass cartons, and every offer includes free delivery. Delivery takes 24 to 48 hours.',
     category: 'delivery',
   },
   {
     qAr: 'ما هي المناطق التي يشملها التوصيل؟',
     qEn: 'Which areas does delivery cover?',
-    aAr: 'التوصيل متاح حاليًا داخل حدود مدينة الرياض. الدمام مضافة كمدينة قادمة، لكن الطلب إليها لن يتفعل قبل اعتماد قائمة المنتجات المتاحة هناك.',
-    aEn: 'Delivery is currently available within Riyadh city limits. Dammam is listed as an upcoming city, but checkout will remain disabled until its available product list is approved.',
+    aAr: 'التوصيل متاح حاليًا في الرياض والدمام والأحساء. جدة ومكة المكرمة والمدينة المنورة ضمن خطة التوسع القادمة وسيتم الإعلان عند التفعيل.',
+    aEn: 'Delivery is currently available in Riyadh, Dammam and Al-Ahsa. Jeddah, Makkah and Madinah are part of the next expansion plan and will be announced when activated.',
     category: 'delivery',
   },
   {
@@ -53,8 +53,8 @@ const faqs = [
   {
     qAr: 'هل يتوفر توصيل في نفس اليوم؟',
     qEn: 'Is same-day delivery available?',
-    aAr: 'مدة التوصيل المعتمدة داخل حدود مدينة الرياض من 24 إلى 48 ساعة بعد تأكيد الطلب وتوفر المنتجات.',
-    aEn: 'The standard delivery time within Riyadh city limits is 24 to 48 hours after order confirmation and availability checks.',
+    aAr: 'مدة التوصيل المعتمدة في المدن المتاحة من 24 إلى 48 ساعة بعد تأكيد الطلب وتوفر المنتجات.',
+    aEn: 'The standard delivery time in available cities is 24 to 48 hours after order confirmation and availability checks.',
     category: 'delivery',
   },
   {
