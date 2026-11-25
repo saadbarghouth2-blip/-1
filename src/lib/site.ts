@@ -56,8 +56,8 @@ export const SITE_PHONE_RAW = `+${CONTACT_PHONE_RAW}`;
 export const SITE_EMAIL = CONTACT_EMAIL;
 
 export const SITE_DEFAULT_DESCRIPTION = {
-  ar: 'متجر ريق هو وجهتك لطلب مياه الشرب المعبأة في جميع أنحاء المملكة العربية السعودية. تسوّق المقاسات والعلامات التجارية والعروض، مع خدمة طلب وتوصيل سريعة وموثوقة إلى بابك.',
-  en: 'Riq Store is the official website for bottled water delivery across Saudi Arabia. Order water products and offers from Riq.com with fast, trusted service.',
+  ar: 'متجر ريق هو وجهتك لطلب مياه الشرب المعبأة في الرياض والدمام والأحساء. تسوّق المقاسات والعلامات التجارية والعروض، مع خدمة طلب وتوصيل سريعة وموثوقة إلى بابك.',
+  en: 'Riq Store is the official website for bottled water delivery in Riyadh, Dammam and Al-Ahsa. Order water products and offers from Riq.com with fast, trusted service.',
 };
 
 export function normalizeSiteUrl(value?: string) {

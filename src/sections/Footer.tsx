@@ -59,12 +59,14 @@ function OfficialImageLogo({ src, alt }: { src: string; alt: string }) {
 
 function NotoqMark() {
   return (
-    <span
-      aria-hidden="true"
-      className="relative flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-[#8ad8ff]/45 bg-[#102d4d] text-sm font-black text-white shadow-[0_5px_16px_rgba(2,132,199,0.22)]"
-    >
-      <span className="relative z-10 leading-none">ن</span>
-      <span className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full bg-[#8ad8ff]/80 blur-[1px]" />
+    <span className="flex h-10 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-[#8ad8ff]/35 bg-white shadow-[0_5px_16px_rgba(2,132,199,0.2)]">
+      <img
+        src="/images/notoq-logo.webp"
+        alt="Notoq"
+        className="h-full w-full scale-[1.7] object-cover object-center"
+        loading="lazy"
+        decoding="async"
+      />
     </span>
   );
 }
@@ -228,8 +230,8 @@ export default function Footer() {
             </Link>
             <p className="mb-6 leading-relaxed text-white/70">
               {isRTL
-                ? 'وجهتك الأولى للمياه المعبأة عالية الجودة في جميع أنحاء المملكة. نوفر لك منتجات موثوقة من علامات محلية وعالمية مع تجربة طلب سهلة وسريعة.'
-                : 'Your first destination for high-quality bottled water across Saudi Arabia, with trusted local and international brands and a smoother ordering experience.'}
+                ? 'وجهتك الأولى للمياه المعبأة عالية الجودة. نوفر لك منتجات موثوقة من علامات محلية وعالمية مع تجربة طلب سهلة وسريعة.'
+                : 'Your first destination for high-quality bottled water, with trusted local and international brands and a smoother ordering experience.'}
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social) => (
@@ -332,7 +334,7 @@ export default function Footer() {
                 <div>
                   <p className="text-sm text-white/70">{isRTL ? 'عنوان الشركة' : 'Company address'}</p>
                   <p className="font-medium">{isRTL ? BUSINESS_ADDRESS_AR : BUSINESS_ADDRESS_EN}</p>
-                  <p className="mt-2 text-sm text-[#8ad8ff]">{isRTL ? 'التوصيل متاح في جميع أنحاء المملكة.' : 'Delivery is available across Saudi Arabia.'}</p>
+                  <p className="mt-2 text-xs text-[#8ad8ff]">{isRTL ? 'التوصيل متاح حاليًا في الرياض والدمام والأحساء.' : 'Delivery is currently available in Riyadh, Dammam and Al-Ahsa.'}</p>
                 </div>
               </div>
             </div>
@@ -391,7 +393,7 @@ export default function Footer() {
               © 2024 {BRAND_NAME_LOCKUP}. {isRTL ? '\u062c\u0645\u064a\u0639 \u0627\u0644\u062d\u0642\u0648\u0642 \u0645\u062d\u0641\u0648\u0638\u0629' : 'All Rights Reserved'}.
             </motion.p>
             <div
-              className="flex max-w-full flex-wrap items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.045] px-2.5 py-1.5 text-xs shadow-[0_8px_28px_rgba(0,0,0,0.14)] md:justify-start"
+              className="flex max-w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.045] px-3 py-2 text-xs shadow-[0_8px_28px_rgba(0,0,0,0.14)] md:items-start"
               dir={isRTL ? 'rtl' : 'ltr'}
             >
               <a
@@ -407,12 +409,11 @@ export default function Footer() {
                 </span>
                 <ExternalLink className="h-3 w-3 text-[#8ad8ff]/80 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </a>
-              <span aria-hidden="true" className="h-4 w-px bg-white/15" />
               <a
                 href="https://www.barghouth.me/"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1 whitespace-nowrap px-1 text-[0.69rem] font-semibold text-white/60 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8ad8ff]"
+                className="inline-flex items-center gap-1 border-t border-white/10 px-1 pt-1.5 text-[0.69rem] font-semibold text-white/60 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8ad8ff]"
                 aria-label={isRTL ? 'زيارة موقع Barghouth' : 'Visit Barghouth website'}
               >
                 <span>barghouth.me</span>

@@ -90,7 +90,7 @@ export default function Contact() {
       icon: MapPin,
       title: isRTL ? 'العنوان' : 'Address',
       content: isRTL ? SITE_ADDRESS_AR : SITE_ADDRESS_EN,
-      subContent: isRTL ? 'عنوان الشركة — والتوصيل متاح في جميع أنحاء المملكة' : 'Company address — delivery is available across Saudi Arabia',
+      subContent: isRTL ? 'عنوان الشركة — والتوصيل حاليًا في الرياض والدمام والأحساء' : 'Company address — delivery is currently available in Riyadh, Dammam and Al-Ahsa',
       color: 'from-red-400 to-red-600',
       action: '#',
     },
@@ -108,20 +108,20 @@ export default function Contact() {
     {
       q: isRTL ? 'ما هي سياسة الطلب والتوصيل؟' : 'What is the order and delivery policy?',
       a: isRTL
-        ? 'الحد الأدنى للمياه العادية 15 كرتون، ولربطات رفا مكة المحددة 20 ربطة، وللمياه الزجاجية 10 كراتين. رسوم التوصيل 25 ريال داخل المملكة عند عدم بلوغ الحد المجاني. التوصيل مجاني من 20 كرتون عادي، أو 35 ربطة، أو 15 كرتون زجاج، وجميع العروض تشمل توصيلًا مجانيًا. مدة التوصيل من 24 إلى 48 ساعة.'
-        : 'Minimums are 15 regular cartons, 20 specified Rafa Makkah bundles, or 10 glass cartons. Delivery costs 25 SAR across Saudi Arabia below the free-delivery threshold. Delivery is free from 20 regular cartons, 35 bundles, or 15 glass cartons, and every offer includes free delivery. Delivery takes 24 to 48 hours.',
+        ? 'الحد الأدنى للمياه العادية 15 كرتون، ولربطات رفا مكة المحددة 20 ربطة، وللمياه الزجاجية 10 كراتين. رسوم التوصيل 25 ريال في المدن المتاحة عند عدم بلوغ الحد المجاني. التوصيل مجاني من 20 كرتون عادي، أو 35 ربطة، أو 15 كرتون زجاج، وجميع العروض تشمل توصيلًا مجانيًا. مدة التوصيل من 24 إلى 48 ساعة.'
+        : 'Minimums are 15 regular cartons, 20 specified Rafa Makkah bundles, or 10 glass cartons. Delivery costs 25 SAR in available cities below the free-delivery threshold. Delivery is free from 20 regular cartons, 35 bundles, or 15 glass cartons, and every offer includes free delivery. Delivery takes 24 to 48 hours.',
     },
     {
       q: isRTL ? 'ما هي مناطق التوصيل المتاحة؟' : 'What are the available delivery areas?',
       a: isRTL 
-        ? 'التوصيل متاح في جميع أنحاء المملكة العربية السعودية دون حصره في مدن محددة.'
-        : 'Delivery is available across Saudi Arabia without limiting service to selected cities.',
+        ? 'التوصيل متاح حاليًا في الرياض والدمام والأحساء. جدة ومكة المكرمة والمدينة المنورة بانتظار اعتماد المنتجات.'
+        : 'Delivery is currently available in Riyadh, Dammam and Al-Ahsa. Jeddah, Makkah and Madinah are awaiting product approval.',
     },
     {
       q: isRTL ? 'كم تستغرق عملية التوصيل؟' : 'How long does delivery take?',
       a: isRTL
-        ? 'مدة التوصيل داخل المملكة من 24 إلى 48 ساعة بعد تأكيد الطلب وتوفر المنتجات.'
-        : 'Delivery across Saudi Arabia takes 24 to 48 hours after order confirmation and product availability checks.',
+        ? 'مدة التوصيل في المدن المتاحة من 24 إلى 48 ساعة بعد تأكيد الطلب وتوفر المنتجات.'
+        : 'Delivery in available cities takes 24 to 48 hours after order confirmation and product availability checks.',
     },
     {
       q: isRTL ? 'ما هي طرق الدفع المتاحة؟' : 'What payment methods are available?',

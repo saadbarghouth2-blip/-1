@@ -9,8 +9,8 @@ interface FAQSectionProps {
 
 const faqs = [
   {
-    qAr: 'ما هي سياسة الطلب والتوصيل داخل المملكة؟',
-    qEn: 'What is the order and delivery policy across Saudi Arabia?',
+    qAr: 'ما هي سياسة الطلب والتوصيل؟',
+    qEn: 'What is the order and delivery policy?',
     aAr: 'الحد الأدنى 15 كرتون للمياه العادية، و20 ربطة لرفا مكة المحددة، و10 كراتين للمياه الزجاجية. رسوم التوصيل 25 ريال عند عدم بلوغ حد المجاني. التوصيل مجاني من 20 كرتون عادي أو 35 ربطة أو 15 كرتون زجاج، وجميع العروض توصيلها مجاني. مدة التوصيل من 24 إلى 48 ساعة.',
     aEn: 'Minimums are 15 regular cartons, 20 specified Rafa Makkah bundles, or 10 glass cartons. Delivery costs 25 SAR below the free-delivery threshold. Delivery is free from 20 regular cartons, 35 bundles, or 15 glass cartons, and every offer includes free delivery. Delivery takes 24 to 48 hours.',
     category: 'delivery',
@@ -18,8 +18,8 @@ const faqs = [
   {
     qAr: 'ما هي المناطق التي يشملها التوصيل؟',
     qEn: 'Which areas does delivery cover?',
-    aAr: 'التوصيل متاح في جميع أنحاء المملكة العربية السعودية دون حصره في مدن محددة.',
-    aEn: 'Delivery is available across Saudi Arabia without limiting service to selected cities.',
+    aAr: 'التوصيل متاح حاليًا في الرياض والدمام والأحساء. جدة ومكة المكرمة والمدينة المنورة بانتظار اعتماد المنتجات.',
+    aEn: 'Delivery is currently available in Riyadh, Dammam and Al-Ahsa. Jeddah, Makkah and Madinah are awaiting product approval.',
     category: 'delivery',
   },
   {
@@ -53,8 +53,8 @@ const faqs = [
   {
     qAr: 'هل يتوفر توصيل في نفس اليوم؟',
     qEn: 'Is same-day delivery available?',
-    aAr: 'مدة التوصيل المعتمدة داخل المملكة من 24 إلى 48 ساعة بعد تأكيد الطلب وتوفر المنتجات.',
-    aEn: 'The standard delivery time across Saudi Arabia is 24 to 48 hours after order confirmation and availability checks.',
+    aAr: 'مدة التوصيل المعتمدة في المدن المتاحة من 24 إلى 48 ساعة بعد تأكيد الطلب وتوفر المنتجات.',
+    aEn: 'The standard delivery time in available cities is 24 to 48 hours after order confirmation and availability checks.',
     category: 'delivery',
   },
   {

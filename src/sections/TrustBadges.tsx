@@ -20,8 +20,8 @@ const badges = [
     icon: Truck,
     titleAr: 'شحن مجاني',
     titleEn: 'Free Shipping',
-    descAr: 'وفق حد التوصيل المجاني داخل المملكة',
-    descEn: 'According to free-delivery thresholds across Saudi Arabia',
+    descAr: 'وفق حد التوصيل المجاني في المدن المتاحة',
+    descEn: 'According to free-delivery thresholds in available cities',
   },
   {
     icon: RotateCcw,

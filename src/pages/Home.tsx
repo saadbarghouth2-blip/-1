@@ -147,7 +147,7 @@ function FastDeliveryHero({
         <div className="absolute inset-0 bg-[linear-gradient(180deg,#dff4ff_0%,#eef8ff_38%,#e9f0ee_64%,#d8dde0_100%)]" />
         <motion.img
           src={truckImageSrc}
-          alt="توصيل سريع لمياه ريق في جميع أنحاء المملكة"
+          alt="توصيل سريع لمياه ريق في المدن المتاحة"
           className="absolute inset-0 h-full w-full object-cover object-[62%_center] opacity-95 sm:object-center"
           initial={prefersReducedMotion ? false : { x: 90, opacity: 0.86, scale: 1.03 }}
           animate={prefersReducedMotion ? { opacity: 1 } : { x: 0, opacity: 1, scale: [1, 1.008, 1] }}
@@ -283,8 +283,8 @@ const fastDeliveryCopy = {
   },
   en: {
     headline: 'Fast Delivery',
-    pill: 'Across Saudi Arabia',
-    alt: 'Fast delivery for Riq water across Saudi Arabia',
+    pill: 'Riyadh, Dammam & Al-Ahsa',
+    alt: 'Fast delivery for Riq water in available cities',
     speedTitle: 'Fast',
     speedDesc: 'Delivery',
     coverageTitle: 'Full Coverage',
@@ -310,8 +310,8 @@ function ExactFastDeliveryHero({
     ? '/images/blue-arabic-water-delivery.webp'
     : '/images/reeq-pure-water-delivery.webp';
   const alt = isRTL
-    ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في جميع أنحاء المملكة'
-    : 'Riq pure water delivery across Saudi Arabia';
+    ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في المدن المتاحة'
+    : 'Riq pure water delivery in available cities';
 
   return (
     <motion.section
@@ -335,7 +335,7 @@ function ExactFastDeliveryHero({
           />
         </picture>
         <div className="absolute bottom-[2.4%] left-1/2 z-10 -translate-x-1/2 rounded-full border-2 border-white/80 bg-[#153b66] px-5 py-2 text-center text-sm font-black text-white shadow-xl sm:px-8 sm:py-3 sm:text-xl" dir={isRTL ? 'rtl' : 'ltr'}>
-          {isRTL ? 'التوصيل إلى جميع أنحاء المملكة' : 'Delivery across Saudi Arabia'}
+          {isRTL ? 'التوصيل في الرياض والدمام والأحساء' : 'Delivery in Riyadh, Dammam and Al-Ahsa'}
         </div>
       </div>
     </motion.section>
@@ -390,7 +390,7 @@ function LegacyExactFastDeliveryHero({
         src="/images/29448fae-193d-4937-9cc8-2eda5e4f2de7.jpg"
         width={1600}
         height={938}
-        alt={isRTL ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في جميع أنحاء المملكة' : 'Riq fast pure water delivery to your door across Saudi Arabia'}
+        alt={isRTL ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في المدن المتاحة' : 'Riq fast pure water delivery to your door in available cities'}
         className="relative z-10 block h-auto w-full rounded-[0.7rem] border border-sky-100/80 object-contain object-center shadow-[0_22px_60px_-34px_rgba(15,63,123,0.46)] sm:rounded-[1.1rem] lg:rounded-[1.5rem]"
         initial={prefersReducedMotion ? false : { opacity: 0, y: 18, scale: 0.985, filter: 'blur(5px)' }}
         animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
@@ -495,7 +495,7 @@ function LegacyExactFastDeliveryHero({
           <div className="absolute inset-x-0 bottom-0 flex h-7 items-center justify-around bg-[#075b96]/94 px-2 text-[0.48rem] font-bold text-white">
             <span>{isRTL ? 'نقاء وجودة' : 'Pure quality'}</span>
             <span>{isRTL ? 'توصيل سريع' : 'Fast delivery'}</span>
-            <span>{isRTL ? 'كل أنحاء المملكة' : 'Saudi-wide'}</span>
+            <span>{isRTL ? 'الرياض والدمام والأحساء' : 'Riyadh, Dammam & Al-Ahsa'}</span>
           </div>
         </motion.div>
       </div>

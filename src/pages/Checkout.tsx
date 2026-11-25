@@ -78,7 +78,7 @@ export default function Checkout() {
     return savedData ? {
       ...savedData,
       email: savedData.email ?? '',
-      city: DELIVERY_CITY_OPTIONS.some((city) => city.id === savedData.city) ? savedData.city : 'nationwide',
+      city: DELIVERY_CITY_OPTIONS.some((city) => city.id === savedData.city && city.enabled) ? savedData.city : 'riyadh',
       floorLevel: savedData.floorLevel ?? 'ground',
       locationConfirmed: savedData.locationConfirmed === true,
     } : {
@@ -86,7 +86,7 @@ export default function Checkout() {
       phone: '',
       email: '',
       address: '',
-      city: 'nationwide',
+      city: 'riyadh',
       floorLevel: 'ground',
       lat: DEFAULT_MAP_LAT,
       lng: DEFAULT_MAP_LNG,
@@ -613,19 +613,19 @@ export default function Checkout() {
                     </div>
                   </div>
                   
-                  <div className="rounded-3xl border border-[#153b66]/10 bg-[#153b66]/5 p-4">
+                  <div className="rounded-3xl border border-[#153b66]/10 bg-[linear-gradient(145deg,#f8fbff,#eef4f9)] p-4 sm:p-5">
                     <div className="mb-3 flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white shadow-sm">
                         <MapPin className="h-5 w-5 text-[#153b66]" />
                       </div>
                       <div>
-                        <p className="text-sm font-black text-gray-900">{isRTL ? 'نطاق التوصيل' : 'Delivery coverage'}</p>
+                        <p className="text-sm font-black text-gray-900">{isRTL ? 'مدينة التوصيل' : 'Delivery city'}</p>
                         <p className="text-xs text-gray-500">
                           {isRTL ? `التوصيل متاح في ${SERVICE_CITY_AR} خلال ${DELIVERY_DURATION_AR}.` : `Delivery is available ${SERVICE_CITY_EN} within ${DELIVERY_DURATION_EN}.`}
                         </p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 gap-3">
+                    <div className="grid grid-cols-2 gap-3">
                       {DELIVERY_CITY_OPTIONS.map((city) => {
                         const selected = formData.city === city.id;
                         return (
@@ -634,7 +634,7 @@ export default function Checkout() {
                             type="button"
                             disabled={!city.enabled}
                             onClick={() => setFormData((current) => ({ ...current, city: city.id }))}
-                            className={`rounded-2xl border px-4 py-3 text-sm font-black transition ${
+                            className={`min-h-[5.4rem] rounded-2xl border px-3 py-3 text-center text-sm font-black transition sm:px-4 ${
                               selected
                                 ? 'border-[#153b66] bg-[#153b66] text-white'
                                 : city.enabled
@@ -642,7 +642,12 @@ export default function Checkout() {
                                   : 'cursor-not-allowed border-amber-200 bg-amber-50 text-amber-700 opacity-80'
                             }`}
                           >
-                            {isRTL ? city.labelAr : city.labelEn}
+                            <span className="block">{isRTL ? city.labelAr : city.labelEn}</span>
+                            {!city.enabled ? (
+                              <span className="mt-1 block text-[0.68rem] font-bold opacity-85">
+                                {isRTL ? 'بانتظار اعتماد المنتجات' : 'Awaiting product approval'}
+                              </span>
+                            ) : null}
                           </button>
                         );
                       })}

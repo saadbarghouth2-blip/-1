@@ -66,8 +66,8 @@ export default function StatsTicker({ isRTL }: StatsTickerProps) {
       suffix: '+',
       labelAr: 'مدينة ومنطقة',
       labelEn: 'Cities & Regions',
-      descAr: 'تغطية واسعة في جميع أنحاء المملكة العربية السعودية',
-      descEn: 'Wide coverage across all of Saudi Arabia',
+      descAr: 'تغطية في الرياض والدمام والأحساء',
+      descEn: 'Coverage in Riyadh, Dammam and Al-Ahsa',
       color: 'from-violet-500 to-purple-600',
     },
     {

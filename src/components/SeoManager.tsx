@@ -264,10 +264,7 @@ function buildCommonSchemas(siteOrigin: string, isRTL: boolean) {
         addressCountry: 'SA',
         streetAddress,
       },
-      areaServed: {
-        '@type': 'Country',
-        name: isRTL ? 'المملكة العربية السعودية' : 'Saudi Arabia',
-      },
+      areaServed: isRTL ? ['الرياض', 'الدمام', 'الأحساء'] : ['Riyadh', 'Dammam', 'Al-Ahsa'],
       priceRange: 'SAR',
       currenciesAccepted: 'SAR',
       paymentAccepted: ['Cash', 'Bank transfer', 'Credit card'],
@@ -403,8 +400,8 @@ function buildBrandSchema({
     url: pageUrl,
     logo: toAbsoluteUrl(brand.logo ?? SITE_DEFAULT_IMAGE, siteOrigin),
     description: isRTL
-      ? `تسوق منتجات ${brand.nameAr} داخل متجر ريق مع توصيل سريع في جميع أنحاء المملكة.`
-      : `Shop ${brand.name} products at Riq Store with fast delivery across Saudi Arabia.`,
+      ? `تسوق منتجات ${brand.nameAr} داخل متجر ريق مع توصيل سريع في المدن المتاحة.`
+      : `Shop ${brand.name} products at Riq Store with fast delivery in available cities.`,
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: isRTL ? `منتجات ${brand.nameAr}` : `${brand.name} products`,
@@ -482,13 +479,13 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
   if (normalizedPath === '/') {
     return buildStaticPagePayload({
       title: isRTL
-        ? 'متجر ريق | توصيل مياه الشرب والعروض في جميع أنحاء المملكة'
-        : 'Riq Store | Bottled Water Delivery and Offers Across Saudi Arabia',
+        ? 'متجر ريق | توصيل مياه الشرب والعروض في الرياض والدمام والأحساء'
+        : 'Riq Store | Bottled Water Delivery and Offers in Riyadh, Dammam and Al-Ahsa',
       description: isRTL ? SITE_DEFAULT_DESCRIPTION.ar : SITE_DEFAULT_DESCRIPTION.en,
       path: '/',
       keywords: isRTL
-        ? 'مياه، توصيل مياه المملكة، طلب مياه، مياه شرب، مياه معبأة، عروض مياه، متجر ريق، ريق'
-        : 'water delivery Saudi Arabia, bottled water, water offers, Riq Store',
+        ? 'مياه، توصيل مياه الرياض، توصيل مياه الدمام، توصيل مياه الأحساء، طلب مياه، مياه معبأة، عروض مياه، متجر ريق، ريق'
+        : 'water delivery Riyadh, Dammam, Al-Ahsa, bottled water, water offers, Riq Store',
       breadcrumbs: [{ name: isRTL ? 'الرئيسية' : 'Home', path: '/' }],
       items: products.slice(0, 10).map((product) => ({
         name: isRTL ? product.name.ar : product.name.en,
@@ -504,12 +501,12 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
     { name: isRTL ? 'الرئيسية' : 'Home', path: '/' },
   ];
   const genericKeywords = isRTL
-    ? 'ريق, ريق.com, الموقع الرسمي ريق, متجر ريق, Riq Store, riq, مياه معبأة, توصيل مياه المملكة, طلب مياه'
-    : 'Riq Store, riq, Riq official website, Riq.com, bottled water Saudi Arabia, water delivery, bottled water catalog';
+    ? 'ريق, ريق.com, الموقع الرسمي ريق, متجر ريق, Riq Store, riq, مياه معبأة, توصيل مياه الرياض والدمام والأحساء, طلب مياه'
+    : 'Riq Store, riq, Riq official website, Riq.com, bottled water Riyadh Dammam Al-Ahsa, water delivery, bottled water catalog';
 
   if (normalizedPath === '/') {
     return buildStaticPagePayload({
-      title: isRTL ? 'ريق - الموقع الرسمي | متجر ريق لتوصيل المياه في المملكة' : 'Riq Official Website | Riq Store Water Delivery Across Saudi Arabia',
+      title: isRTL ? 'ريق - الموقع الرسمي | متجر ريق لتوصيل المياه في الرياض والدمام والأحساء' : 'Riq Official Website | Riq Store Water Delivery in Riyadh, Dammam and Al-Ahsa',
       description: isRTL ? SITE_DEFAULT_DESCRIPTION.ar : SITE_DEFAULT_DESCRIPTION.en,
       path: '/',
       keywords: genericKeywords,
@@ -528,8 +525,8 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
     return buildStaticPagePayload({
       title: isRTL ? 'المنتجات | متجر ريق' : 'Products | Riq Store',
       description: isRTL
-        ? 'تصفح منتجات المياه المعبأة المتاحة في متجر ريق واطلب توصيل المياه في جميع أنحاء المملكة.'
-        : 'Browse bottled water products at Riq Store and order water delivery across Saudi Arabia.',
+        ? 'تصفح منتجات المياه المعبأة المتاحة في متجر ريق واطلب توصيل المياه في الرياض والدمام والأحساء.'
+        : 'Browse bottled water products at Riq Store and order water delivery in Riyadh, Dammam and Al-Ahsa.',
       path: '/products',
       keywords: isRTL
         ? 'منتجات متجر ريق, مياه 200 مل, مياه 330 مل, مياه 1.5 لتر, توصيل مياه'
@@ -590,8 +587,8 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
       const description = hasFixedPrice(product)
         ? (
           isRTL
-            ? `اطلب ${product.name.ar} من متجر ريق مع توصيل سريع في جميع أنحاء المملكة وسعر يبدأ من ${product.price.toFixed(2)} ريال.`
-            : `Order ${product.name.en} from Riq Store with fast delivery across Saudi Arabia from ${product.price.toFixed(2)} SAR.`
+            ? `اطلب ${product.name.ar} من متجر ريق مع توصيل سريع في المدن المتاحة وسعر يبدأ من ${product.price.toFixed(2)} ريال.`
+            : `Order ${product.name.en} from Riq Store with fast delivery in available cities from ${product.price.toFixed(2)} SAR.`
         )
         : (
           isRTL
@@ -640,7 +637,7 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
     return buildStaticPagePayload({
       title: isRTL ? 'العلامات التجارية | متجر ريق' : 'Brands | Riq Store',
       description: isRTL
-        ? 'اكتشف العلامات التجارية المتاحة حاليا داخل متجر ريق لتوصيل المياه في جميع أنحاء المملكة.'
+        ? 'اكتشف العلامات التجارية المتاحة حاليا داخل متجر ريق لتوصيل المياه في الرياض والدمام والأحساء.'
         : 'Discover the water brands currently available at Riq Store.',
       path: '/brands',
       keywords: isRTL ? 'العلامات التجارية, مياه معبأة, متجر ريق' : 'water brands, bottled water, Riq Store',
@@ -743,8 +740,8 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
     '/about': {
       title: isRTL ? 'من نحن | متجر ريق' : 'About Us | Riq Store',
       description: isRTL
-        ? 'تعرف على متجر ريق ورسالتنا في توصيل المياه المعبأة في جميع أنحاء المملكة.'
-        : 'Learn more about Riq Store and our mission to deliver high-quality bottled water across Saudi Arabia.',
+        ? 'تعرف على متجر ريق ورسالتنا في توصيل المياه المعبأة في الرياض والدمام والأحساء.'
+        : 'Learn more about Riq Store and our mission to deliver high-quality bottled water in Riyadh, Dammam and Al-Ahsa.',
       pageType: 'AboutPage',
     },
     '/app': {
@@ -757,8 +754,8 @@ function buildSeoPayload(pathname: string, isRTL: boolean, siteOrigin: string): 
     '/contact': {
       title: isRTL ? 'اتصل بنا | متجر ريق' : 'Contact Us | Riq Store',
       description: isRTL
-        ? 'تواصل مع متجر ريق للطلبات والاستفسارات وخدمة العملاء في جميع أنحاء المملكة.'
-        : 'Contact Riq Store for orders, questions, and customer support across Saudi Arabia.',
+        ? 'تواصل مع متجر ريق للطلبات والاستفسارات وخدمة العملاء في الرياض والدمام والأحساء.'
+        : 'Contact Riq Store for orders, questions, and customer support in Riyadh, Dammam and Al-Ahsa.',
       pageType: 'ContactPage',
     },
     '/cart': {
