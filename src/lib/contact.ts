@@ -2,13 +2,16 @@ import { formatSarPrice } from './utils';
 import { BRAND_NAME_EN, BRAND_NAME_LOCKUP } from './brand';
 
 export const CONTACT_PHONE_RAW = '966505457251';
-export const CONTACT_PHONE_DISPLAY = '+966 50 545 7251';
+export const CONTACT_PHONE_DISPLAY = '0505457251';
 export const CONTACT_PHONE_HREF = `tel:+${CONTACT_PHONE_RAW}`;
 export const CONTACT_ADDITIONAL_PHONES: Array<{
   raw: string;
   display: string;
   href: string;
-}> = [];
+}> = [
+  { raw: '966591081186', display: '0591081186', href: 'tel:+966591081186' },
+  { raw: '966573734946', display: '0573734946', href: 'tel:+966573734946' },
+];
 export const CONTACT_PHONE_NUMBERS = [
   {
     raw: CONTACT_PHONE_RAW,
@@ -18,16 +21,18 @@ export const CONTACT_PHONE_NUMBERS = [
   },
   ...CONTACT_ADDITIONAL_PHONES.map((phone) => ({ ...phone, primary: false })),
 ];
-export const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL?.trim() || 'saadsaad50begiseralex6@gmail.com';
-export const CONTACT_EMAIL_HREF = `mailto:${CONTACT_EMAIL}`;
+export const CONTACT_EMAIL = 'info@ريق.com';
+// Keep the public Arabic domain as supplied while using its ASCII form for mail clients.
+export const CONTACT_EMAIL_HREF = 'mailto:info@xn--wgb8axa.com';
 export const WHATSAPP_PHONE_RAW = '966505457251';
-export const WHATSAPP_PHONE_DISPLAY = '+966 50 545 7251';
+export const WHATSAPP_PHONE_DISPLAY = '0505457251';
 export const WHATSAPP_LINK = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE_RAW}`;
-export const TIKTOK_LINK = 'https://www.tiktok.com/@moya.ksaa?_r=1&_t=ZS-96ucaLw51Tc';
+export const INSTAGRAM_LINK = 'https://www.instagram.com/riq_store_?fqnt=b2FjZ2RtdzNyZ24=';
+export const TIKTOK_LINK = 'https://www.tiktok.com/@riq.storee?_r=1&_t=ZS-9BhbFHxBbnU';
 export const BUSINESS_LEGAL_NAME_AR = '\u0634\u0631\u0643\u0629 \u0625\u0634\u0631\u0627\u0642 \u0627\u0644\u0648\u0627\u062f\u064a \u0644\u0644\u062a\u062c\u0627\u0631\u0629 \u0634\u0631\u0643\u0629 \u0634\u062e\u0635 \u0648\u0627\u062d\u062f';
 export const BUSINESS_LEGAL_NAME_EN = 'Ashraq Alwady Trading One Person Company';
-export const BUSINESS_ADDRESS_AR = '\u0627\u0644\u0631\u064a\u0627\u0636\u060c \u062d\u064a \u0647\u0627\u0631\u0648\u0646 \u0627\u0644\u0631\u0634\u064a\u062f\u060c \u0634\u0627\u0631\u0639 53\u060c \u0645\u0628\u0646\u0649 6149\u060c \u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a 14264\u060c \u0627\u0644\u0631\u0642\u0645 \u0627\u0644\u0641\u0631\u0639\u064a 2909\u060c \u0627\u0644\u0645\u0645\u0644\u0643\u0629 \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u0627\u0644\u0633\u0639\u0648\u062f\u064a\u0629';
-export const BUSINESS_ADDRESS_EN = 'Building 6149, 53 Street, Harun Al Rashid District, Riyadh 14264, Saudi Arabia';
+export const BUSINESS_ADDRESS_AR = 'المملكة العربية السعودية – الرياض – حي السلي – شارع هارون الرشيد.';
+export const BUSINESS_ADDRESS_EN = 'Harun Al Rashid Street, Al Sulay District, Riyadh, Saudi Arabia';
 export const BUSINESS_TAX_NUMBER = '312711661800003';
 export const BUSINESS_NATIONAL_UNIFIED_NUMBER = '7030837798';
 export const BUSINESS_COMMERCIAL_REGISTRATION = BUSINESS_NATIONAL_UNIFIED_NUMBER;

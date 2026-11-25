@@ -427,8 +427,10 @@
   }
 
   .home-deferred-section {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 28rem;
+    /* Keep lazy home content in normal document flow; intrinsic containment was
+       reserving a tall blank area before the footer on some browsers. */
+    content-visibility: visible;
+    contain-intrinsic-size: auto;
   }
   
   /* Delay Utilities */

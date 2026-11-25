@@ -4,7 +4,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { 
   Phone, Mail, MapPin, Clock, Send, MessageCircle, 
   Check, ChevronDown, ChevronUp, Truck, Headphones, Shield,
-  Instagram, Twitter, Facebook, ExternalLink, Sparkles,
+  Instagram, ExternalLink, Sparkles,
   TimerReset, BadgeCheck, Activity, Music2
 } from 'lucide-react';
 import {
@@ -13,6 +13,7 @@ import {
   CONTACT_EMAIL_HREF,
   CONTACT_PHONE_HREF,
   CONTACT_PHONE_NUMBERS,
+  INSTAGRAM_LINK,
   sendContactEmail,
   TIKTOK_LINK,
   WHATSAPP_LINK,
@@ -89,7 +90,7 @@ export default function Contact() {
       icon: MapPin,
       title: isRTL ? 'العنوان' : 'Address',
       content: isRTL ? SITE_ADDRESS_AR : SITE_ADDRESS_EN,
-      subContent: isRTL ? 'توصيل لجميع المناطق' : 'Delivery to all areas',
+      subContent: isRTL ? 'عنوان الشركة — والتوصيل متاح في جميع أنحاء المملكة' : 'Company address — delivery is available across Saudi Arabia',
       color: 'from-red-400 to-red-600',
       action: '#',
     },
@@ -107,20 +108,20 @@ export default function Contact() {
     {
       q: isRTL ? 'ما هي سياسة الطلب والتوصيل؟' : 'What is the order and delivery policy?',
       a: isRTL
-        ? 'الحد الأدنى للمياه العادية 15 كرتون، ولربطات رفا مكة المحددة 20 ربطة، وللمياه الزجاجية 10 كراتين. رسوم التوصيل 25 ريال في المدن المتاحة عند عدم بلوغ الحد المجاني. التوصيل مجاني من 20 كرتون عادي، أو 35 ربطة، أو 15 كرتون زجاج، وجميع العروض تشمل توصيلًا مجانيًا. مدة التوصيل من 24 إلى 48 ساعة.'
-        : 'Minimums are 15 regular cartons, 20 specified Rafa Makkah bundles, or 10 glass cartons. Delivery costs 25 SAR in available cities below the free-delivery threshold. Delivery is free from 20 regular cartons, 35 bundles, or 15 glass cartons, and every offer includes free delivery. Delivery takes 24 to 48 hours.',
+        ? 'الحد الأدنى للمياه العادية 15 كرتون، ولربطات رفا مكة المحددة 20 ربطة، وللمياه الزجاجية 10 كراتين. رسوم التوصيل 25 ريال داخل المملكة عند عدم بلوغ الحد المجاني. التوصيل مجاني من 20 كرتون عادي، أو 35 ربطة، أو 15 كرتون زجاج، وجميع العروض تشمل توصيلًا مجانيًا. مدة التوصيل من 24 إلى 48 ساعة.'
+        : 'Minimums are 15 regular cartons, 20 specified Rafa Makkah bundles, or 10 glass cartons. Delivery costs 25 SAR across Saudi Arabia below the free-delivery threshold. Delivery is free from 20 regular cartons, 35 bundles, or 15 glass cartons, and every offer includes free delivery. Delivery takes 24 to 48 hours.',
     },
     {
       q: isRTL ? 'ما هي مناطق التوصيل المتاحة؟' : 'What are the available delivery areas?',
       a: isRTL 
-        ? 'التوصيل متاح حاليًا في الرياض والدمام والأحساء. جدة ومكة المكرمة والمدينة المنورة ضمن خطة التوسع القادمة وسيتم الإعلان عند التفعيل.'
-        : 'Delivery is currently available in Riyadh, Dammam and Al-Ahsa. Jeddah, Makkah and Madinah are planned for the next expansion and will be announced when activated.',
+        ? 'التوصيل متاح في جميع أنحاء المملكة العربية السعودية دون حصره في مدن محددة.'
+        : 'Delivery is available across Saudi Arabia without limiting service to selected cities.',
     },
     {
       q: isRTL ? 'كم تستغرق عملية التوصيل؟' : 'How long does delivery take?',
       a: isRTL
-        ? 'مدة التوصيل في المدن المتاحة من 24 إلى 48 ساعة بعد تأكيد الطلب وتوفر المنتجات.'
-        : 'Delivery in available cities takes 24 to 48 hours after order confirmation and product availability checks.',
+        ? 'مدة التوصيل داخل المملكة من 24 إلى 48 ساعة بعد تأكيد الطلب وتوفر المنتجات.'
+        : 'Delivery across Saudi Arabia takes 24 to 48 hours after order confirmation and product availability checks.',
     },
     {
       q: isRTL ? 'ما هي طرق الدفع المتاحة؟' : 'What payment methods are available?',
@@ -149,9 +150,7 @@ export default function Contact() {
   ];
 
   const socialLinks = [
-    { icon: Instagram, href: '#', color: 'from-purple-500 to-pink-500', label: 'Instagram' },
-    { icon: Twitter, href: '#', color: 'from-blue-400 to-blue-600', label: 'Twitter' },
-    { icon: Facebook, href: '#', color: 'from-blue-600 to-blue-800', label: 'Facebook' },
+    { icon: Instagram, href: INSTAGRAM_LINK, color: 'from-purple-500 to-pink-500', label: 'Instagram' },
     { icon: Music2, href: TIKTOK_LINK, color: 'from-slate-900 to-slate-700', label: 'TikTok' },
     { icon: MessageCircle, href: WHATSAPP_LINK, color: 'from-green-500 to-green-600', label: 'WhatsApp' },
   ];

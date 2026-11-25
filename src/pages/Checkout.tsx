@@ -30,6 +30,8 @@ import {
   getDeliveryPolicySummary,
   getFloorDeliveryFee,
   requiresFloorFeeAgreement,
+  SERVICE_CITY_AR,
+  SERVICE_CITY_EN,
   type DeliveryCity,
   type DeliveryFloorLevel,
 } from '../lib/deliveryRules';
@@ -76,7 +78,7 @@ export default function Checkout() {
     return savedData ? {
       ...savedData,
       email: savedData.email ?? '',
-      city: savedData.city ?? 'riyadh',
+      city: DELIVERY_CITY_OPTIONS.some((city) => city.id === savedData.city) ? savedData.city : 'nationwide',
       floorLevel: savedData.floorLevel ?? 'ground',
       locationConfirmed: savedData.locationConfirmed === true,
     } : {
@@ -84,7 +86,7 @@ export default function Checkout() {
       phone: '',
       email: '',
       address: '',
-      city: 'riyadh',
+      city: 'nationwide',
       floorLevel: 'ground',
       lat: DEFAULT_MAP_LAT,
       lng: DEFAULT_MAP_LNG,
@@ -127,8 +129,7 @@ export default function Checkout() {
       && hasValidOptionalEmail
   );
   const selectedPaymentMethodLabel = getManualPaymentMethodLabel(paymentMethod, isRTL);
-  const selectedCity = DELIVERY_CITY_OPTIONS.find((city) => city.id === formData.city);
-  const deliveryAddress = `${isRTL ? selectedCity?.labelAr : selectedCity?.labelEn} - ${formData.address.trim()}`;
+  const deliveryAddress = formData.address.trim();
   const paymentMethodIcons = {
     cash_on_delivery: Banknote,
     bank_transfer: Landmark,
@@ -554,7 +555,7 @@ export default function Checkout() {
               </button>
               <div>
                 <h1 className="text-3xl font-black text-gray-900">{isRTL ? 'تحديد الموقع والتوصيل' : 'Delivery & Location'}</h1>
-                <p className="text-gray-400 mt-1 text-sm font-medium">{isRTL ? (step === 1 ? 'موقعك في الرياض بدقة عالية' : 'تأكيد الطلب') : (step === 1 ? 'Precision Riyadh location' : 'Order confirmation')}</p>
+                <p className="text-gray-400 mt-1 text-sm font-medium">{isRTL ? (step === 1 ? 'حدّد موقعك بدقة عالية' : 'تأكيد الطلب') : (step === 1 ? 'Set your location accurately' : 'Order confirmation')}</p>
               </div>
             </div>
 
@@ -618,13 +619,13 @@ export default function Checkout() {
                         <MapPin className="h-5 w-5 text-[#153b66]" />
                       </div>
                       <div>
-                        <p className="text-sm font-black text-gray-900">{isRTL ? 'مدينة التوصيل' : 'Delivery city'}</p>
+                        <p className="text-sm font-black text-gray-900">{isRTL ? 'نطاق التوصيل' : 'Delivery coverage'}</p>
                         <p className="text-xs text-gray-500">
-                          {isRTL ? `التوصيل في المدن المتاحة خلال ${DELIVERY_DURATION_AR}.` : `Delivery in available cities takes ${DELIVERY_DURATION_EN}.`}
+                          {isRTL ? `التوصيل متاح في ${SERVICE_CITY_AR} خلال ${DELIVERY_DURATION_AR}.` : `Delivery is available ${SERVICE_CITY_EN} within ${DELIVERY_DURATION_EN}.`}
                         </p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3">
                       {DELIVERY_CITY_OPTIONS.map((city) => {
                         const selected = formData.city === city.id;
                         return (
@@ -642,11 +643,6 @@ export default function Checkout() {
                             }`}
                           >
                             {isRTL ? city.labelAr : city.labelEn}
-                            {!city.enabled ? (
-                              <span className="mt-1 block text-[10px] font-bold">
-                                {isRTL ? 'بانتظار اعتماد المنتجات' : 'Products pending approval'}
-                              </span>
-                            ) : null}
                           </button>
                         );
                       })}

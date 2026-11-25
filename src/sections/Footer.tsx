@@ -3,10 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import {
-  Facebook,
-  Twitter,
   Instagram,
-  Linkedin,
   Music2,
   ArrowUp,
   MapPin,
@@ -22,11 +19,14 @@ import {
   BUSINESS_REGISTRATION_STATUS_AR,
   BUSINESS_REGISTRATION_STATUS_EN,
   BUSINESS_TAX_NUMBER,
+  BUSINESS_ADDRESS_AR,
+  BUSINESS_ADDRESS_EN,
   CONTACT_EMAIL,
   CONTACT_EMAIL_HREF,
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_HREF,
   CONTACT_PHONE_NUMBERS,
+  INSTAGRAM_LINK,
   TIKTOK_LINK,
 } from '../lib/contact';
 import { BRAND_NAME_AR, BRAND_NAME_EN, BRAND_NAME_LOCKUP } from '../lib/brand';
@@ -81,10 +81,7 @@ export default function Footer() {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
+    { icon: Instagram, href: INSTAGRAM_LINK, label: 'Instagram' },
     { icon: Music2, href: TIKTOK_LINK, label: 'TikTok' },
   ];
 
@@ -218,8 +215,8 @@ export default function Footer() {
             </Link>
             <p className="mb-6 leading-relaxed text-white/70">
               {isRTL
-                ? '\u0648\u062c\u0647\u062a\u0643 \u0627\u0644\u0623\u0648\u0644\u0649 \u0644\u0644\u0645\u064a\u0627\u0647 \u0627\u0644\u0645\u0639\u0628\u0623\u0629 \u0639\u0627\u0644\u064a\u0629 \u0627\u0644\u062c\u0648\u062f\u0629 \u062f\u0627\u062e\u0644 \u0627\u0644\u0631\u064a\u0627\u0636. \u0646\u0648\u0641\u0631 \u0644\u0643 \u0645\u0646\u062a\u062c\u0627\u062a \u0645\u0648\u062b\u0648\u0642\u0629 \u0645\u0646 \u0639\u0644\u0627\u0645\u0627\u062a \u0645\u062d\u0644\u064a\u0629 \u0648\u0639\u0627\u0644\u0645\u064a\u0629 \u0645\u0639 \u062a\u062c\u0631\u0628\u0629 \u0637\u0644\u0628 \u0633\u0647\u0644\u0629 \u0648\u0633\u0631\u064a\u0639\u0629.'
-                : 'Your first destination for high-quality bottled water in Riyadh, with trusted local and international brands and a smoother ordering experience.'}
+                ? 'وجهتك الأولى للمياه المعبأة عالية الجودة في جميع أنحاء المملكة. نوفر لك منتجات موثوقة من علامات محلية وعالمية مع تجربة طلب سهلة وسريعة.'
+                : 'Your first destination for high-quality bottled water across Saudi Arabia, with trusted local and international brands and a smoother ordering experience.'}
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social) => (
@@ -230,6 +227,8 @@ export default function Footer() {
                   whileTap={{ scale: 0.9 }}
                   className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-[#153b66] sm:h-10 sm:w-10"
                   aria-label={social.label}
+                  target="_blank"
+                  rel="noreferrer"
                 >
                   <social.icon className="h-4 w-4 sm:h-5 sm:w-5" />
                 </motion.a>
@@ -318,8 +317,9 @@ export default function Footer() {
                   <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-white/70">{isRTL ? '\u0627\u0644\u0639\u0646\u0648\u0627\u0646' : 'Address'}</p>
-                  <p className="font-medium">{isRTL ? '\u0627\u0644\u062a\u0648\u0635\u064a\u0644 \u0645\u062a\u0627\u062d \u062f\u0627\u062e\u0644 \u0627\u0644\u0631\u064a\u0627\u0636' : 'Delivery available in Riyadh'}</p>
+                  <p className="text-sm text-white/70">{isRTL ? 'عنوان الشركة' : 'Company address'}</p>
+                  <p className="font-medium">{isRTL ? BUSINESS_ADDRESS_AR : BUSINESS_ADDRESS_EN}</p>
+                  <p className="mt-2 text-sm text-[#8ad8ff]">{isRTL ? 'التوصيل متاح في جميع أنحاء المملكة.' : 'Delivery is available across Saudi Arabia.'}</p>
                 </div>
               </div>
             </div>
@@ -377,6 +377,13 @@ export default function Footer() {
             >
               © 2024 {BRAND_NAME_LOCKUP}. {isRTL ? '\u062c\u0645\u064a\u0639 \u0627\u0644\u062d\u0642\u0648\u0642 \u0645\u062d\u0641\u0648\u0638\u0629' : 'All Rights Reserved'}.
             </motion.p>
+            <p className="text-center text-xs font-medium text-white/60 md:text-right">
+              <a href="https://xn--2gbwk.site/" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#8ad8ff]">
+                {isRTL ? 'إنتاج وتطوير شركة نُطق' : 'Produced and developed by Notoq'}
+              </a>
+              <span className="mx-2 text-white/30">•</span>
+              <a href="https://www.barghouth.me/" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#8ad8ff]">barghouth.me</a>
+            </p>
             <div dir="ltr" className="flex max-w-full items-center justify-center gap-2 overflow-x-auto pb-1 sm:gap-3 md:justify-start">
               {paymentMethods.map((paymentMethod) => (
                 <div

@@ -10,6 +10,7 @@ import {
   CONTACT_EMAIL,
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_RAW,
+  INSTAGRAM_LINK,
   TIKTOK_LINK,
   WHATSAPP_LINK,
 } from './contact';
@@ -26,8 +27,8 @@ export const SITE_ADDRESS_AR = BUSINESS_ADDRESS_AR;
 export const SITE_LEGAL_NAME_AR = BUSINESS_LEGAL_NAME_AR;
 export const SITE_LEGAL_NAME_EN = BUSINESS_LEGAL_NAME_EN;
 export const SITE_POSTAL_CODE = '14264';
-export const SITE_STREET_ADDRESS_AR = 'حي هارون الرشيد، شارع 53، مبنى 6149، الرقم الفرعي 2909';
-export const SITE_STREET_ADDRESS_EN = 'Building 6149, 53 Street, Harun Al Rashid District';
+export const SITE_STREET_ADDRESS_AR = 'حي السلي، شارع هارون الرشيد';
+export const SITE_STREET_ADDRESS_EN = 'Harun Al Rashid Street, Al Sulay District';
 export const SITE_BUSINESS_IMAGES = [
   SITE_DEFAULT_IMAGE,
   '/images/blue-arabic-water-delivery.webp',
@@ -48,15 +49,15 @@ export const SITE_NAVIGATION = [
   { path: '/contact', nameAr: 'اتصل بنا', nameEn: 'Contact us' },
   { path: '/app', nameAr: 'تطبيق ريق', nameEn: 'Riq app' },
 ];
-export const SITE_SOCIAL_LINKS = [TIKTOK_LINK];
+export const SITE_SOCIAL_LINKS = [INSTAGRAM_LINK, TIKTOK_LINK];
 export const SITE_WHATSAPP = WHATSAPP_LINK;
 export const SITE_PHONE = CONTACT_PHONE_DISPLAY;
 export const SITE_PHONE_RAW = `+${CONTACT_PHONE_RAW}`;
 export const SITE_EMAIL = CONTACT_EMAIL;
 
 export const SITE_DEFAULT_DESCRIPTION = {
-  ar: 'متجر ريق هو وجهتك لطلب مياه الشرب المعبأة في الرياض. تسوّق المقاسات والعلامات التجارية والعروض، مع خدمة طلب وتوصيل سريعة وموثوقة إلى بابك.',
-  en: 'Riq Store is the official website for bottled water delivery in Riyadh. Order water products and offers from Riq.com with fast, trusted service.',
+  ar: 'متجر ريق هو وجهتك لطلب مياه الشرب المعبأة في جميع أنحاء المملكة العربية السعودية. تسوّق المقاسات والعلامات التجارية والعروض، مع خدمة طلب وتوصيل سريعة وموثوقة إلى بابك.',
+  en: 'Riq Store is the official website for bottled water delivery across Saudi Arabia. Order water products and offers from Riq.com with fast, trusted service.',
 };
 
 export function normalizeSiteUrl(value?: string) {

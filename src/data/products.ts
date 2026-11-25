@@ -1477,14 +1477,14 @@ function makeCampaignOfferProduct({
     isPurchasable: true,
     image: offerImage(imageFile),
     description: {
-      ar: `اشتر 15 كرتون مياه ${brandNameAr} ${sizeAr} واحصل على 5 كراتين مجانا بسعر ${price} ريال شامل الضريبة والتوصيل داخل الرياض.`,
-      en: `Buy 15 ${brand.en} ${size} cartons and get 5 cartons free for SAR ${price}, including VAT and delivery in Riyadh.`,
+      ar: `اشتر 15 كرتون مياه ${brandNameAr} ${sizeAr} واحصل على 5 كراتين مجانا بسعر ${price} ريال شامل الضريبة والتوصيل داخل المملكة.`,
+      en: `Buy 15 ${brand.en} ${size} cartons and get 5 cartons free for SAR ${price}, including VAT and delivery across Saudi Arabia.`,
     },
     features: [
       `اشتر 15 كرتون مياه ${brandNameAr} واحصل على 5 كراتين مجانا.`,
       `مقاس ${sizeAr} بعدد ${bottleCountAr} للكراتين.`,
-      `السعر ${price} ريال شامل الضريبة والتوصيل داخل الرياض.`,
-      'توصيل مجاني داخل الرياض ضمن العرض.',
+      `السعر ${price} ريال شامل الضريبة والتوصيل داخل المملكة.`,
+      'توصيل مجاني داخل المملكة ضمن العرض.',
     ],
     benefits: [
       '15 كرتون + 5 كراتين مجانا',
@@ -1496,8 +1496,8 @@ function makeCampaignOfferProduct({
       packaging: `15 + 5 كراتين مجانا، ${size} ${bottleCountEn}`,
     },
     story: {
-      ar: `عرض ${brandNameAr} مناسب للبيت والمكتب والضيافة، مع سعر شامل الضريبة والتوصيل داخل الرياض.`,
-      en: `${brand.en} offer is suitable for home, office, and hospitality orders with VAT and delivery included in Riyadh.`,
+      ar: `عرض ${brandNameAr} مناسب للبيت والمكتب والضيافة، مع سعر شامل الضريبة والتوصيل داخل المملكة.`,
+      en: `${brand.en} offer is suitable for home, office, and hospitality orders with VAT and delivery included across Saudi Arabia.`,
     },
     quickFacts: [
       { labelAr: 'العلامة', labelEn: 'Brand', valueAr: brandNameAr, valueEn: brand.en },
@@ -1587,14 +1587,14 @@ const legacyOfferProducts: Product[] = [
     isPurchasable: true,
     image: offerImage('nova-campaign.webp'),
     description: {
-      ar: 'عرض مميز على مياه نوفا 330 مل: اشتر 15 كرتون واحصل على 5 كراتين مجانا، شامل التوصيل المجاني داخل الرياض بسعر 350 ريال فقط.',
-      en: 'Special Nova 330ml offer: buy 15 cartons and get 5 cartons free, with free delivery in Riyadh for SAR 350 only.',
+      ar: 'عرض مميز على مياه نوفا 330 مل: اشتر 15 كرتون واحصل على 5 كراتين مجانا، شامل التوصيل المجاني داخل المملكة بسعر 350 ريال فقط.',
+      en: 'Special Nova 330ml offer: buy 15 cartons and get 5 cartons free, with free delivery across Saudi Arabia for SAR 350 only.',
     },
     features: [
       'مياه نوفا تأتي من آبار وادي سعد، أحد أشهر المصادر الطبيعية للمياه النقية في المملكة.',
       'تركيبة متوازنة وطعم نقي ينعش يومك مع كل رشفة.',
       'المقاس: 330 مل، والكمية الإجمالية: 20 كرتون ضمن عرض 15 + 5 مجانا.',
-      'السعر 350 ريال فقط شامل التوصيل المجاني داخل الرياض.',
+      'السعر 350 ريال فقط شامل التوصيل المجاني داخل المملكة.',
       'اختيار مثالي للمنزل، المكاتب، المناسبات، والضيافة الراقية.',
     ],
     benefits: [
@@ -1614,7 +1614,7 @@ const legacyOfferProducts: Product[] = [
       { labelAr: 'العلامة', labelEn: 'Brand', valueAr: 'نوفا', valueEn: 'Nova' },
       { labelAr: 'المقاس', labelEn: 'Size', valueAr: '330 مل', valueEn: '330ml' },
       { labelAr: 'العرض', labelEn: 'Offer', valueAr: '15 + 5 كراتين مجانا', valueEn: '15 + 5 cartons free' },
-      { labelAr: 'التوصيل', labelEn: 'Delivery', valueAr: 'مجاني داخل الرياض', valueEn: 'Free in Riyadh' },
+      { labelAr: 'التوصيل', labelEn: 'Delivery', valueAr: 'مجاني داخل المملكة', valueEn: 'Free across Saudi Arabia' },
     ],
     inStock: true,
     isPublished: true,
@@ -1643,13 +1643,13 @@ const legacyOfferProducts: Product[] = [
     isPurchasable: true,
     image: FLY_CAMPAIGN_IMAGE,
     description: {
-      ar: 'اشتر 15 كرتون مياه فلاي واحصل على 5 كراتين مجانا. متوفر 200 مل 48 عبوة أو 330 مل 40 عبوة بسعر 195 ريال شامل الضريبة والتوصيل داخل الرياض.',
-      en: 'Buy 15 Fly Water cartons and get 5 cartons free. Available in 200ml x48 bottles or 330ml x40 bottles for SAR 195 including VAT and delivery in Riyadh.',
+      ar: 'اشتر 15 كرتون مياه فلاي واحصل على 5 كراتين مجانا. متوفر 200 مل 48 عبوة أو 330 مل 40 عبوة بسعر 195 ريال شامل الضريبة والتوصيل داخل المملكة.',
+      en: 'Buy 15 Fly Water cartons and get 5 cartons free. Available in 200ml x48 bottles or 330ml x40 bottles for SAR 195 including VAT and delivery across Saudi Arabia.',
     },
     features: [
       'اشتر 15 كرتون مياه فلاي واحصل على 5 كراتين مجانا.',
       'متوفر بمقاس 200 مل بعدد 48 عبوة للكرتون أو 330 مل بعدد 40 عبوة للكرتون.',
-      'السعر 195 ريال فقط شامل الضريبة والتوصيل داخل الرياض.',
+      'السعر 195 ريال فقط شامل الضريبة والتوصيل داخل المملكة.',
       'مياه شرب نقية مع توصيل سريع وعروض مستمرة.',
       'اطلب الآن واستفد من العرض قبل انتهائه.',
     ],
@@ -1657,14 +1657,14 @@ const legacyOfferProducts: Product[] = [
       '15 كرتون + 5 كراتين مجانا',
       '200 مل أو 330 مل',
       'شامل الضريبة والتوصيل',
-      'توصيل سريع داخل الرياض',
+      'توصيل سريع داخل المملكة',
     ],
     specifications: {
       packaging: '15 + 5 كراتين مجانا، 200ml x48 أو 330ml x40',
     },
     story: {
-      ar: 'عرض فلاي مناسب للتخزين اليومي والطلبات العائلية والمكتبية مع سعر شامل الضريبة والتوصيل داخل الرياض.',
-      en: 'Fly offer is suited for daily stocking, family orders, and office supply with VAT and delivery included in Riyadh.',
+      ar: 'عرض فلاي مناسب للتخزين اليومي والطلبات العائلية والمكتبية مع سعر شامل الضريبة والتوصيل داخل المملكة.',
+      en: 'Fly offer is suited for daily stocking, family orders, and office supply with VAT and delivery included across Saudi Arabia.',
     },
     quickFacts: [
       { labelAr: 'العلامة', labelEn: 'Brand', valueAr: 'فلاي', valueEn: 'Fly Water' },
@@ -1700,7 +1700,7 @@ const legacyOfferProducts: Product[] = [
     image: FLY_CAMPAIGN_IMAGE,
     description: {
       ar: '\u0627\u0634\u062a\u0631 15 \u0643\u0631\u062a\u0648\u0646 \u0645\u064a\u0627\u0647 \u0641\u0644\u0627\u064a 330 \u0645\u0644 \u0648\u0627\u062d\u0635\u0644 \u0639\u0644\u0649 5 \u0643\u0631\u0627\u062a\u064a\u0646 \u0645\u062c\u0627\u0646\u0627 \u0628\u0633\u0639\u0631 195 \u0631\u064a\u0627\u0644 \u0634\u0627\u0645\u0644 \u0627\u0644\u0636\u0631\u064a\u0628\u0629 \u0648\u0627\u0644\u062a\u0648\u0635\u064a\u0644 \u062f\u0627\u062e\u0644 \u0627\u0644\u0631\u064a\u0627\u0636.',
-      en: 'Buy 15 Fly Water 330ml cartons and get 5 cartons free for SAR 195 including VAT and delivery in Riyadh.',
+      en: 'Buy 15 Fly Water 330ml cartons and get 5 cartons free for SAR 195 including VAT and delivery across Saudi Arabia.',
     },
     features: [
       '\u0627\u0634\u062a\u0631 15 \u0643\u0631\u062a\u0648\u0646 \u0645\u064a\u0627\u0647 \u0641\u0644\u0627\u064a \u0648\u0627\u062d\u0635\u0644 \u0639\u0644\u0649 5 \u0643\u0631\u0627\u062a\u064a\u0646 \u0645\u062c\u0627\u0646\u0627.',
@@ -1720,7 +1720,7 @@ const legacyOfferProducts: Product[] = [
     },
     story: {
       ar: '\u0639\u0631\u0636 \u0641\u0644\u0627\u064a 330 \u0645\u0644 \u0645\u0646\u0627\u0633\u0628 \u0644\u0644\u062a\u062e\u0632\u064a\u0646 \u0627\u0644\u064a\u0648\u0645\u064a \u0648\u0627\u0644\u0637\u0644\u0628\u0627\u062a \u0627\u0644\u0639\u0627\u0626\u0644\u064a\u0629 \u0648\u0627\u0644\u0645\u0643\u062a\u0628\u064a\u0629 \u0645\u0639 \u0633\u0639\u0631 \u0634\u0627\u0645\u0644 \u0627\u0644\u0636\u0631\u064a\u0628\u0629 \u0648\u0627\u0644\u062a\u0648\u0635\u064a\u0644 \u062f\u0627\u062e\u0644 \u0627\u0644\u0631\u064a\u0627\u0636.',
-      en: 'Fly 330ml offer is suited for daily stocking, family orders, and office supply with VAT and delivery included in Riyadh.',
+      en: 'Fly 330ml offer is suited for daily stocking, family orders, and office supply with VAT and delivery included across Saudi Arabia.',
     },
     quickFacts: [
       { labelAr: '\u0627\u0644\u0639\u0644\u0627\u0645\u0629', labelEn: 'Brand', valueAr: '\u0641\u0644\u0627\u064a', valueEn: 'Fly Water' },
@@ -1782,18 +1782,18 @@ function makeCurrentOfferProduct({
     isPurchasable: true,
     image,
     description: {
-      ar: `${quantity} كرتون بسعر ${price} ريال فقط، شامل التوصيل المجاني داخل الرياض. العرض لفترة محدودة حتى نفاد الكمية.`,
-      en: `${quantity} cartons for SAR ${price}, including free delivery in Riyadh. Limited-time offer while stocks last.`,
+      ar: `${quantity} كرتون بسعر ${price} ريال فقط، شامل التوصيل المجاني داخل المملكة. العرض لفترة محدودة حتى نفاد الكمية.`,
+      en: `${quantity} cartons for SAR ${price}, including free delivery across Saudi Arabia. Limited-time offer while stocks last.`,
     },
     features: [
       `${quantity} كرتون بسعر ${price} ريال فقط.`,
       'متوفر بمقاسي 330 مل و200 مل.',
       'مياه نقية وجودة مضمونة.',
-      'توصيل مجاني داخل الرياض.',
+      'توصيل مجاني داخل المملكة.',
     ],
     benefits: [
       `${quantity} كرتون`,
-      'توصيل مجاني داخل الرياض',
+      'توصيل مجاني داخل المملكة',
       'مياه نقية 100%',
       'عرض لفترة محدودة',
     ],
@@ -1802,7 +1802,7 @@ function makeCurrentOfferProduct({
       { labelAr: 'العلامة', labelEn: 'Brand', valueAr: brandAr, valueEn: brand },
       { labelAr: 'الكمية', labelEn: 'Quantity', valueAr: `${quantity} كرتون`, valueEn: `${quantity} cartons` },
       { labelAr: 'السعر', labelEn: 'Price', valueAr: `${price} ريال`, valueEn: `SAR ${price}` },
-      { labelAr: 'التوصيل', labelEn: 'Delivery', valueAr: 'مجاني داخل الرياض', valueEn: 'Free in Riyadh' },
+      { labelAr: 'التوصيل', labelEn: 'Delivery', valueAr: 'مجاني داخل المملكة', valueEn: 'Free across Saudi Arabia' },
     ],
     inStock: true,
     isPublished: true,
@@ -2114,14 +2114,14 @@ export function getProductPackageDetails(product: Product, isRTL: boolean) {
           'مياه نوفا تأتي من آبار وادي سعد، أحد أشهر المصادر الطبيعية للمياه النقية في المملكة.',
           'تركيبة متوازنة وطعم نقي ينعش يومك مع كل رشفة.',
           'المقاس: 330 مل، والكمية الإجمالية: 20 كرتون ضمن عرض 15 + 5 مجانا.',
-          'السعر 350 ريال فقط شامل التوصيل المجاني داخل الرياض.',
+          'السعر 350 ريال فقط شامل التوصيل المجاني داخل المملكة.',
           'اختيار مثالي للمنزل، المكاتب، المناسبات، والضيافة الراقية.',
         ]
       : [
           'Nova water comes from Wadi Saad wells, one of the well-known natural sources of pure water in Saudi Arabia.',
           'Balanced composition with a clean taste that refreshes your day with every sip.',
           'Size: 330ml, total quantity: 20 cartons in a 15 + 5 free offer.',
-          'SAR 350 only, including free delivery in Riyadh.',
+          'SAR 350 only, including free delivery across Saudi Arabia.',
           'Ideal for homes, offices, events, and premium hospitality.',
         ];
   }
@@ -2131,14 +2131,14 @@ export function getProductPackageDetails(product: Product, isRTL: boolean) {
       ? [
           'اشتر 15 كرتون مياه فلاي واحصل على 5 كراتين مجانا.',
           'متوفر بمقاس 200 مل بعدد 48 عبوة للكرتون أو 330 مل بعدد 40 عبوة للكرتون.',
-          'السعر 195 ريال فقط شامل الضريبة والتوصيل داخل الرياض.',
+          'السعر 195 ريال فقط شامل الضريبة والتوصيل داخل المملكة.',
           'مياه شرب نقية مع توصيل سريع وعروض مستمرة.',
           'اطلب الآن واستفد من العرض قبل انتهائه.',
         ]
       : [
           'Buy 15 Fly Water cartons and get 5 cartons free.',
           'Available as 200ml with 48 bottles per carton or 330ml with 40 bottles per carton.',
-          'SAR 195 only, including VAT and delivery in Riyadh.',
+          'SAR 195 only, including VAT and delivery across Saudi Arabia.',
           'Pure drinking water with fast delivery and ongoing offers.',
           'Order now and use the offer before it ends.',
         ];

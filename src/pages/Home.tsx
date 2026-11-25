@@ -25,6 +25,7 @@ import ProductImage from '../components/ProductImage';
 import { hasFixedPrice, isDiscountedProduct, isOfferProduct, type Product } from '../data/products';
 import { useProductCatalog } from '../features/catalog/ProductCatalogProvider';
 import { formatSarPrice } from '../lib/utils';
+import DeliveryCoverage from '../sections/DeliveryCoverage';
 
 const loadStatsTickerSection = () => import('../sections/StatsTicker');
 const loadParallaxShowcaseSection = () => import('../sections/ParallaxShowcase');
@@ -146,7 +147,7 @@ function FastDeliveryHero({
         <div className="absolute inset-0 bg-[linear-gradient(180deg,#dff4ff_0%,#eef8ff_38%,#e9f0ee_64%,#d8dde0_100%)]" />
         <motion.img
           src={truckImageSrc}
-          alt="توصيل سريع لمياه ريق في الرياض"
+          alt="توصيل سريع لمياه ريق في جميع أنحاء المملكة"
           className="absolute inset-0 h-full w-full object-cover object-[62%_center] opacity-95 sm:object-center"
           initial={prefersReducedMotion ? false : { x: 90, opacity: 0.86, scale: 1.03 }}
           animate={prefersReducedMotion ? { opacity: 1 } : { x: 0, opacity: 1, scale: [1, 1.008, 1] }}
@@ -271,8 +272,8 @@ function FastDeliveryHero({
 const fastDeliveryCopy = {
   ar: {
     headline: '\u062a\u0648\u0635\u064a\u0644 \u0633\u0631\u064a\u0639',
-    pill: '\u0644\u0643\u0644 \u0623\u062d\u064a\u0627\u0621 \u0627\u0644\u0631\u064a\u0627\u0636',
-    alt: '\u062a\u0648\u0635\u064a\u0644 \u0633\u0631\u064a\u0639 \u0644\u0645\u064a\u0627\u0647 \u0631\u064a\u0642 \u0641\u064a \u0627\u0644\u0631\u064a\u0627\u0636',
+    pill: '\u0641\u064a \u062c\u0645\u064a\u0639 \u0623\u0646\u062d\u0627\u0621 \u0627\u0644\u0645\u0645\u0644\u0643\u0629',
+    alt: '\u062a\u0648\u0635\u064a\u0644 \u0633\u0631\u064a\u0639 \u0644\u0645\u064a\u0627\u0647 \u0631\u064a\u0642 \u0641\u064a \u062c\u0645\u064a\u0639 \u0623\u0646\u062d\u0627\u0621 \u0627\u0644\u0645\u0645\u0644\u0643\u0629',
     speedTitle: '\u0633\u0631\u0639\u0629',
     speedDesc: '\u0641\u064a \u0627\u0644\u062a\u0648\u0635\u064a\u0644',
     coverageTitle: '\u062a\u063a\u0637\u064a\u0629 \u0634\u0627\u0645\u0644\u0629',
@@ -282,8 +283,8 @@ const fastDeliveryCopy = {
   },
   en: {
     headline: 'Fast Delivery',
-    pill: 'Across Riyadh Neighborhoods',
-    alt: 'Fast delivery for Riq water across Riyadh',
+    pill: 'Across Saudi Arabia',
+    alt: 'Fast delivery for Riq water across Saudi Arabia',
     speedTitle: 'Fast',
     speedDesc: 'Delivery',
     coverageTitle: 'Full Coverage',
@@ -309,8 +310,8 @@ function ExactFastDeliveryHero({
     ? '/images/blue-arabic-water-delivery.webp'
     : '/images/reeq-pure-water-delivery.webp';
   const alt = isRTL
-    ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في الرياض'
-    : 'Riq pure water delivery in Riyadh';
+    ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في جميع أنحاء المملكة'
+    : 'Riq pure water delivery across Saudi Arabia';
 
   return (
     <motion.section
@@ -333,6 +334,9 @@ function ExactFastDeliveryHero({
             decoding="async"
           />
         </picture>
+        <div className="absolute bottom-[2.4%] left-1/2 z-10 -translate-x-1/2 rounded-full border-2 border-white/80 bg-[#153b66] px-5 py-2 text-center text-sm font-black text-white shadow-xl sm:px-8 sm:py-3 sm:text-xl" dir={isRTL ? 'rtl' : 'ltr'}>
+          {isRTL ? 'التوصيل إلى جميع أنحاء المملكة' : 'Delivery across Saudi Arabia'}
+        </div>
       </div>
     </motion.section>
   );
@@ -386,7 +390,7 @@ function LegacyExactFastDeliveryHero({
         src="/images/29448fae-193d-4937-9cc8-2eda5e4f2de7.jpg"
         width={1600}
         height={938}
-        alt={isRTL ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في الرياض' : 'Riq fast pure water delivery to your door in Riyadh'}
+        alt={isRTL ? 'ريق لتوصيل المياه النقية بسرعة إلى باب بيتك في جميع أنحاء المملكة' : 'Riq fast pure water delivery to your door across Saudi Arabia'}
         className="relative z-10 block h-auto w-full rounded-[0.7rem] border border-sky-100/80 object-contain object-center shadow-[0_22px_60px_-34px_rgba(15,63,123,0.46)] sm:rounded-[1.1rem] lg:rounded-[1.5rem]"
         initial={prefersReducedMotion ? false : { opacity: 0, y: 18, scale: 0.985, filter: 'blur(5px)' }}
         animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
@@ -491,7 +495,7 @@ function LegacyExactFastDeliveryHero({
           <div className="absolute inset-x-0 bottom-0 flex h-7 items-center justify-around bg-[#075b96]/94 px-2 text-[0.48rem] font-bold text-white">
             <span>{isRTL ? 'نقاء وجودة' : 'Pure quality'}</span>
             <span>{isRTL ? 'توصيل سريع' : 'Fast delivery'}</span>
-            <span>{isRTL ? 'كل أحياء الرياض' : 'All Riyadh'}</span>
+            <span>{isRTL ? 'كل أنحاء المملكة' : 'Saudi-wide'}</span>
           </div>
         </motion.div>
       </div>
@@ -774,6 +778,7 @@ export default function Home() {
         isRTL={isRTL}
       />
       <HomeOffersShowcase offers={homeOffers} isRTL={isRTL} onAddToCart={addToCart} />
+      <DeliveryCoverage isRTL={isRTL} />
       {false ? (
       <motion.section
         ref={heroRef}

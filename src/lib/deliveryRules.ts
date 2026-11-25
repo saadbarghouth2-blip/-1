@@ -7,15 +7,16 @@ export const FREE_DELIVERY_BUNDLES = 35;
 export const MIN_DELIVERY_GLASS_CARTONS = 10;
 export const FREE_DELIVERY_GLASS_CARTONS = 15;
 export const STANDARD_DELIVERY_FEE = 25;
-export const SERVICE_CITY_AR = 'الرياض، الدمام والأحساء';
-export const SERVICE_CITY_EN = 'Riyadh, Dammam and Al-Ahsa';
+export const SERVICE_CITY_AR = 'جميع أنحاء المملكة العربية السعودية';
+export const SERVICE_CITY_EN = 'all across Saudi Arabia';
 export const DELIVERY_DURATION_AR = 'من 24 إلى 48 ساعة';
 export const DELIVERY_DURATION_EN = '24 to 48 hours';
 export const DELIVERY_WINDOW_AR = '8:00 صباحًا حتى 8:00 مساءً';
 export const DELIVERY_WINDOW_EN = '8:00 AM to 8:00 PM';
 
 export type DeliveryFloorLevel = 'ground' | 'first' | 'second' | 'higher';
-export type DeliveryCity = 'riyadh' | 'dammam' | 'al-ahsa' | 'jeddah' | 'makkah' | 'madinah';
+// Legacy IDs are retained solely to normalize saved browser drafts safely.
+export type DeliveryCity = 'nationwide' | 'riyadh' | 'dammam' | 'al-ahsa' | 'jeddah' | 'makkah' | 'madinah';
 export type DeliveryUnitKind = 'carton' | 'bundle' | 'glass';
 
 export type DeliveryCartItem = { product: Product; quantity: number };
@@ -53,12 +54,7 @@ export const DELIVERY_CITY_OPTIONS: Array<{
   labelEn: string;
   enabled: boolean;
 }> = [
-  { id: 'riyadh', labelAr: 'الرياض', labelEn: 'Riyadh', enabled: true },
-  { id: 'dammam', labelAr: 'الدمام', labelEn: 'Dammam', enabled: true },
-  { id: 'al-ahsa', labelAr: 'الأحساء', labelEn: 'Al-Ahsa', enabled: true },
-  { id: 'jeddah', labelAr: 'جدة', labelEn: 'Jeddah', enabled: false },
-  { id: 'makkah', labelAr: 'مكة المكرمة', labelEn: 'Makkah', enabled: false },
-  { id: 'madinah', labelAr: 'المدينة المنورة', labelEn: 'Madinah', enabled: false },
+  { id: 'nationwide', labelAr: 'جميع أنحاء المملكة', labelEn: 'Saudi Arabia', enabled: true },
 ];
 
 function normalizeIdentity(product: Product) {
@@ -173,25 +169,25 @@ export function getDeliveryPolicySummary(isRTL: boolean) {
         `الحد الأدنى للمياه العادية ${MIN_DELIVERY_CARTONS} كرتون، والتوصيل المجاني من ${FREE_DELIVERY_CARTONS} كرتون.`,
         `الحد الأدنى لربطات رفا مكة المحددة ${MIN_DELIVERY_BUNDLES} ربطة، والتوصيل المجاني من ${FREE_DELIVERY_BUNDLES} ربطة.`,
         `الحد الأدنى للمياه الزجاجية ${MIN_DELIVERY_GLASS_CARTONS} كراتين، والتوصيل المجاني من ${FREE_DELIVERY_GLASS_CARTONS} كرتون.`,
-        `رسوم التوصيل في المدن المتاحة ${STANDARD_DELIVERY_FEE} ريال عند عدم بلوغ حد التوصيل المجاني.`,
-        'جميع العروض تشمل توصيلًا مجانيًا داخل المدن المتاحة.',
-        `مدة التوصيل المتوقعة في المدن المتاحة ${DELIVERY_DURATION_AR}.`,
+        `رسوم التوصيل داخل المملكة ${STANDARD_DELIVERY_FEE} ريال عند عدم بلوغ حد التوصيل المجاني.`,
+        'جميع العروض تشمل توصيلًا مجانيًا داخل المملكة.',
+        `مدة التوصيل المتوقعة داخل المملكة ${DELIVERY_DURATION_AR}.`,
         'التوصيل للأرضي بدون رسوم إضافية، والدور الأول 10 ريالات، والدور الثاني 20 ريالًا.',
         'للأدوار الأعلى يتم الاتفاق على الرسوم حسب حالة الموقع قبل تأكيد الطلب.',
         `التوصيل خلال ساعات العمل من ${DELIVERY_WINDOW_AR}.`,
-        'التوصيل متاح حاليًا في الرياض والدمام والأحساء. جدة ومكة المكرمة والمدينة المنورة قيد التجهيز للتوسع القادم.',
+        'التوصيل متاح في جميع أنحاء المملكة العربية السعودية.',
       ]
     : [
         `Regular water requires at least ${MIN_DELIVERY_CARTONS} cartons; free delivery starts at ${FREE_DELIVERY_CARTONS}.`,
         `The specified Rafa Makkah bundles require at least ${MIN_DELIVERY_BUNDLES} bundles; free delivery starts at ${FREE_DELIVERY_BUNDLES}.`,
         `Glass water requires at least ${MIN_DELIVERY_GLASS_CARTONS} cartons; free delivery starts at ${FREE_DELIVERY_GLASS_CARTONS}.`,
-        `Delivery in available cities costs ${STANDARD_DELIVERY_FEE} SAR when the free-delivery threshold is not met.`,
-        'Every offer includes free delivery in available cities.',
-        `Expected delivery time in available cities is ${DELIVERY_DURATION_EN}.`,
+        `Delivery across Saudi Arabia costs ${STANDARD_DELIVERY_FEE} SAR when the free-delivery threshold is not met.`,
+        'Every offer includes free delivery across Saudi Arabia.',
+        `Expected delivery time across Saudi Arabia is ${DELIVERY_DURATION_EN}.`,
         'Ground-floor delivery has no extra fee; first floor is 10 SAR and second floor is 20 SAR.',
         'Higher floors are quoted according to site conditions before order confirmation.',
         `Delivery runs during working hours from ${DELIVERY_WINDOW_EN}.`,
-        'Delivery is currently available in Riyadh, Dammam and Al-Ahsa. Jeddah, Makkah and Madinah are being prepared for future expansion.',
+        'Delivery is available across Saudi Arabia.',
       ];
 }
 
