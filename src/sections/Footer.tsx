@@ -6,6 +6,7 @@ import {
   Instagram,
   Music2,
   ArrowUp,
+  ExternalLink,
   MapPin,
   Phone,
   Mail,
@@ -53,6 +54,18 @@ function OfficialImageLogo({ src, alt }: { src: string; alt: string }) {
       loading="lazy"
       decoding="async"
     />
+  );
+}
+
+function NotoqMark() {
+  return (
+    <span
+      aria-hidden="true"
+      className="relative flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-[#8ad8ff]/45 bg-[#102d4d] text-sm font-black text-white shadow-[0_5px_16px_rgba(2,132,199,0.22)]"
+    >
+      <span className="relative z-10 leading-none">ن</span>
+      <span className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full bg-[#8ad8ff]/80 blur-[1px]" />
+    </span>
   );
 }
 
@@ -368,7 +381,7 @@ export default function Footer() {
         </motion.div>
 
         <div className="flex flex-col items-center justify-between gap-5 md:flex-row">
-          <div className="flex flex-col items-center gap-5 md:flex-row">
+          <div className="flex flex-col items-center gap-4 md:flex-row md:gap-5">
             <motion.p
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
@@ -377,13 +390,35 @@ export default function Footer() {
             >
               © 2024 {BRAND_NAME_LOCKUP}. {isRTL ? '\u062c\u0645\u064a\u0639 \u0627\u0644\u062d\u0642\u0648\u0642 \u0645\u062d\u0641\u0648\u0638\u0629' : 'All Rights Reserved'}.
             </motion.p>
-            <p className="text-center text-xs font-medium text-white/60 md:text-right">
-              <a href="https://xn--2gbwk.site/" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#8ad8ff]">
-                {isRTL ? 'إنتاج وتطوير شركة نُطق' : 'Produced and developed by Notoq'}
+            <div
+              className="flex max-w-full flex-wrap items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.045] px-2.5 py-1.5 text-xs shadow-[0_8px_28px_rgba(0,0,0,0.14)] md:justify-start"
+              dir={isRTL ? 'rtl' : 'ltr'}
+            >
+              <a
+                href="https://xn--2gbwk.site/"
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center gap-2 rounded-lg px-1 py-0.5 font-bold text-white transition-colors hover:text-[#8ad8ff] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8ad8ff]"
+                aria-label={isRTL ? 'زيارة موقع شركة نُطق' : 'Visit Notoq website'}
+              >
+                <NotoqMark />
+                <span className="whitespace-nowrap">
+                  {isRTL ? 'إنتاج وتطوير شركة نُطق' : 'Produced by Notoq'}
+                </span>
+                <ExternalLink className="h-3 w-3 text-[#8ad8ff]/80 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </a>
-              <span className="mx-2 text-white/30">•</span>
-              <a href="https://www.barghouth.me/" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#8ad8ff]">barghouth.me</a>
-            </p>
+              <span aria-hidden="true" className="h-4 w-px bg-white/15" />
+              <a
+                href="https://www.barghouth.me/"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 whitespace-nowrap px-1 text-[0.69rem] font-semibold text-white/60 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8ad8ff]"
+                aria-label={isRTL ? 'زيارة موقع Barghouth' : 'Visit Barghouth website'}
+              >
+                <span>barghouth.me</span>
+                <ExternalLink className="h-2.5 w-2.5" />
+              </a>
+            </div>
             <div dir="ltr" className="flex max-w-full items-center justify-center gap-2 overflow-x-auto pb-1 sm:gap-3 md:justify-start">
               {paymentMethods.map((paymentMethod) => (
                 <div
